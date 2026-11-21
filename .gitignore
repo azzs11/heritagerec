@@ -88,6 +88,8 @@ venv.bak/
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 *.ipynb
+# The Colab notebooks of the study are part of the method and are kept in git.
+!notebooks/*.ipynb
 
 # Jupyter Notebook config
 .jupyter
