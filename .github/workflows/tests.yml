@@ -16,9 +16,9 @@ jobs:
       # The inherited folders in src/ have ~320 pre-existing violations; fix those in a separate
       # refactor/ branch. Until then, enforce lint only on the code we actively maintain.
       - name: Run ruff check
-        run: uvx ruff check api/ tests/ src/corpus/ src/graph/
+        run: uvx ruff check api/ tests/ src/corpus/ src/graph/ src/retrieval/
       - name: Run ruff format check
-        run: uvx ruff format --check api/ tests/ src/corpus/ src/graph/
+        run: uvx ruff format --check api/ tests/ src/corpus/ src/graph/ src/retrieval/
 
   test:
     name: Test
@@ -28,7 +28,7 @@ jobs:
       - uses: astral-sh/setup-uv@v3
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Install dev dependencies only
         run: uv sync --only-group dev --frozen
       - name: Run tests
