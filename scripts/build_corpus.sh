@@ -43,3 +43,7 @@ run src.corpus.link_objects
 # 6. Snapshot, manifest and data card (decision 0004)
 run src.corpus.build_snapshot
 run src.corpus.data_card
+
+# 7. Core Wikidata graph (decision 0020); its statistics go into the data card, so the card is regenerated
+run src.graph.core_graph
+run src.corpus.data_card

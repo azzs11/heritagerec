@@ -9,7 +9,7 @@ and who decided it. Counts come from the files named; nothing here replaces them
 author review" means the change was made while building the corpus and is marked
 in its file for the author to confirm or reverse.
 
-Last updated: 19 November 2026.
+Last updated: 21 November 2026.
 
 ## 1. Audit of the old corpus
 
@@ -120,7 +120,13 @@ After the people and style scans, the seeds went from 1,215 to 1,196.
 Link precision per layer is measured on the author's check of
 `results/linking/link_check_sample_v1.csv` (200 links).
 
-## 9. Checks waiting for the author
+## 9. The core graph
+
+| Found | Example | Change | Recorded in | Decided by |
+| --- | --- | --- | --- | --- |
+| Museum objects' own Wikidata items say which museum holds them, so the holding museum became the top hub and linked objects by source | Cleveland Museum of Art, 2,797 "location" (P276) edges | Statement edges to the five source institutions (Cleveland, Met, Art Institute of Chicago, Wellcome Collection, Internet Archive) are skipped and counted (2,798) | `src/graph/core_graph.py`, `results/graph/core_v1.json` | Author (21 Nov 2026) |
+
+## 10. Checks waiting for the author
 
 - Scope of the neighbour sample: `results/probes/neighbour_select_v1.md` (50 entities).
 - Scope of the class-based list sample: `results/probes/class_list_sample_v1.md` (50 entities).

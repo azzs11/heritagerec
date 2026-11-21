@@ -1,0 +1,300 @@
+{
+  "date": "2026-11-21",
+  "commit": "b4fbad7734634041e64e198cc4eeb4857948ac7b",
+  "requests": {
+    "fetched": 0,
+    "reused": 191
+  },
+  "relations": {
+    "P131": "located in the administrative entity",
+    "P276": "location",
+    "P361": "part of",
+    "P527": "has part",
+    "P88": "commissioned by",
+    "P84": "architect",
+    "P112": "founded by",
+    "P53": "family (dynasty)",
+    "P36": "capital",
+    "P149": "architectural style",
+    "P136": "genre",
+    "P135": "movement",
+    "P1365": "replaces",
+    "P1366": "replaced by",
+    "P800": "notable work",
+    "P170": "creator"
+  },
+  "min_connector_sources": 2,
+  "stats": {
+    "nodes": 24006,
+    "edges": 42990,
+    "nodes_by_kind": {
+      "document": 14485,
+      "entity": 8858,
+      "connector": 623,
+      "period": 40
+    },
+    "entity_nodes_by_type": {
+      "site": 4915,
+      "other": 3305,
+      "place": 510,
+      "culture": 261,
+      "person": 247,
+      "polity": 226,
+      "style": 17
+    },
+    "edges_by_relation": {
+      "about": {
+        "label": "about",
+        "edges": 21063
+      },
+      "in_period": {
+        "label": "in period",
+        "edges": 14212
+      },
+      "P131": {
+        "label": "located in the administrative entity",
+        "edges": 3714
+      },
+      "P361": {
+        "label": "part of",
+        "edges": 1818
+      },
+      "P149": {
+        "label": "architectural style",
+        "edges": 417
+      },
+      "P276": {
+        "label": "location",
+        "edges": 388
+      },
+      "P1365": {
+        "label": "replaces",
+        "edges": 261
+      },
+      "P527": {
+        "label": "has part",
+        "edges": 243
+      },
+      "P1366": {
+        "label": "replaced by",
+        "edges": 215
+      },
+      "P36": {
+        "label": "capital",
+        "edges": 159
+      },
+      "P53": {
+        "label": "family (dynasty)",
+        "edges": 141
+      },
+      "P136": {
+        "label": "genre",
+        "edges": 127
+      },
+      "P112": {
+        "label": "founded by",
+        "edges": 73
+      },
+      "P88": {
+        "label": "commissioned by",
+        "edges": 59
+      },
+      "P170": {
+        "label": "creator",
+        "edges": 57
+      },
+      "P84": {
+        "label": "architect",
+        "edges": 20
+      },
+      "P135": {
+        "label": "movement",
+        "edges": 15
+      },
+      "P800": {
+        "label": "notable work",
+        "edges": 8
+      }
+    },
+    "degree_by_kind": {
+      "document": {
+        "nodes": 14485,
+        "min": 1,
+        "median": 1,
+        "max": 15,
+        "mean": 2.22
+      },
+      "connector": {
+        "nodes": 623,
+        "min": 2,
+        "median": 3,
+        "max": 71,
+        "mean": 5.03
+      },
+      "entity": {
+        "nodes": 8858,
+        "min": 1,
+        "median": 2,
+        "max": 1347,
+        "mean": 4.12
+      },
+      "period": {
+        "nodes": 40,
+        "min": 1,
+        "median": 94,
+        "max": 2357,
+        "mean": 355.3
+      }
+    },
+    "components": {
+      "count": 1609,
+      "largest": 19583,
+      "sizes_top10": [
+        19583,
+        25,
+        25,
+        24,
+        21,
+        21,
+        21,
+        18,
+        17,
+        16
+      ]
+    },
+    "documents": 14485,
+    "documents_in_largest_component": 12063,
+    "top_hubs": [
+      {
+        "id": "century:19",
+        "label": "19th century",
+        "kind": "period",
+        "degree": 2357
+      },
+      {
+        "id": "century:18",
+        "label": "18th century",
+        "kind": "period",
+        "degree": 2326
+      },
+      {
+        "id": "century:16",
+        "label": "16th century",
+        "kind": "period",
+        "degree": 2222
+      },
+      {
+        "id": "century:17",
+        "label": "17th century",
+        "kind": "period",
+        "degree": 2071
+      },
+      {
+        "id": "Q668",
+        "label": "India",
+        "kind": "entity",
+        "degree": 1347
+      },
+      {
+        "id": "Q33296",
+        "label": "Mughal Empire",
+        "kind": "entity",
+        "degree": 1291
+      },
+      {
+        "id": "century:12",
+        "label": "12th century",
+        "kind": "period",
+        "degree": 941
+      },
+      {
+        "id": "Q60466177",
+        "label": "Tuti-Nama (Tales of a Parrot)",
+        "kind": "entity",
+        "degree": 658
+      },
+      {
+        "id": "Q1061",
+        "label": "Gujarat",
+        "kind": "entity",
+        "degree": 603
+      },
+      {
+        "id": "century:20",
+        "label": "20th century",
+        "kind": "period",
+        "degree": 588
+      },
+      {
+        "id": "century:15",
+        "label": "15th century",
+        "kind": "period",
+        "degree": 567
+      },
+      {
+        "id": "Q1165",
+        "label": "Bihar",
+        "kind": "entity",
+        "degree": 507
+      },
+      {
+        "id": "Q1445",
+        "label": "Tamil Nadu",
+        "kind": "entity",
+        "degree": 486
+      },
+      {
+        "id": "Q1437",
+        "label": "Rajasthan",
+        "kind": "entity",
+        "degree": 457
+      },
+      {
+        "id": "Q8441",
+        "label": "man",
+        "kind": "entity",
+        "degree": 430
+      },
+      {
+        "id": "Q60514050",
+        "label": "Manuscript of the Perfection of Wisdom in Eight Thousand Lines (Ashtasahasrika Prajnaparamita-sutra)",
+        "kind": "entity",
+        "degree": 379
+      },
+      {
+        "id": "Q162442",
+        "label": "Prayagraj",
+        "kind": "entity",
+        "degree": 370
+      },
+      {
+        "id": "century:14",
+        "label": "14th century",
+        "kind": "period",
+        "degree": 340
+      },
+      {
+        "id": "Q467",
+        "label": "woman",
+        "kind": "entity",
+        "degree": 271
+      },
+      {
+        "id": "century:11",
+        "label": "11th century",
+        "kind": "period",
+        "degree": 252
+      }
+    ],
+    "build": {
+      "edges to a source institution skipped": 2798,
+      "self loops skipped": 1,
+      "connector candidates": 2852,
+      "connectors kept": 623,
+      "connector candidates dropped (one corpus entity)": 2229,
+      "statement edges dropped with them": 2234
+    },
+    "redirects": 5,
+    "missing_entities": []
+  }
+}

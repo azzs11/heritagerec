@@ -65,6 +65,45 @@ Layer 1: links the museum gives. Layer 2: structured fields matched against the 
 | cleveland_place_v1 | 3,201 | 2,800 | 2,429 | 302 | 67 |
 | artic_place_v1 | 347 | 0 | 110 | 19 | 238 |
 
+## Knowledge graph: core Wikidata layer (decision 0020)
+
+Built by `src/graph/core_graph.py` on 2026-11-21 at commit `b4fbad7734634041e64e198cc4eeb4857948ac7b`: 24,006 nodes and 42,990 edges. 12,063 of 14,485 documents are in the largest connected component (1,609 components). Hubs are down-weighted at retrieval time (decision 0007), not in the graph. Full statistics: `results/graph/core_v1.md`.
+
+| Node kind | Nodes |
+| --- | --- |
+| document | 14,485 |
+| entity | 8,858 |
+| connector | 623 |
+| period | 40 |
+
+| Relation | Label | Edges |
+| --- | --- | --- |
+| about | about | 21,063 |
+| in_period | in period | 14,212 |
+| P131 | located in the administrative entity | 3,714 |
+| P361 | part of | 1,818 |
+| P149 | architectural style | 417 |
+| P276 | location | 388 |
+| P1365 | replaces | 261 |
+| P527 | has part | 243 |
+| P1366 | replaced by | 215 |
+| P36 | capital | 159 |
+| P53 | family (dynasty) | 141 |
+| P136 | genre | 127 |
+| P112 | founded by | 73 |
+| P88 | commissioned by | 59 |
+| P170 | creator | 57 |
+| P84 | architect | 20 |
+| P135 | movement | 15 |
+| P800 | notable work | 8 |
+
+- edges to a source institution skipped: 2,798
+- self loops skipped: 1
+- connector candidates: 2,852
+- connectors kept: 623
+- connector candidates dropped (one corpus entity): 2,229
+- statement edges dropped with them: 2,234
+
 ## Text length (characters)
 
 | Source | Document type | Documents | Median | Min | Max |
