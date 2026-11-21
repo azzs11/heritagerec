@@ -58,7 +58,7 @@ are in [`docs/decisions/`](docs/decisions/).
 
 ## Rebuilding the corpus
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
+Requires Python 3.12+, [uv](https://docs.astral.sh/uv/), and for the search indexes a Java 21 JDK (set `JAVA_HOME` in `.env`).
 
 ```bash
 git clone https://github.com/azzs11/heritagerec.git

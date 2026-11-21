@@ -46,4 +46,8 @@ run src.corpus.data_card
 
 # 7. Core Wikidata graph (decision 0020); its statistics go into the data card, so the card is regenerated
 run src.graph.core_graph
+
+# 8. Passages shared by every retrieval system, and the BM25 indexes (decision 0023); needs JAVA_HOME in .env
+run src.retrieval.passages
+run src.retrieval.bm25 index
 run src.corpus.data_card

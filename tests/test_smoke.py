@@ -7,12 +7,12 @@ ROOT = Path(__file__).parent.parent
 
 
 def test_pyproject_valid():
-    """pyproject.toml exists, parses as valid TOML, and pins Python >=3.11."""
+    """pyproject.toml exists, parses as valid TOML, and pins Python >=3.12."""
     path = ROOT / "pyproject.toml"
     assert path.exists(), "pyproject.toml not found"
     with open(path, "rb") as f:
         config = tomllib.load(f)
-    assert config["project"]["requires-python"] == ">=3.11"
+    assert config["project"]["requires-python"] == ">=3.12"
 
 
 def test_dev_deps_declared():

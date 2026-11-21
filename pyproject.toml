@@ -1,7 +1,7 @@
 [project]
 name = "heritage-doc-recomm-sys"
 version = "0.1.0"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "Apache-2.0"
 dependencies = [
     # Data processing
@@ -47,6 +47,7 @@ dependencies = [
     #   gradio           — not used in the current codebase
     #   imbalanced-learn — used only in the balancing step (superseded)
     "pydantic>=2.6",
+    "pyserini>=2.4.0",
 ]
 
 [dependency-groups]
@@ -57,7 +58,7 @@ dev = [
 ]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 120
 
 [tool.ruff.lint]
