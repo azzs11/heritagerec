@@ -7,6 +7,7 @@
 | `corpus_v1/staging/` | One file of validated records per collector, before the snapshot | No (rebuilt) |
 | `gazetteer/` | `gazetteer_v1.jsonl.gz`: Wikidata labels and aliases (en, hi, kn) by entity type, used for linking | Yes |
 | `graph/core_v1/` | Core Wikidata graph (decision 0020): `nodes.jsonl.gz` and `edges.tsv.gz` (source, relation, target, layer, origin, revision); later edge layers add rows with their own layer | Yes |
+| `queries/` | Grid cells for query generation (`generator_trial_cells_v1.jsonl`); later the generated, curated and split benchmark queries | Yes |
 | `raw/` | Every API response, saved untouched and gzipped, named by a hash of the request | No (archived on Zenodo at release) |
 | `balanced/`, `classified/`, `metadata/`, `ontology/`, `processed/`, `embeddings/`, `evaluation/`, `entity_importance/` | Files of the conference version, superseded by corpus v1 | Some |
 
