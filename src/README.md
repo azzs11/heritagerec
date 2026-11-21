@@ -4,6 +4,7 @@
 | --- | --- |
 | `corpus/` | Corpus v1: seed selection, probes, entity lists, collectors, shared matching rules, gazetteer, object linking, snapshot and data card. Run modules with `uv run python -m src.corpus.<module>`; the order is in `scripts/build_corpus.sh` |
 | `graph/` | Knowledge graph v1: the core Wikidata layer (decision 0020); later edge layers (decision 0006). Run with `uv run python -m src.graph.core_graph` |
+| `queries/` | Benchmark queries (decision 0021): the grid of information needs, the fixed generation prompts, and the generator trial's blind rating sheet and summary |
 | `2_preprocessing/` … `8_streamlit_app/`, `fallback/` | Pipeline of the conference version (preprocessing, representation, knowledge graph, ranking, query system, evaluation, Streamlit app), to be replaced by the corpus v1 systems |
 
 The numbered folders are inherited; new code goes in folders with descriptive names.
