@@ -53,11 +53,17 @@ Tool A, tokenisation A, passages A.
 - **Parameters:** Anserini defaults (BM25 k1 = 0.9, b = 0.4; RM3 with 10 feedback terms, 10 feedback
   documents and original-query weight 0.5) as the reported baseline. Any tuning is done on the 40 dev queries
   only, and the untuned run is reported beside it.
-- **Kannada analyser:** checked in the Anserini source once it is installed; the result is recorded here.
+- **Kannada analyser (checked 21 Nov 2026, Pyserini 2.4.0):** Pyserini has no Kannada analyser
+  (`get_lucene_analyzer(language="kn")` raises "Invalid configuration"; Telugu's would be wrong for another
+  script). Kannada uses Lucene's standard Unicode word splitting with lower-casing and no stemming or stop
+  words (`get_lucene_analyzer(language="en", stemming=False, stopwords=False)`). The whitespace analyser was
+  rejected because it leaves punctuation on words ("ದೇವಾಲಯಗಳು," with its comma).
+- **Python:** the project runs on Python 3.12, which Pyserini is built on; Python 3.15 lacks wheels for its
+  onnxruntime dependency.
 
 ## Consequences
 
-- Java 21 (Eclipse Temurin JDK 21, from adoptium.net) is installed on the laptop, and `pyserini` is added to
-  `pyproject.toml`.
+- Java 21 (Eclipse Temurin JDK 21, from adoptium.net) is installed on the laptop, `JAVA_HOME` is set in `.env`
+  (template in `.env.example`), and `pyserini` is added to `pyproject.toml`; `.python-version` and CI use 3.12.
 - Indexes are built locally and are not committed. The passage file's SHA-256 goes into a manifest.
 - The data card states the passage settings and the passage count by language and source.
