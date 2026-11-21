@@ -25,6 +25,7 @@ SEED_LISTS = {
     "class list": ROOT / "data/seeds/class_list_v1.csv",
 }
 LINKS_REPORT = ROOT / "results/linking/object_links_v1.json"
+GRAPH_REPORT = ROOT / "results/graph/core_v1.json"
 SEED_REPORT = ROOT / "data/seeds/seed_report.md"
 OUT = ROOT / "docs/data_card.md"
 LICENCE_NAMES = {
@@ -76,6 +77,32 @@ def linking_section() -> list[str]:
         " Precision per layer comes from the author's check of `results/linking/link_check_sample_v1.csv`.",
         "",
         *table(["Staging file", "Records", "Layer 1", "Layer 2", "Layer 3", "India only"], rows),
+        "",
+    ]
+
+
+def graph_section() -> list[str]:
+    if not GRAPH_REPORT.exists():
+        return []
+    rep = json.load(open(GRAPH_REPORT, encoding="utf-8"))
+    s = rep["stats"]
+    return [
+        "## Knowledge graph: core Wikidata layer (decision 0020)",
+        "",
+        f"Built by `src/graph/core_graph.py` on {rep['date']} at commit `{rep['commit']}`:"
+        f" {fmt(s['nodes'])} nodes and {fmt(s['edges'])} edges. {fmt(s['documents_in_largest_component'])} of"
+        f" {fmt(s['documents'])} documents are in the largest connected component"
+        f" ({fmt(s['components']['count'])} components). Hubs are down-weighted at retrieval time (decision 0007),"
+        " not in the graph. Full statistics: `results/graph/core_v1.md`.",
+        "",
+        *table(["Node kind", "Nodes"], [[k, fmt(v)] for k, v in s["nodes_by_kind"].items()]),
+        "",
+        *table(
+            ["Relation", "Label", "Edges"],
+            [[k, v["label"], fmt(v["edges"])] for k, v in s["edges_by_relation"].items()],
+        ),
+        "",
+        *[f"- {k}: {fmt(v)}" for k, v in s["build"].items()],
         "",
     ]
 
@@ -154,6 +181,7 @@ def main() -> None:
         f"{fmt(manifest['duplicates_merged'])} pages reached from two lists were merged into one record each.",
         "",
         *linking_section(),
+        *graph_section(),
         "## Text length (characters)",
         "",
         *table(
