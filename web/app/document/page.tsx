@@ -1,10 +1,12 @@
 "use client";
 
+import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 
 import { Load, MarginNote, Names, Stamp, fmt } from "@/components/ui";
+import { LiveGraph, groupOf, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
 import { NextSteps } from "@/components/Wayfinding";
 import { api, downloadUrl, get, label, type DocumentView as Doc, type ImageRef } from "@/lib/api";
 import { DOC_TYPES, LANGUAGES, LICENCES, SOURCES, plural } from "@/lib/names";
@@ -31,7 +33,9 @@ export default function DocumentPage() {
 }
 
 function DocumentView() {
-  const id = useSearchParams().get("id") ?? "";
+  const params = useSearchParams();
+  const id = params.get("id") ?? "";
+  const asked = params.get("q") ?? "";
   const doc = useResource(id ? () => api.document(id) : null, `doc|${id}`);
   useTrailStep(doc.state === "ready" ? { kind: "document", label: doc.data.title, href: `/document/?id=${encodeURIComponent(id)}` } : null);
   if (!id) return <p className="page">No document was named. Open one from a case or the graph.</p>;
@@ -94,7 +98,8 @@ function DocumentView() {
                 </p>
               ) : null}
               <h2 className={s.h2}>The text, as the search engines see it</h2>
-              <Passages id={d.id} lang={d.language} />
+              <Passages id={d.id} lang={d.language} asked={asked} />
+              {d.in_graph ? <InGraph d={d} /> : null}
               <NextSteps steps={nextSteps(d)} />
             </div>
             <aside className={s.side}>
@@ -114,7 +119,21 @@ function DocumentView() {
   );
 }
 
-function Passages({ id, lang }: { id: string; lang: string }) {
+/**
+ * Marks the words of the reader's search in a passage. Matching is by spelling (a word is marked when it begins with
+ * the first five letters of a search word), not by the search engine's stems, and the page says so.
+ */
+function marked(text: string, words: string[]) {
+  if (!words.length) return text;
+  const stems = words.map((w) => w.toLocaleLowerCase().slice(0, 5));
+  return text.split(/(\s+)/).map((tok, i) => {
+    const bare = tok.toLocaleLowerCase().replace(/[^\p{L}\p{M}\p{N}]/gu, "");
+    return bare && stems.some((st) => bare.startsWith(st)) ? <mark key={i}>{tok}</mark> : tok;
+  });
+}
+
+function Passages({ id, lang, asked }: { id: string; lang: string; asked: string }) {
+  const words = asked.split(/\s+/).filter((w) => w.length >= 3);
   const [offset, setOffset] = useState(0);
   const page = useResource(
     () => get<PassagePage>(`/api/documents/${encodeURIComponent(id)}/passages`, { offset, limit: PAGE }),
@@ -124,11 +143,16 @@ function Passages({ id, lang }: { id: string; lang: string }) {
     <Load res={page} what="the passages">
       {(p) => (
         <>
+          {words.length ? (
+            <p className={s.askedNote}>
+              Words of your search, <q>{asked}</q>, are marked by spelling.
+            </p>
+          ) : null}
           <ol className={s.passages} start={p.offset + 1}>
             {p.passages.map((x) => (
               <li key={x.id} lang={lang}>
                 <span className={s.pid}>#{x.id.split("#").pop()}</span>
-                {x.contents.split("\n").slice(1).join(" ") || x.contents}
+                {marked(x.contents.split("\n").slice(1).join(" ") || x.contents, words)}
               </li>
             ))}
           </ol>
@@ -159,18 +183,42 @@ function ObjectImage({ image, title, fallback }: { image: ImageRef; title: strin
           The museum&apos;s server did not send the image. <a href={page}>See the object on the museum&apos;s site</a>.
         </p>
       ) : (
-        <a href={page} rel="noreferrer">
-          {/* Remote museum image in a static site: next/image's optimiser is not available here. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={image.thumb}
-            alt={title}
-            referrerPolicy="no-referrer"
-            width={image.width ?? undefined}
-            height={image.height ?? undefined}
-            onError={() => setFailed(true)}
-          />
-        </a>
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
+            <button className={s.zoomable} aria-label={`Open ${title} full size`}>
+              {/* Remote museum image in a static site: next/image's optimiser is not available here. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={image.thumb}
+                alt={title}
+                referrerPolicy="no-referrer"
+                width={image.width ?? undefined}
+                height={image.height ?? undefined}
+                onError={() => setFailed(true)}
+              />
+              <span className={s.zoomHint} aria-hidden>
+                ⤢ full size
+              </span>
+            </button>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay className={s.lightboxBack} />
+            <Dialog.Content className={s.lightbox} aria-describedby={undefined}>
+              <Dialog.Title className="visually-hidden">{title}</Dialog.Title>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={image.full} alt={title} referrerPolicy="no-referrer" />
+              <p>
+                {image.credit} ·{" "}
+                <a href={page} target="_blank" rel="noreferrer">
+                  at the museum ↗
+                </a>
+              </p>
+              <Dialog.Close className={s.lightboxClose} aria-label="Close">
+                ×
+              </Dialog.Close>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
       )}
       <figcaption>
         {image.credit}. Open licence:{" "}
@@ -228,4 +276,69 @@ function nextSteps(d: Doc) {
   if (placed) steps.push({ label: "On the atlas", href: `/atlas/?lat=${placed.lat}&lon=${placed.lon}`, hint: `around ${label(placed.labels, placed.id)}` });
   if (!steps.length) steps.push({ label: "Search for it", href: `/cases/?q=${encodeURIComponent(d.title)}`, hint: "what the lenses find for its title" });
   return steps;
+}
+
+/** Where the document sits in the graph, and the documents a walk from its entities reaches first. */
+function InGraph({ d }: { d: Doc }) {
+  const ego = useResource(() => api.ego(d.id, 40, undefined, 2), `docego|${d.id}`);
+  const ents = d.entities.filter((e) => e.kind !== "document").map((e) => e.id);
+  const close = useResource(ents.length ? () => api.rank(ents.join(";"), 1, 0.15, 8) : null, `close|${ents.join(";")}`);
+  const picture = useMemo(() => {
+    if (ego.state !== "ready") return null;
+    const v = ego.data;
+    const nodes: LiveNode[] = v.nodes.map((n) => ({
+      id: n.id,
+      label: label(n.labels, n.id),
+      group: groupOf(n.kind, n.type),
+      size: n.id === d.id ? 12 : n.kind === "document" ? (n.image ? 6 : 3.5) : 4 + Math.min(6, Math.sqrt(n.degree)),
+      hub: n.hub || n.id === d.id,
+      image: n.kind === "document" ? n.image : undefined,
+    }));
+    const pairs = new Map<string, LiveEdge>();
+    for (const e of v.edges) {
+      const k = e.source < e.target ? `${e.source}|${e.target}` : `${e.target}|${e.source}`;
+      pairs.set(k, { id: k, source: e.source, target: e.target, label: e.relation_label });
+    }
+    return { nodes, edges: [...pairs.values()] };
+  }, [ego, d.id]);
+  const closeDocs = close.state === "ready" ? close.data.results.filter((x) => x.document.id !== d.id).slice(0, 6) : [];
+  return (
+    <section className={s.inGraph}>
+      <h2 className={s.h2}>In the graph</h2>
+      {picture && picture.nodes.length > 1 ? (
+        <div className={s.miniGraph}>
+          <LiveGraph nodes={picture.nodes} edges={picture.edges} selected={d.id} onSelect={() => {}} focusOnSelect={false} ariaLabel={`${d.title} and its neighbours in the graph`} />
+          <Link className={s.openGraph} href={`/graph/?node=${encodeURIComponent(d.id)}`}>
+            Open in the graph →
+          </Link>
+        </div>
+      ) : null}
+      {closeDocs.length ? (
+        <>
+          <h3 className={s.h3}>Close in the graph</h3>
+          <p className={s.muted}>
+            Documents a walk from what this one is about reaches first (personalised PageRank). Not yet the recommender,
+            which comes later.
+          </p>
+          <ul className={s.close}>
+            {closeDocs.map((x) => (
+              <li key={x.document.id}>
+                <Link href={`/document/?id=${encodeURIComponent(x.document.id)}`}>
+                  {x.document.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={x.document.image.thumb} alt="" loading="lazy" referrerPolicy="no-referrer" onError={(e) => (e.currentTarget.style.display = "none")} />
+                  ) : (
+                    <span className={s.closeMark} aria-hidden>
+                      {x.document.id.startsWith("wikipedia:hi") ? "हि" : x.document.id.startsWith("wikipedia:kn") ? "ಕ" : "En"}
+                    </span>
+                  )}
+                  <span>{label(x.document.labels, x.document.id)}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+    </section>
+  );
 }
