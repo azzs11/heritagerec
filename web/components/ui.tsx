@@ -1,8 +1,9 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import type { Labels, Word } from "@/lib/api";
+import { useStored } from "@/lib/stored";
 import type { Resource } from "@/lib/useResource";
 
 import s from "./ui.module.css";
@@ -58,19 +59,14 @@ export function Load<T>({ res, children, what }: { res: Resource<T>; children: (
   }
 }
 
-/** "What am I looking at?": a plain-language note beside a panel, open on request. */
-export function MarginNote({ title = "What am I looking at?", children }: { title?: string; children: ReactNode }) {
-  const [open, setOpen] = useState(false);
-  const id = useId();
+/** An explanation of a panel, shown when the reader turns Notes on in the masthead. */
+export function MarginNote({ children }: { title?: string; children: ReactNode }) {
+  const [notes] = useStored("notes", "off");
+  if (notes !== "on") return null;
   return (
-    <div className={s.note}>
-      <button className={s.noteButton} aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
-        <span aria-hidden>{open ? "–" : "?"}</span> {title}
-      </button>
-      <div id={id} hidden={!open} className={s.noteBody}>
-        {children}
-      </div>
-    </div>
+    <aside className={s.note} aria-label="Note">
+      {children}
+    </aside>
   );
 }
 

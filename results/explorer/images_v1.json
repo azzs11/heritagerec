@@ -1,0 +1,17 @@
+{
+  "built": "2026-11-22",
+  "commit": "3848f5ac5e7209b2b110c170774d6035753f8667",
+  "images": 6025,
+  "by_source": {
+    "cleveland": {
+      "no image": 58,
+      "ok": 3143,
+      "records": 3201
+    },
+    "met": {
+      "ok": 2882,
+      "records": 2882
+    }
+  },
+  "note": "Art Institute of Chicago records were collected without image ids and have no image here."
+}

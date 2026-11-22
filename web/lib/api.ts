@@ -14,6 +14,18 @@ export interface NodeCard {
   documents: number;
   lat?: number;
   lon?: number;
+  image?: ImageRef;
+}
+
+export interface ImageRef {
+  thumb: string;
+  full: string;
+  width: number | null;
+  height: number | null;
+  licence: string;
+  credit: string;
+  page: string | null;
+  source: string;
 }
 
 export interface GraphEdge {
@@ -112,6 +124,7 @@ export interface SearchResult {
   doc_type: string | null;
   language: string;
   snippet: Word[] | null;
+  image?: ImageRef;
 }
 
 export interface SearchView {
@@ -176,6 +189,7 @@ export interface DocumentView {
   passages: number;
   entities: NodeCard[];
   in_graph: boolean;
+  image?: ImageRef;
 }
 
 export interface PartStatus {

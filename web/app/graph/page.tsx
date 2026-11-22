@@ -29,11 +29,10 @@ function Explorer() {
   const go = (id: string | null) => router.push(id ? `/graph/?node=${encodeURIComponent(id)}` : "/graph/");
 
   return (
-    <article className="page">
+    <article className={s.full}>
       <header className={s.head}>
         <div>
-          <p className={s.kicker}>Graph</p>
-          <h1 className={s.title}>{centre ? "A neighbourhood" : "The graph, by community"}</h1>
+          <h1 className={s.title}>{centre ? "Graph · neighbourhood" : "Graph · communities"}</h1>
         </div>
         <Finder onPick={(id) => go(id)} />
       </header>
