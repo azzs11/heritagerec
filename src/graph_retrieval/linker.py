@@ -176,6 +176,28 @@ def link(text: str, gaz: Gazetteer | None = None, fuzzy_threshold: float = FUZZY
     return {"text": text, "words": words, "mentions": mentions, "seeds": seeds}
 
 
+def suggest(text: str, limit: int = 6, cutoff: float = 75.0, gaz: Gazetteer | None = None) -> list[tuple[str, float]]:
+    """Entities whose names are close to the question's words, for a "did you mean" when nothing links.
+
+    Looser than linking (cutoff 75 rather than 90) and never used to rank anything; only offered to the reader.
+    """
+    from rapidfuzz import fuzz, process
+
+    g = gaz or load()
+    words = normalise(text).split()
+    best: dict[str, float] = {}
+    for size in range(min(3, len(words)), 0, -1):
+        for i in range(len(words) - size + 1):
+            span = " ".join(words[i : i + size])
+            if len(span.replace(" ", "")) < 4:
+                continue
+            pool = g.by_shape.get((script(span), size), [])
+            for key, score, _ in process.extract(span, pool, scorer=fuzz.ratio, score_cutoff=cutoff, limit=4):
+                for q in sorted(g.exact.get(key) or g.romanised.get(key) or ()):
+                    best[q] = max(best.get(q, 0.0), float(score))
+    return sorted(best.items(), key=lambda kv: (-kv[1], kv[0]))[:limit]
+
+
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("text", nargs="+")
