@@ -93,6 +93,7 @@ export interface Place {
   labels: Labels;
   hub: boolean;
   documents: number;
+  centuries: number[];
 }
 
 export interface Shared {
@@ -109,6 +110,7 @@ export interface NearView {
   periods: Shared[];
   documents_about_several: Shared[];
   documents_per_place: Record<string, number>;
+  photos: (NodeCard & { about: string })[];
 }
 
 export interface Word {
