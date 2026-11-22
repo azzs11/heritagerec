@@ -17,7 +17,7 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
-import type { ReactNode } from "react";
+import { ViewTransition, type ReactNode } from "react";
 
 import { Masthead } from "@/components/Masthead";
 import { SkyField } from "@/components/SkyField";
@@ -43,7 +43,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SkyField />
         <Masthead />
         <Trail />
-        <main id="main">{children}</main>
+        <main id="main">
+          {/* Navigations are transitions in the App Router, so pages fade and rise in; the masthead stays still. */}
+          <ViewTransition default="page">{children}</ViewTransition>
+        </main>
         <footer className="page" style={{ paddingTop: 0, paddingBottom: "2rem", color: "var(--ink-faint)", fontSize: "var(--step--1)" }}>
           <hr />
           Code under Apache-2.0. Each document keeps its source&apos;s licence; images are shown from the museums&apos; own

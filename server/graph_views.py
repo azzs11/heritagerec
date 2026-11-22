@@ -232,6 +232,18 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return 2 * 6371.0 * math.asin(math.sqrt(h))
 
 
+def centuries_of(g: Graph, n: str) -> list[int]:
+    """The centuries a node belongs to, from the graph's own "in the century" facts (BCE as negative numbers)."""
+    out = []
+    for e in g.adjacency.get(n, []):
+        if e.relation == "in_period" and e.direction == "out" and e.other.startswith("century:"):
+            try:
+                out.append(int(e.other.split(":", 1)[1]))
+            except ValueError:
+                continue
+    return sorted(set(out))
+
+
 def places(g: Graph) -> list[dict]:
     """Every placed entity and connector, for the atlas to draw all marks at once (a few thousand)."""
     return [
@@ -243,6 +255,7 @@ def places(g: Graph) -> list[dict]:
             "labels": g.label(n),
             "hub": m["hub"],
             "documents": g.documents_about.get(n, 0),
+            "centuries": centuries_of(g, n),
         }
         for n, m in sorted(g.meta.items())
         if "lat" in m
@@ -300,7 +313,25 @@ def near(g: Graph, lat: float, lon: float, k: int = NEAR_DEFAULT) -> dict:
         "periods": by_reach(periods),
         "documents_about_several": by_reach(documents)[:SHARED_MAX],
         "documents_per_place": {n: g.documents_about.get(n, 0) for n in members},
+        "photos": photos_about(g, members),
     }
+
+
+PHOTOS = 12
+
+
+def photos_about(g: Graph, members: list[str]) -> list[dict]:
+    """Museum objects with an open image that are about these places, nearest place first."""
+    out, seen = [], set()
+    for n in members:
+        for e in g.adjacency.get(n, []):
+            d = e.other
+            if e.relation == "about" and e.direction == "in" and d in g.images and d not in seen:
+                seen.add(d)
+                out.append(dict(g.card(d), about=n))
+                if len(out) >= PHOTOS:
+                    return out
+    return out
 
 
 def find(g: Graph, text: str, limit: int = 20) -> list[dict]:

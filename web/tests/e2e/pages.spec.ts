@@ -108,11 +108,35 @@ test("the overview draws the connected communities and shelves the rest", async 
   await expect(page.getByText("its most connected members")).toBeVisible();
 });
 
-test("the atlas answers what is near Belur", async ({ page }) => {
+test("the atlas answers what is near Belur, and its filters work", async ({ page }) => {
   await page.goto("/atlas/?lat=13.16&lon=75.87");
   await settle(page);
-  await expect(page.getByRole("heading", { name: /nearest places/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Belur/ }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: /places within/ })).toBeVisible();
+  await expect(page.getByRole("complementary", { name: "Places near the chosen point" }).getByRole("link", { name: /Belur/ }).first()).toBeVisible();
+  const kinds = page.getByRole("list", { name: /Kinds of place/ });
+  const sites = kinds.getByRole("button", { name: /sites and places/ });
+  await sites.click();
+  await expect(sites).toHaveAttribute("aria-pressed", "false");
+  // The period panel is left off phones, where the map has no room beside it.
+  if ((page.viewportSize()?.width ?? 0) >= 768) {
+    const latest = page.getByRole("slider", { name: "Latest century" });
+    await latest.fill("15");
+    await expect(page.getByText(/– 15th c\./)).toBeVisible();
+  }
+});
+
+test("the masthead finder offers a search and the entities it knows", async ({ page }) => {
+  await page.goto("/guide/");
+  await settle(page);
+  await page.keyboard.press("/");
+  const box = page.getByRole("combobox", { name: /Search the archive/ });
+  await expect(box).toBeFocused();
+  await box.fill("Hampi");
+  const options = page.getByRole("option");
+  await expect(options.first()).toContainText("Search for");
+  await expect(options.filter({ hasText: "Hampi" }).nth(1)).toBeVisible();
+  await box.press("Enter");
+  await expect(page).toHaveURL(/\/cases\/\?q=Hampi/);
 });
 
 test("a refused query says why", async ({ page }) => {
