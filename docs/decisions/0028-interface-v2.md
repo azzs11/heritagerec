@@ -135,6 +135,24 @@ transitions and visual appeal across pages. What the screens show:
 5. Home and Document.
 6. Lab, Ledger, Guide; then a motion and polish pass across pages; then the tests above.
 
+## Addendum (author, 22 Nov 2026): dead ends, errors, downloads, flow, background
+
+- **When the archive has nothing.** No result and no linked name: "This history has not been written here — yet",
+  with close spellings of known names and links that search the same words at Wikipedia (in the question's
+  language), Wikidata, the Internet Archive, The Met and Cleveland. Partial matches (no linked name, and the best
+  passage holds only some of the question's words): a short banner saying so, with the same routes. Every search
+  ends with "Not what you were after?".
+- **Errors in one voice:** what happened, why, what to do next (retry, a route, the fix), for a missing part, a
+  server not answering, a record or page that does not exist (a "not in the archive" page), refused input, and an
+  image a museum will not send.
+- **Downloads:** the text as `.txt` with title, source, licence and attribution written in (CC BY-SA asks for it),
+  the record as `.json`, and the original at its source (the Internet Archive item, Wikipedia's PDF of the page, the
+  museum's full image).
+- **Flow:** a trail of the reader's own path (searches, documents, entities, places) under the masthead, drawn like
+  a graph path; next steps at the end of every page and panel.
+- **Background:** the placed entities as a faint, slowly drifting field of points, brighter in the dark theme, with a
+  soft glow in the two lens colours; hidden on the Atlas and Graph, still under reduced motion.
+
 ## Decision
 
 The plan as written, in the order given. Every design choice should be original and specific to this project: it

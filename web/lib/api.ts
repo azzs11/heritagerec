@@ -137,6 +137,7 @@ export interface SearchView {
   passage_depth: number;
   results: SearchResult[];
   linked: Linked;
+  top_match: { query_words: number; in_best_passage: number; missing: string[] } | null;
 }
 
 export interface Linked {
@@ -196,6 +197,7 @@ export interface DocumentView {
   entities: NodeCard[];
   in_graph: boolean;
   image?: ImageRef;
+  get_it: { label: string; url: string }[];
 }
 
 export interface PartStatus {
@@ -298,6 +300,7 @@ export const api = {
   path: (source: string, target: string) => get<PathView>("/api/graph/path", { source, target }),
   rank: (seeds: string, hubPower: number, restart: number, k = 10) =>
     get<GraphRank>("/api/graph/rank", { seeds, hub_power: hubPower, restart, k }),
+  suggest: (q: string) => get<(NodeCard & { closeness: number })[]>("/api/suggest", { q }),
   find: (q: string) => get<NodeCard[]>("/api/graph/find", { q }),
   places: () => get<Place[]>("/api/atlas/places"),
   near: (lat: number, lon: number, k = 25) => get<NearView>("/api/atlas/near", { lat, lon, k }),
@@ -315,4 +318,9 @@ export function label(labels: Labels, fallback: string): string {
 /** How a fact reads when walked from `from` to the next node: forward ("founded by →") or backward ("← founded by"). */
 export function stepLabel(edge: GraphEdge, from: string): string {
   return edge.source === from ? `${edge.relation_label} →` : `← ${edge.relation_label}`;
+}
+
+/** A link that downloads a record as a file, with its attribution written in. */
+export function downloadUrl(id: string, format: "txt" | "json"): string {
+  return `${API_BASE}/api/documents/${enc(id)}/download?format=${format}`;
 }

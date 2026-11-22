@@ -1027,3 +1027,51 @@
     animation: none;
   }
 }
+
+/* ---------- after the results ---------- */
+
+.after {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 2rem;
+  margin-top: 2.5rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+}
+
+.after > nav {
+  margin-top: 0;
+}
+
+@media (max-width: 60rem) {
+  .after {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.didYouMean {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+  align-items: baseline;
+}
+
+.didYouMean a {
+  color: var(--lac);
+}
+
+.moreRoutes summary {
+  cursor: pointer;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  margin-top: 0.4rem;
+}
+
+.emptyLane {
+  border: 1px dashed var(--rule-strong);
+  border-radius: 6px;
+  padding: 1.4rem 1rem;
+  color: var(--ink-faint);
+  font-size: var(--step--1);
+  text-align: center;
+}

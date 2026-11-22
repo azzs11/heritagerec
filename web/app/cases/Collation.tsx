@@ -86,6 +86,9 @@ export function Collation({
         className={`${s.column} ${lens === "text" ? s.columnText : s.columnGraph}`}
         aria-label={lens === "text" ? "Text lens results" : "Graph lens results"}
       >
+        {items.length === 0 ? (
+          <li className={s.emptyLane}>{lens === "text" ? "No passage matched the question's words." : "The walk reached no document."}</li>
+        ) : null}
         <AnimatePresence initial={false}>
           {items.map((r) => (
             <motion.li

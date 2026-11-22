@@ -6,7 +6,10 @@ import { Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from "
 
 import { Load, Names, fmt } from "@/components/ui";
 import { api, label, type Linked, type NodeCard } from "@/lib/api";
+import { Elsewhere, NextSteps, Notice } from "@/components/Wayfinding";
+import { elsewhere } from "@/lib/elsewhere";
 import { DOC_TYPES, LANGUAGES } from "@/lib/names";
+import { useTrailStep } from "@/lib/trail";
 import { useResource } from "@/lib/useResource";
 
 import { Collation } from "./Collation";
@@ -134,6 +137,7 @@ function Case({
     seeds && seedKey ? () => api.rank(seedKey, hub, restart, DEPTH) : null,
     seeds ? `g|${seedKey}|${hub}|${restart}` : "none",
   );
+  useTrailStep(q ? { kind: "search", label: q, href: `/cases/?q=${encodeURIComponent(q)}` } : null);
   const [filters, setFilters] = useState<{ language: Set<string>; kind: Set<string> }>({ language: new Set(), kind: new Set() });
   const [working, setWorking] = useState<{ lens: Lens; r: Reading } | null>(null);
 
@@ -196,9 +200,40 @@ function Case({
     },
   ];
 
+  const nothing = t.results.length === 0;
+  const noName = !linked || linked.mentions.length === 0;
+  const partial = !nothing && noName && t.top_match != null && t.top_match.in_best_passage < t.top_match.query_words;
+  const firstEntity = linked?.mentions[0]?.candidates[0];
+
+  if (nothing && noName) {
+    return (
+      <>
+        <Pipeline steps={steps} />
+        <NotWritten q={q} lang={t.language} />
+      </>
+    );
+  }
+
   return (
     <>
       <Pipeline steps={steps} />
+      {nothing ? (
+        <Notice tone="partial" title="No passage holds these words, but the graph found a way in">
+          <p>
+            The text lens matched none of the question&apos;s words; a spelling may differ from the documents&apos;.
+            The graph lens recognised{" "}
+            {linked!.mentions.map((m, i) => (
+              <span key={m.text}>
+                {i ? ", " : ""}
+                <q>{m.text}</q>
+                {m.method === "fuzzy" ? " (a close spelling)" : ""}
+              </span>
+            ))}{" "}
+            and walked from there.
+          </p>
+        </Notice>
+      ) : null}
+      {partial ? <PartialMatch q={q} lang={t.language} missing={t.top_match!.missing} held={t.top_match!.in_best_passage} of={t.top_match!.query_words} /> : null}
       <Facets all={[...textAll.slice(0, DEPTH), ...graphAll.slice(0, DEPTH)]} filters={filters} setFilters={setFilters} />
       <p className={s.agreement} aria-live="polite">
         <span className={`${s.agreeNum} num`}>{shared}</span>
@@ -246,6 +281,23 @@ function Case({
           point above.
         </p>
       ) : null}
+      <section className={s.after}>
+        <NextSteps
+          title="From here"
+          steps={[
+            ...(firstEntity
+              ? [
+                  { label: `${label(firstEntity.labels, firstEntity.id)} in the graph`, href: `/graph/?node=${encodeURIComponent(firstEntity.id)}`, hint: "its facts and neighbours" },
+                  ...(firstEntity.lat != null
+                    ? [{ label: "On the atlas", href: `/atlas/?lat=${firstEntity.lat}&lon=${firstEntity.lon}`, hint: "what lies near it, and what ties it" }]
+                    : []),
+                ]
+              : []),
+            { label: "The Lab", href: "/lab/", hint: "where these lenses are known to break" },
+          ]}
+        />
+        <Elsewhere routes={elsewhere(q, t.language)} title="Not what you were after? Search the same words elsewhere" />
+      </section>
       <WorkingDrawer
         open={working != null}
         onClose={() => setWorking(null)}
@@ -257,6 +309,73 @@ function Case({
         settings={{ restart, hub, seeds: Object.keys(seeds ?? {}) }}
       />
     </>
+  );
+}
+
+/** Nothing in the archive and no name it knows: say so plainly, and offer every other way forward. */
+function NotWritten({ q, lang }: { q: string; lang: string }) {
+  const near = useResource(() => api.suggest(q), `sugg|${q}`);
+  return (
+    <Notice
+      title="This history has not been written here — yet."
+      actions={
+        <>
+          <Link href="/atlas/">Walk the atlas</Link>
+          <Link href="/graph/">Browse the graph</Link>
+          <Link href="/">See the collection</Link>
+        </>
+      }
+    >
+      <p>
+        No document in this archive holds the words of <q>{q}</q>, and no name in it matches a place, person, dynasty
+        or style the graph knows. The archive covers the heritage of the Republic of India from open sources (Wikipedia,
+        museum collections, the Internet Archive); much is still missing from it.
+      </p>
+      {near.state === "ready" && near.data.length ? (
+        <p className={s.didYouMean}>
+          Close to your words:{" "}
+          {near.data.map((n) => (
+            <Link key={n.id} href={`/cases/?q=${encodeURIComponent(label(n.labels, n.id))}`}>
+              <Names labels={n.labels} fallback={n.id} />
+            </Link>
+          ))}
+        </p>
+      ) : null}
+      <Elsewhere routes={elsewhere(q, lang)} />
+    </Notice>
+  );
+}
+
+/** Results exist, but no name linked and the best passage holds only part of the question. */
+function PartialMatch({ q, lang, missing, held, of }: { q: string; lang: string; missing: string[]; held: number; of: number }) {
+  const near = useResource(() => api.suggest(q), `sugg|${q}`);
+  return (
+    <Notice tone="partial" title="These results answer only part of the question">
+      <p>
+        No name in it is a place, person or dynasty the graph knows, and the best passage holds {held} of its {of}{" "}
+        words; missing: {missing.map((m, i) => (
+          <span key={m}>
+            {i ? ", " : ""}
+            <code>{m}</code>
+          </span>
+        ))}
+        . The archive may not cover this; the results below are the nearest it has.
+      </p>
+      {near.state === "ready" && near.data.length ? (
+        <p className={s.didYouMean}>
+          Did you mean:{" "}
+          {near.data.slice(0, 4).map((n) => (
+            <Link key={n.id} href={`/cases/?q=${encodeURIComponent(label(n.labels, n.id))}`}>
+              <Names labels={n.labels} fallback={n.id} />
+            </Link>
+          ))}
+        </p>
+      ) : null}
+      <details className={s.moreRoutes}>
+        <summary>Look for it elsewhere</summary>
+        <Elsewhere routes={elsewhere(q, lang)} title="" />
+      </details>
+    </Notice>
   );
 }
 

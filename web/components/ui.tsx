@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { type ReactNode } from "react";
 
 import type { Labels, Word } from "@/lib/api";
 import { useStored } from "@/lib/stored";
+
+import { Notice } from "./Wayfinding";
 import type { Resource } from "@/lib/useResource";
 
 import s from "./ui.module.css";
@@ -41,18 +44,52 @@ export function Load<T>({ res, children, what }: { res: Resource<T>; children: (
         </p>
       );
     case "unavailable":
+      if (res.error.part === "server") {
+        return (
+          <Notice
+            tone="error"
+            title="The archive's server is not answering."
+            actions={
+              <>
+                <button onClick={() => window.location.reload()}>Try again</button>
+                <Link href="/guide/">How to start it</Link>
+              </>
+            }
+          >
+            <p>
+              The pages are here but the data behind them is not. If you run the site yourself, start the server with{" "}
+              <code>{res.error.fix.replace(/^start it from the repository root: /, "")}</code>.
+            </p>
+          </Notice>
+        );
+      }
       return <MissingSlip part={res.error.part} reason={res.error.reason} fix={res.error.fix} />;
     case "refused":
+      if (res.error.status === 404) {
+        return (
+          <Notice
+            title="Not in the archive."
+            actions={
+              <>
+                <Link href="/cases/">Search the archive</Link>
+                <Link href="/">See the collection</Link>
+              </>
+            }
+          >
+            <p>{res.error.message}. It may have been renamed or never collected.</p>
+          </Notice>
+        );
+      }
       return (
-        <p className={s.refused} role="alert">
-          <Seal kind="pending">refused</Seal> {res.error.message}
-        </p>
+        <Notice tone="partial" title="That could not be read.">
+          <p>{res.error.message}.</p>
+        </Notice>
       );
     case "failed":
       return (
-        <p className={s.refused} role="alert">
-          <Seal kind="pending">error</Seal> {res.error.message}
-        </p>
+        <Notice tone="error" title="Something went wrong on this page." actions={<button onClick={() => window.location.reload()}>Reload</button>}>
+          <p>{res.error.message}</p>
+        </Notice>
       );
     case "ready":
       return <>{children(res.data)}</>;

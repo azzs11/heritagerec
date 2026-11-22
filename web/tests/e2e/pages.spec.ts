@@ -112,3 +112,57 @@ test("chosen starting points rank documents and each chain reads the right way",
   await expect(graph.getByText("← document is about").first()).toBeVisible();
   await expect(graph.getByText("document is about →")).toHaveCount(0);
 });
+
+// ---------- dead ends, downloads, flow ----------
+
+test("a question the archive cannot answer says so and offers other ways", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
+  await page.goto("/cases/?q=xqzv%20blorp");
+  await settle(page);
+  await expect(page.getByRole("heading", { name: /has not been written here/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Wikipedia \(English\)/ })).toHaveAttribute("href", /en\.wikipedia\.org.*search=xqzv/);
+  await expect(page.getByRole("link", { name: "Walk the atlas" })).toBeVisible();
+});
+
+test("a partial match is flagged, and a misspelling is rescued by the graph", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
+  await page.goto("/cases/?q=colosseum%20gladiators%20rome");
+  await settle(page);
+  await expect(page.getByRole("heading", { name: /answer only part of the question/ })).toBeVisible();
+  await page.goto("/cases/?q=hoysla%20tempels");
+  await settle(page);
+  await expect(page.getByRole("heading", { name: /graph found a way in/ })).toBeVisible();
+  await expect(page.getByRole("list", { name: "Graph lens results" }).getByRole("article").first()).toBeVisible();
+});
+
+test("a document can be taken away with its licence written in", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "the corpus is not running");
+  await page.goto("/document/?id=wikipedia%3Aen%3A7051661");
+  await settle(page);
+  const txt = page.getByRole("link", { name: /^Text/ });
+  const href = await txt.getAttribute("href");
+  const body = await (await page.request.get(href!)).text();
+  expect(body).toContain("licence: https://creativecommons.org/licenses/by-sa/4.0/");
+  await expect(page.getByRole("link", { name: /PDF from Wikipedia/ })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "From here" }).getByRole("link", { name: /More like this/ })).toBeVisible();
+});
+
+test("an address that does not exist is answered, not left blank", async ({ page }) => {
+  await page.goto("/no-such-page/");
+  await expect(page.getByRole("heading", { name: "This page is not in the archive." })).toBeVisible();
+  await page.goto("/document/?id=nope");
+  await settle(page);
+  await expect(page.getByRole("heading", { name: "Not in the archive." })).toBeVisible();
+});
+
+test("the reader's path is drawn as they move, and the sky stays off the map", async ({ page }) => {
+  await page.goto("/graph/?node=Q466581");
+  await settle(page);
+  await page.goto("/atlas/?lat=13.16&lon=75.87");
+  await settle(page);
+  const trail = page.getByRole("navigation", { name: "Your path through the archive" });
+  await expect(trail.getByRole("link")).toHaveCount(2);
+  await expect(page.locator(".sky")).toHaveCount(0);
+  await page.goto("/guide/");
+  await expect(page.locator(".sky")).toHaveCount(1);
+});

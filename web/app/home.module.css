@@ -191,3 +191,86 @@
     column-gap: 0.6rem;
   }
 }
+
+.doors {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 1.4rem 0 0.4rem;
+}
+
+@media (max-width: 56rem) {
+  .doors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.door {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 0.9rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--card);
+  text-decoration: none;
+  transition:
+    border-color 180ms,
+    transform 180ms;
+}
+
+.door:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.doorArt {
+  width: 4.2rem;
+  height: 1.6rem;
+  overflow: visible;
+  fill: var(--ink-soft);
+  stroke: var(--ink-soft);
+  stroke-width: 0;
+  margin-bottom: 0.2rem;
+}
+
+.doorArt rect {
+  fill: none;
+  stroke-width: 1;
+}
+
+.artLine {
+  fill: none;
+  stroke-width: 1 !important;
+}
+
+.artLac {
+  fill: none;
+  stroke: var(--lac) !important;
+  stroke-width: 1.4 !important;
+}
+
+.artLacFill {
+  fill: var(--lac);
+}
+
+.artRing {
+  fill: none;
+  stroke: var(--lac) !important;
+  stroke-width: 1 !important;
+}
+
+.doorName {
+  font-weight: 700;
+}
+
+.doorWhat {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door:hover {
+    transform: none;
+  }
+}

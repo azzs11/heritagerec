@@ -244,3 +244,83 @@ select {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------- the sky: placed entities as faint points behind every page ---------- */
+
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sky-field {
+  position: absolute;
+  top: -6%;
+  left: -6%;
+  opacity: 0.07;
+  animation: sky-drift 120s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.sky-glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(42% 38% at 18% 22%, var(--indigo-wash), transparent 70%),
+    radial-gradient(38% 42% at 82% 78%, var(--lac-wash), transparent 70%);
+  opacity: 0.7;
+  animation: sky-glow 60s ease-in-out infinite alternate;
+}
+
+:root[data-theme="dark"] .sky-field {
+  opacity: 0.28;
+}
+
+:root[data-theme="dark"] .sky-glow {
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sky-field {
+    opacity: 0.28;
+  }
+
+  :root:not([data-theme="light"]) .sky-glow {
+    opacity: 1;
+  }
+}
+
+@keyframes sky-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-3%, 2%, 0) scale(1.03);
+  }
+}
+
+@keyframes sky-glow {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(4%, -3%, 0) rotate(8deg);
+  }
+}
+
+main,
+header,
+footer,
+nav {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky-field,
+  .sky-glow {
+    animation: none;
+  }
+}
