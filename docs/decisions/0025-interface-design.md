@@ -100,7 +100,12 @@ real index and graph sizes before deploying.
 | B. d3-geo on canvas with one boundary file in the repo | Full control of the drawn look; offline; light for a few thousand marks | Hand-built zoom and labels |
 
 **Chosen: B** (d3, ISC). India's boundary follows the official Survey of India depiction; the boundary file and
-its licence are checked before use and recorded in `docs/data_notes.md`. Entities without coordinates are never
+its licence are checked before use and recorded in `docs/data_notes.md`.
+
+*Checked 22 Nov 2026:* the Survey of India's digital boundary data is copyrighted and its use on the web needs one
+of its licences; the community GeoJSON files do not state a clear licence for this use. Until a licence is in hand
+the atlas draws **no political boundaries**: the placed entities, as ink dots, make the map, over a faint
+graticule. Adding the official outline later is one file and one layer. Entities without coordinates are never
 placed by guesswork; the atlas states how many are unplaced, from the builder's report.
 
 ### 6. Showing how a ranking is made
