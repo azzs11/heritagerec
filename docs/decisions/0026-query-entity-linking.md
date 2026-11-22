@@ -1,6 +1,6 @@
 # 0026: Linking the entities a query names
 
-- Status: proposed (options for the author)
+- Status: accepted (author, 2026-11-22: "B or whatever you think is the best option")
 - Date: 2026-11-22
 
 ## Context
@@ -54,7 +54,9 @@ and PPR spreads from all of them.
 
 ## Decision
 
-Waiting for the author.
+Option B, as recommended: gazetteer matching in English, Hindi and Kannada, Hindi and Kannada names also
+indexed in Latin letters, and a RapidFuzz fallback with one threshold set on the dev queries. The exact-only
+version (option A) is reported beside it.
 
 ## Consequences
 
