@@ -237,9 +237,7 @@ def load(paths: Paths, keyword: bool = True) -> dict:
             )
     # Systems that are planned but not built: named so the interface can say so, with their decision record.
     parts["planned"] = {
-        "query_linker": "decision 0025; the linker and its evaluation come in phase 1, week 7",
         "dense": "decision 0024; runs arrive from the Kaggle notebook",
-        "ppr": "runs from entities a reader chooses (/api/graph/rank); from queries once the linker exists (0026)",
         "fusion": "decision 0008",
         "reranker": "decision 0008",
         "lambdamart": "decision 0008",

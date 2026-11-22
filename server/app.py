@@ -64,6 +64,24 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
                 400, detail="no searchable words are left after analysis (only stop words, punctuation or symbols)"
             )
 
+    def linked(text: str) -> dict:
+        """The query's linked entities as cards, with the seed weights PageRank starts from (decisions 0026, 0027)."""
+        g = optional("graph")
+        if g is None:
+            return {"mentions": [], "seeds": {}}
+        from src.graph_retrieval.linker import link
+
+        out = link(text)
+        for m in out["mentions"]:
+            m["candidates"] = [g.card(q) for q in m["candidates"] if q in g.nodes]
+        out["seeds"] = {q: w for q, w in out["seeds"].items() if q in g.nodes}
+        return out
+
+    @app.get("/api/link")
+    def link_route(q: Annotated[str, Query(max_length=500)]) -> dict:
+        need("graph")
+        return linked(clean_query(q))
+
     def node(g: Graph, node_id: str) -> str:
         if node_id not in g.nodes:
             raise HTTPException(404, detail=f"{node_id} is not a node of the graph")
@@ -76,6 +94,13 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
         out = {}
         for name in ("corpus", "graph", "keyword"):
             out[name] = parts[name].status()
+        # Built and running, but not yet measured: they need the dev queries and their judgements.
+        if not isinstance(parts["graph"], Missing):
+            out["graph_lens"] = {
+                "status": "ok",
+                "parts": "query linker (0026) and personalised PageRank (0027)",
+                "evaluated": False,
+            }
         out["planned"] = {k: {"status": "not built yet", "see": v} for k, v in parts["planned"].items()}
         return out
 
@@ -188,13 +213,21 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
         hub_power: Annotated[float, Query(ge=0, le=1)] = 1.0,
     ) -> dict:
         g: Graph = need("graph")
-        chosen = list(dict.fromkeys(x.strip() for x in seeds.split(";") if x.strip()))
+        from src.graph_retrieval.ppr import parse_seeds
+
+        try:
+            weighted = parse_seeds(seeds)
+        except ValueError:
+            raise HTTPException(400, detail="seeds are ids separated by ;, each optionally with :weight") from None
+        chosen = list(weighted)
         unknown = [x for x in chosen if x not in g.nodes]
         if not chosen or unknown:
             raise HTTPException(400, detail=f"not nodes of the graph: {', '.join(unknown) or 'no seed given'}")
         if hub_power not in (0.0, 0.5, 1.0):
             raise HTTPException(400, detail="hub_power must be 0, 0.5 or 1 (decision 0027)")
-        return graph_rank_module.rank(g, paths, chosen[:10], k, restart, hub_power)
+        if any(w <= 0 or w != w for w in weighted.values()):
+            raise HTTPException(400, detail="seed weights must be positive")
+        return graph_rank_module.rank(g, paths, {q: weighted[q] for q in chosen[:10]}, k, restart, hub_power)
 
     @app.get("/api/graph/find")
     def graph_find(q: Annotated[str, Query(max_length=200)], limit: Annotated[int, Query(ge=1, le=100)] = 20) -> list:
@@ -246,7 +279,7 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
             "language": chosen,
             "detected": detected,
             "tokens": keyword.analyse(kw, text, chosen),
-            "entities": {"status": "not built yet", "see": parts["planned"]["query_linker"]},
+            "entities": linked(text),
         }
 
     @app.get("/api/search")
@@ -271,6 +304,7 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
             if g and r["doc_id"] in g.images:
                 r["image"] = g.images[r["doc_id"]]
         out["query"], out["detected"] = text, detected
+        out["linked"] = linked(text)
         return out
 
     @app.get("/api/explain")
