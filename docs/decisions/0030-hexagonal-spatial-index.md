@@ -1,6 +1,6 @@
 # 0030: A hexagonal spatial index (Uber's H3) for the atlas, the graph, ranking and recommendation
 
-- Status: proposed (the author asked to study Uber's hexagon system and use it for recommendations and ranking)
+- Status: accepted (author, 2026-11-22: "do the best course of action")
 - Date: 2026-11-22
 
 ## Context
@@ -54,4 +54,5 @@ merging whole districts; resolutions 4 and 6 are compared on dev, and the choice
 
 ## Decision
 
-Waiting for the author.
+B, C, D and E, as recommended, with the proximity layer (C) kept as its own layer and never in the headline
+result. D waits for LambdaMART and fusion to be built; B, C and E are built now.
