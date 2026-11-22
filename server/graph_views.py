@@ -8,7 +8,7 @@ say so when they pass through one.
 """
 
 import math
-from collections import defaultdict, deque
+from collections import Counter, defaultdict, deque
 
 from server.components import RELATION_LABELS, Edge, Graph
 
@@ -352,3 +352,103 @@ def find(g: Graph, text: str, limit: int = 20) -> list[dict]:
         if best is not None:
             hits.append((best, KIND_ORDER.get(node["kind"], 9), -g.meta.get(n, {}).get("degree", 0), n))
     return [g.card(n) for *_, n in sorted(hits)[: max(1, min(limit, 100))]]
+
+
+# ---------- hexagons (decision 0030): Uber's H3 grid ----------
+
+HEX_RES = 5  # about 10 km across: the resolution the proximity layer and the rings use
+RING_MAX = 3
+RING_DOCS = 8
+
+
+def group_of(kind: str, type_: str | None) -> str:
+    """The same three colour groups as the interface (web/components/LiveGraph.tsx)."""
+    if type_ in ("site", "place"):
+        return "built"
+    if type_ in ("person", "polity"):
+        return "people"
+    if type_ in ("culture", "style"):
+        return "culture"
+    return "other"
+
+
+def _cells(g: Graph, res: int) -> dict[str, str]:
+    import h3
+
+    cache = g.hex_cells.setdefault(res, {})
+    if not cache:
+        for n, m in g.meta.items():
+            if "lat" in m and not m["hub"]:
+                cache[n] = h3.latlng_to_cell(m["lat"], m["lon"], res)
+    return cache
+
+
+def hexes(g: Graph, res: int) -> list[dict]:
+    """Every occupied hexagon at a resolution, with its place count by colour group."""
+    counts: dict[str, Counter] = defaultdict(Counter)
+    for n, c in _cells(g, res).items():
+        counts[c][group_of(g.nodes[n]["kind"], g.nodes[n].get("type"))] += 1
+    return [{"cell": c, "count": sum(v.values()), "groups": dict(v)} for c, v in sorted(counts.items())]
+
+
+def rings(g: Graph, lat: float, lon: float, k: int = 2) -> dict:
+    """The places in the point's hexagon, then one ring out, then two: nearness drawn as concentric bands."""
+    import h3
+
+    cells = _cells(g, HEX_RES)
+    by_cell: dict[str, list[str]] = defaultdict(list)
+    for n, c in cells.items():
+        by_cell[c].append(n)
+    centre = h3.latlng_to_cell(lat, lon, HEX_RES)
+    bands = []
+    for r in range(k + 1):
+        ids = sorted(
+            {n for c in h3.grid_ring(centre, r) for n in by_cell.get(c, ())},
+            key=lambda n: (-g.documents_about.get(n, 0), n),
+        )
+        bands.append(
+            {
+                "ring": r,
+                "cells": len(h3.grid_ring(centre, r)),
+                "places": [g.card(n) for n in ids[:24]],
+                "total": len(ids),
+            }
+        )
+    return {"cell": centre, "resolution": HEX_RES, "rings": bands}
+
+
+def document_rings(g: Graph, doc_id: str, k: int = 2) -> dict:
+    """Concentric recommendations: documents about places in the document's own hexagon first, then each ring out.
+
+    One signal of the recommender (decisions 0009, 0030); shown alone here, labelled as such.
+    """
+    import h3
+
+    cells = _cells(g, HEX_RES)
+    about = [e.other for e in g.adjacency.get(doc_id, []) if e.relation == "about" and e.direction == "out"]
+    origins = [n for n in about if n in cells]
+    if not origins:
+        return {"doc_id": doc_id, "places": [], "rings": []}
+    by_cell: dict[str, list[str]] = defaultdict(list)
+    for n, c in cells.items():
+        by_cell[c].append(n)
+    seen = {doc_id}
+    bands = []
+    for r in range(k + 1):
+        ring_cells = {c for o in origins for c in h3.grid_ring(cells[o], r)}
+        docs = []
+        for c in sorted(ring_cells):
+            for place in by_cell.get(c, ()):
+                for e in g.adjacency.get(place, []):
+                    if e.relation == "about" and e.direction == "in" and e.other not in seen:
+                        seen.add(e.other)
+                        docs.append((0 if e.other in g.images else 1, e.other, place))
+        docs.sort()
+        bands.append(
+            {
+                "ring": r,
+                "documents": [dict(g.card(d), place=g.card(p)) for _, d, p in docs[:RING_DOCS]],
+                "total": len(docs),
+            }
+        )
+    return {"doc_id": doc_id, "places": [g.card(o) for o in origins], "resolution": HEX_RES, "rings": bands}
