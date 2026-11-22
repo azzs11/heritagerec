@@ -24,8 +24,8 @@ export interface Hover {
 }
 
 /**
- * The atlas canvas. Far out, places are counted into hexagons, so dense regions read as density rather than a
- * smear of dots; closer in, the hexagons melt into individual places coloured by type. A chosen point is flown to
+ * The atlas canvas. Far out, places are counted into H3 hexagons (Uber's grid, decision 0030), so dense regions read
+ * as density rather than a smear of dots; closer in, the hexagons melt into individual places coloured by type. A chosen point is flown to
  * and marked with a ping. Everything is drawn on one canvas; only the transform changes as the reader moves.
  */
 export const AtlasMap = forwardRef<
@@ -50,11 +50,11 @@ export const AtlasMap = forwardRef<
   useEffect(() => {
     let cleanup = () => {};
     (async () => {
-      const [{ geoConicEqualArea, geoGraticule10, geoPath }, { zoom, zoomIdentity }, { select }, { hexbin }] = await Promise.all([
+      const [{ geoConicEqualArea, geoGraticule10, geoPath }, { zoom, zoomIdentity }, { select }, h3] = await Promise.all([
         import("d3-geo"),
         import("d3-zoom"),
         import("d3-selection"),
-        import("d3-hexbin"),
+        import("h3-js"),
         import("d3-transition"),
       ]);
       const el = canvas.current;
@@ -69,6 +69,17 @@ export const AtlasMap = forwardRef<
       let xy: [number, number][] = [];
       const graticule = geoGraticule10();
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // Each place's cell at the two density resolutions, computed once.
+      const cellCache = new Map<string, string>();
+      const cellOf = (p: Place, res: number) => {
+        const key = `${res}|${p.id}`;
+        let c = cellCache.get(key);
+        if (!c) {
+          c = h3.latLngToCell(p.lat, p.lon, res);
+          cellCache.set(key, c);
+        }
+        return c;
+      };
 
       const size = () => {
         const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -130,23 +141,36 @@ export const AtlasMap = forwardRef<
         ctx.restore();
 
         const dotsMix = Math.max(0, Math.min(1, (t.k - DOTS_FROM) / (DOTS_FULL - DOTS_FROM)));
-        // density hexagons, drawn in screen space from the visible places
+        // Density as Uber's H3 hexagons (decision 0030): real cells on the globe, larger when far out, counted from
+        // the places the filters leave visible.
         if (dotsMix < 1) {
-          const pts: [number, number][] = [];
-          places.forEach((p, i) => {
+          const res = t.k < 1.5 ? 3 : 4;
+          const counts = new Map<string, number>();
+          places.forEach((p) => {
             if (vis(p) !== "on") return;
-            pts.push([t.applyX(xy[i]![0]), t.applyY(xy[i]![1])]);
+            const cell = cellOf(p, res);
+            counts.set(cell, (counts.get(cell) ?? 0) + 1);
           });
-          const bins = hexbin<[number, number]>().radius(11).extent([[-20, -20], [w + 20, h + 20]])(pts);
-          const max = Math.max(1, ...bins.map((b) => b.length));
-          const hexPath = new Path2D(hexbin().radius(10.2).hexagon());
+          const max = Math.max(1, ...counts.values());
           ctx.fillStyle = c.ink;
-          for (const b of bins) {
-            ctx.globalAlpha = (1 - dotsMix) * (0.12 + 0.68 * Math.sqrt(b.length / max));
-            ctx.save();
-            ctx.translate(b.x, b.y);
-            ctx.fill(hexPath);
-            ctx.restore();
+          ctx.strokeStyle = c.paper;
+          ctx.lineWidth = 1;
+          for (const [cell, n] of counts) {
+            const ring = h3.cellToBoundary(cell);
+            ctx.beginPath();
+            ring.forEach(([la, lo], j) => {
+              const pr = projection([lo, la]);
+              if (!pr) return;
+              const x = t.applyX(pr[0]);
+              const y = t.applyY(pr[1]);
+              if (j === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.globalAlpha = (1 - dotsMix) * (0.1 + 0.7 * Math.sqrt(n / max));
+            ctx.fill();
+            ctx.globalAlpha = (1 - dotsMix) * 0.9;
+            ctx.stroke();
           }
           ctx.globalAlpha = 1;
         }
