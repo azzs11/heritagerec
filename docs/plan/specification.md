@@ -164,7 +164,7 @@ Benchmark: 200 queries (40 in Hindi or Kannada), LLM-generated and author-curate
 | Figure: graph schema | Node and edge types |
 | Figure: worked example | One query, its results, and their explanations |
 
-**Release (decision 0011).** Code, corpus snapshot, queries, qrels and run files archived on Zenodo with a DOI; the benchmark also on Hugging Face Datasets, with a loader that returns ranx-compatible qrels and runs. A Hugging Face Spaces demo with a graph explorer is proposed (decision 0012).
+**Release (decision 0011).** Code, corpus snapshot, queries, qrels and run files archived on Zenodo with a DOI; the benchmark also on Hugging Face Datasets, with a loader that returns ranx-compatible qrels and runs. An interface with a graph explorer, an atlas and stage-by-stage ranking explanations is accepted (decisions 0012, 0025), hosted on Hugging Face Spaces.
 
 What makes the work remarkable is the design, not a promised number: six document types in one graph, cross-lingual retrieval through language-independent entities, a graph kept separate from text so the comparison is clean, explanations whose faithfulness is measured, and a public benchmark with a DOI.
 
@@ -204,6 +204,7 @@ Phase 2 dates are set at the corpus freeze. The interim dev pools are judged aga
 | Corpus of about 10K documents, data card, knowledge graph with separate edge layers | SIDDHAM and Wikisource collectors |
 | BM25, BM25+RM3, dense, graph retrieval, both controls, fusion, reranker, LambdaMART | RotatE; the 4B reranker |
 | Benchmark: LLM-generated, author-curated queries; LLM judge; the author's 15-query validation; judge-bias check; frozen analysis plan | A second LLM judge; about 50 validation queries judged by two people |
-| RQ1–RQ3 results with statistics and ablation; release with DOI and loader | Recommendation evaluation on 40 seed documents, explanation fidelity (RQ4), diversity step; explanation user study; Spaces demo and graph explorer |
+| RQ1–RQ3 results with statistics and ablation; release with DOI and loader | Recommendation evaluation on 40 seed documents, explanation fidelity (RQ4), diversity step; explanation user study |
+| Interface: story, atlas, cases with stage-by-stage explanations, graph explorer, ledger and Lab (decisions 0012, 0025); built alongside phase 1 without moving its gates | |
 
 After the release: arXiv preprint once the co-authors agree, then the paper submissions. Never drop the human validation set, and never invent or estimate a number.
