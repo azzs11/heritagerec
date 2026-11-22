@@ -4,17 +4,17 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 
-import { GraphCanvas, type CanvasEdge, type CanvasNode } from "@/components/GraphCanvas";
+import { LiveGraph, Legend, groupOf, type Group, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
 import { Load, MarginNote, Names, Seal, fmt } from "@/components/ui";
+import { NextSteps } from "@/components/Wayfinding";
 import { api, label, stepLabel, type Bundle, type EgoView, type GraphEdge, type NodeCard, type Overview, type PathView } from "@/lib/api";
 import { KINDS, KINDS_PLURAL } from "@/lib/names";
-import { NextSteps } from "@/components/Wayfinding";
 import { useTrailStep } from "@/lib/trail";
 import { useResource } from "@/lib/useResource";
 
 import s from "./graph.module.css";
 
-const GLOBAL_BUDGET = 400; // the most marks on screen after merging neighbourhoods
+const GLOBAL_BUDGET = 400; // the most marks on screen after growing neighbourhoods
 
 export default function GraphPage() {
   return (
@@ -33,9 +33,8 @@ function Explorer() {
   return (
     <article className={s.full}>
       <header className={s.head}>
-        <div>
-          <h1 className={s.title}>{centre ? "Graph · neighbourhood" : "Graph · communities"}</h1>
-        </div>
+        <h1 className={s.title}>{centre ? "Graph · neighbourhood" : "Graph · communities"}</h1>
+        {centre ? <Legend groups={["built", "people", "culture", "other", "time", "document"]} /> : null}
         <Finder onPick={(id) => go(id)} />
       </header>
       {centre ? <Neighbourhood key={centre} centre={centre} go={go} /> : <Communities go={go} />}
@@ -48,17 +47,18 @@ function Finder({ onPick }: { onPick: (id: string) => void }) {
   const res = useResource(q.trim().length >= 2 ? () => api.find(q.trim()) : null, `find|${q.trim()}`);
   return (
     <div className={s.finder}>
-      <label htmlFor="find" className="label">
-        find a place, person, dynasty or document
+      <label htmlFor="find" className="visually-hidden">
+        Find a place, person, dynasty or document
       </label>
-      <input id="find" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Hampi, हम्पी, ಹಂಪೆ…" autoComplete="off" />
+      <input id="find" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find: Hampi, हम्पी, ಹಂಪೆ…" autoComplete="off" />
       {q.trim().length >= 2 && res.state === "ready" ? (
         <ul className={s.found} role="listbox" aria-label="Matches">
           {res.data.length === 0 ? <li className={s.muted}>nothing by that name</li> : null}
           {res.data.slice(0, 10).map((n) => (
             <li key={n.id}>
               <button onClick={() => (setQ(""), onPick(n.id))}>
-                <Names labels={n.labels} fallback={n.id} /> <span className={s.muted}>{KINDS[n.kind]}</span>
+                <i className={s[`g_${groupOf(n.kind, n.type)}`]} aria-hidden /> <Names labels={n.labels} fallback={n.id} />{" "}
+                <span className={s.muted}>{n.type ?? KINDS[n.kind]}</span>
               </button>
             </li>
           ))}
@@ -68,7 +68,7 @@ function Finder({ onPick }: { onPick: (id: string) => void }) {
   );
 }
 
-// ---------- overview: communities ----------
+// ---------- overview: the connected core, and a shelf of the communities that touch nothing else ----------
 
 function Communities({ go }: { go: (id: string) => void }) {
   const res = useResource(() => api.overview(10), "overview");
@@ -81,60 +81,83 @@ function Communities({ go }: { go: (id: string) => void }) {
 
 function CommunityView({ o, go }: { o: Overview; go: (id: string) => void }) {
   const [picked, setPicked] = useState<number | null>(null);
+  const linked = useMemo(() => new Set(o.links.flatMap((l) => [l.a, l.b])), [o]);
+  const core = o.communities.filter((c) => linked.has(c.id));
+  const shelf = o.communities.filter((c) => !linked.has(c.id));
   const { nodes, edges } = useMemo(() => {
-    const max = Math.max(...o.communities.map((c) => c.size));
-    // Communities arrive largest first; only the largest are always labelled, the rest on hover or choice.
-    const nodes: CanvasNode[] = o.communities.map((c, i) => ({
+    const max = Math.max(...core.map((c) => c.size), 1);
+    const nodes: LiveNode[] = core.map((c, i) => ({
       id: `c${c.id}`,
       label: c.label ?? `community ${c.id}`,
-      size: 3 + 14 * Math.sqrt(c.size / max),
-      tone: "community",
-      important: i < 15,
+      group: "other" as Group,
+      size: 4 + 16 * Math.sqrt(c.size / max),
+      hub: i < 12,
     }));
-    const edges: CanvasEdge[] = o.links.map((l) => ({ id: `l${l.a}-${l.b}`, source: `c${l.a}`, target: `c${l.b}`, label: `${l.edges} edges` }));
+    const edges: LiveEdge[] = o.links.map((l) => ({ id: `l${l.a}-${l.b}`, source: `c${l.a}`, target: `c${l.b}`, label: `${l.edges} shared ${l.edges === 1 ? "fact" : "facts"}` }));
     return { nodes, edges };
+    // `core` is derived from `o`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [o]);
   const c = picked != null ? o.communities.find((x) => x.id === picked) : null;
+  const maxShelf = Math.max(...shelf.map((x) => x.size), 1);
 
   return (
     <div className={s.stage}>
       <div className={s.canvas}>
-        <GraphCanvas
+        <LiveGraph
           nodes={nodes}
           edges={edges}
           selected={picked != null ? `c${picked}` : null}
-          onSelect={(id) => setPicked(Number(id.slice(1)))}
-          ariaLabel={`${o.communities.length} communities of the graph, joined where they share edges`}
+          onSelect={(id) => setPicked(id ? Number(id.slice(1)) : null)}
+          focusOnSelect={false}
+          ariaLabel={`${core.length} communities that share facts with others, joined where they do`}
         />
       </div>
       <aside className={s.panel}>
-        <p>
-          <span className="num">{fmt(o.communities.length)}</span> communities with {o.min_size} or more nodes are
-          drawn; <span className="num">{fmt(o.others.communities)}</span> smaller ones (
-          <span className="num">{fmt(o.others.nodes)}</span> nodes) are left out of this picture, and the hubs are set
-          aside. Lines join communities that share at least one edge.
-        </p>
         {c ? (
           <div className={s.card}>
+            <p className={s.kind}>community</p>
             <h2 className={s.cardTitle}>{c.label}</h2>
             <p className={s.muted}>
-              <span className="num">{fmt(c.size)}</span> nodes: <span className="num">{fmt(c.documents)}</span>{" "}
-              documents, <span className="num">{fmt(c.entities)}</span> entities (
-              <span className="num">{fmt(c.placed)}</span> on the map)
+              <span className="num">{fmt(c.size)}</span> nodes: <span className="num">{fmt(c.documents)}</span> documents,{" "}
+              <span className="num">{fmt(c.entities)}</span> entities (<span className="num">{fmt(c.placed)}</span> on the map)
             </p>
             <p className="label">its most connected members</p>
             <TopMembers ids={c.top} go={go} />
           </div>
         ) : (
-          <p className={s.muted}>Choose a community to see what it is made of.</p>
+          <p className={s.lede}>
+            The graph without its hubs, grouped into communities. <b className="num">{fmt(core.length)}</b> share facts
+            with one another and are drawn on the left; <b className="num">{fmt(shelf.length)}</b> touch no other and wait
+            on the shelf below. Choose any to see what it is made of.
+          </p>
         )}
+        <h3 className={s.shelfTitle}>
+          The shelf <span className="num">{fmt(shelf.length)}</span>
+        </h3>
+        <ul className={s.shelf}>
+          {shelf.map((x) => (
+            <li key={x.id}>
+              <button onClick={() => setPicked(x.id)} aria-pressed={picked === x.id}>
+                <span className={s.shelfName}>{x.label ?? `community ${x.id}`}</span>
+                <span className={s.shelfBar} aria-hidden>
+                  <i style={{ width: `${(100 * x.size) / maxShelf}%` }} />
+                </span>
+                <span className="num">{fmt(x.size)}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p className={s.muted}>
+          Left out: <span className="num">{fmt(o.others.communities)}</span> communities under {o.min_size} nodes (
+          <span className="num">{fmt(o.others.nodes)}</span> nodes in all).
+        </p>
         <MarginNote>
           <p>
             Communities are found by the Louvain method with a fixed seed, on the graph without its hubs. They are a way
             to look at the graph, not a finding about heritage.
           </p>
         </MarginNote>
-        <TextList title="Communities in this picture" items={o.communities.map((x) => `${x.label ?? x.id}: ${x.size} nodes`)} />
       </aside>
     </div>
   );
@@ -149,7 +172,7 @@ function TopMembers({ ids, go }: { ids: string[]; go: (id: string) => void }) {
           {nodes.map((n) => (
             <li key={n.id}>
               <button onClick={() => go(n.id)}>
-                <Names labels={n.labels} fallback={n.id} />
+                <i className={s[`g_${groupOf(n.kind, n.type)}`]} aria-hidden /> <Names labels={n.labels} fallback={n.id} />
               </button>
               <span className="num">{fmt(n.degree)}</span>
             </li>
@@ -166,20 +189,34 @@ interface Merged {
   nodes: Map<string, NodeCard>;
   edges: Map<string, GraphEdge>;
   bundles: Map<string, Bundle & { owner: string }>;
+  near: Map<string, string>; // the node each one grew out of
 }
 
+const pairKey = (a: string, b: string) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 const edgeKey = (e: GraphEdge) => `${e.source}|${e.relation}|${e.target}`;
 
-function merge(into: Merged, v: EgoView): Merged {
-  const out: Merged = { nodes: new Map(into.nodes), edges: new Map(into.edges), bundles: new Map(into.bundles) };
-  v.nodes.forEach((n) => out.nodes.set(n.id, n));
+function merge(into: Merged, v: EgoView, grewFrom: string): Merged {
+  const out: Merged = { nodes: new Map(into.nodes), edges: new Map(into.edges), bundles: new Map(into.bundles), near: new Map(into.near) };
+  const ring = v.ring ?? {};
+  for (const n of v.nodes) {
+    if (!out.nodes.has(n.id)) {
+      // Grow out of a neighbour that is already placed, nearer the centre if the view says which.
+      const parent = v.edges
+        .filter((e) => e.source === n.id || e.target === n.id)
+        .map((e) => (e.source === n.id ? e.target : e.source))
+        .filter((m) => out.nodes.has(m) || (ring[m] ?? 9) < (ring[n.id] ?? 9))
+        .sort((a, b) => (ring[a] ?? 9) - (ring[b] ?? 9))[0];
+      out.near.set(n.id, parent ?? grewFrom);
+    }
+    out.nodes.set(n.id, n);
+  }
   v.edges.forEach((e) => out.edges.set(edgeKey(e), e));
   v.bundles.forEach((b) => out.bundles.set(`${v.center}|${b.relation}|${b.direction}|${b.kind}`, { ...b, owner: v.center }));
   return out;
 }
 
 function Neighbourhood({ centre, go }: { centre: string; go: (id: string | null) => void }) {
-  const first = useResource(() => api.ego(centre, 150), `ego|${centre}`);
+  const first = useResource(() => api.ego(centre, 150, undefined, 2), `ego2|${centre}`);
   return (
     <Load res={first} what="the neighbourhood">
       {(v) => <Growing centre={centre} first={v} go={go} />}
@@ -198,49 +235,56 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
         }
       : null,
   );
-  const [view, setView] = useState<Merged>(() => merge({ nodes: new Map(), edges: new Map(), bundles: new Map() }, first));
-  const [selected, setSelected] = useState<string>(centre);
+  const [view, setView] = useState<Merged>(() => merge({ nodes: new Map(), edges: new Map(), bundles: new Map(), near: new Map() }, first, centre));
+  const [selected, setSelected] = useState<string | null>(centre);
   const [path, setPath] = useState<PathView | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
   const marks = view.nodes.size + view.bundles.size;
-  const highlight = useMemo(() => {
-    const h = new Set<string>();
-    path?.paths.forEach((p) => {
-      p.nodes.forEach((n) => h.add(n.id));
-      p.edges.forEach((e) => h.add(edgeKey(e)));
-    });
-    return h;
-  }, [path]);
 
   const { nodes, edges } = useMemo(() => {
-    const maxDeg = Math.max(...[...view.nodes.values()].map((n) => n.degree), 1);
-    const nodes: CanvasNode[] = [...view.nodes.values()].map((n) => ({
+    const maxDeg = Math.max(...[...view.nodes.values()].filter((n) => n.kind !== "period").map((n) => n.degree), 1);
+    const nodes: LiveNode[] = [...view.nodes.values()].map((n) => ({
       id: n.id,
       label: label(n.labels, n.id),
-      size: n.id === centre ? 14 : n.kind === "document" ? 3 : 4 + 8 * Math.sqrt(n.degree / maxDeg),
-      tone: n.id === centre ? "focus" : n.hub ? "hub" : n.kind === "document" ? "document" : n.kind === "period" ? "period" : "entity",
+      group: groupOf(n.kind, n.type),
+      size: n.id === centre ? 15 : n.kind === "document" ? (n.image ? 6 : 3.5) : n.kind === "period" ? 5 : 4.5 + 9 * Math.sqrt(Math.min(n.degree, maxDeg) / maxDeg),
+      hub: n.hub || n.id === centre,
+      image: n.kind === "document" ? n.image : undefined,
+      near: view.near.get(n.id),
     }));
-    const edges: CanvasEdge[] = [...view.edges.values()].map((e) => ({ id: edgeKey(e), source: e.source, target: e.target, label: e.relation_label }));
+    // One line per pair of nodes; several facts between a pair are named together on it.
+    const pairs = new Map<string, LiveEdge>();
+    for (const e of view.edges.values()) {
+      const k = pairKey(e.source, e.target);
+      const prev = pairs.get(k);
+      pairs.set(k, prev ? { ...prev, label: `${prev.label} · ${e.relation_label}` } : { id: k, source: e.source, target: e.target, label: e.relation_label });
+    }
+    const edges = [...pairs.values()];
     for (const [k, b] of view.bundles) {
-      nodes.push({ id: `bundle:${k}`, label: `+${fmt(b.count)} ${KINDS_PLURAL[b.kind]} · ${b.relation_label}`, size: 5, tone: "bundle" });
+      nodes.push({ id: `bundle:${k}`, label: `+${fmt(b.count)} ${KINDS_PLURAL[b.kind]}`, group: "bundle", size: 4, near: b.owner });
       edges.push({ id: `bundle-edge:${k}`, source: b.owner, target: `bundle:${k}`, label: b.relation_label });
     }
     return { nodes, edges };
   }, [view, centre]);
 
+  const highlight = useMemo(() => {
+    const p = path?.paths[0];
+    if (!p) return null;
+    return { nodes: p.nodes.map((n) => n.id), edges: p.edges.map((e) => pairKey(e.source, e.target)) };
+  }, [path]);
+
   const expand = async (id: string) => {
     setBusy(true);
     setMessage(null);
     try {
-      const room = Math.max(2, Math.min(150, GLOBAL_BUDGET - marks + 1));
+      const room = Math.min(150, GLOBAL_BUDGET - marks + 1);
       if (room <= 2) {
-        setMessage(`The picture holds ${GLOBAL_BUDGET} marks at most. Centre on this node instead to see its neighbourhood.`);
+        setMessage(`The picture holds ${GLOBAL_BUDGET} marks at most. Centre on this node instead to see its own neighbourhood.`);
         return;
       }
       const v = await api.ego(id, room);
-      setView((cur) => merge(cur, v));
+      setView((cur) => merge(cur, v, id));
     } catch (e) {
       setMessage((e as Error).message);
     } finally {
@@ -252,12 +296,12 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
     setBusy(true);
     try {
       const p = await api.path(centre, id);
-      setPath(p);
       setView((cur) => {
         let out = cur;
-        for (const pp of p.paths) out = merge(out, { center: centre, budget: 0, nodes: pp.nodes, edges: pp.edges, bundles: [], neighbours: 0, shown: 0, center_is_hub: false });
+        for (const pp of p.paths) out = merge(out, { center: centre, budget: 0, nodes: pp.nodes, edges: pp.edges, bundles: [], neighbours: 0, shown: 0, center_is_hub: false }, centre);
         return out;
       });
+      setPath(p);
     } catch (e) {
       setMessage((e as Error).message);
     } finally {
@@ -265,27 +309,36 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
     }
   };
 
-  const sel = selected.startsWith("bundle:") ? null : view.nodes.get(selected);
-  const bundle = selected.startsWith("bundle:") ? view.bundles.get(selected.slice(7)) : null;
+  const sel = selected && !selected.startsWith("bundle:") ? view.nodes.get(selected) : null;
+  const bundle = selected?.startsWith("bundle:") ? view.bundles.get(selected.slice(7)) : null;
 
   return (
     <div className={s.stage}>
       <div className={s.canvas} aria-busy={busy}>
-        <GraphCanvas nodes={nodes} edges={edges} highlight={highlight} selected={selected} onSelect={setSelected} ariaLabel={`Neighbourhood of ${label(view.nodes.get(centre)?.labels ?? {}, centre)}: ${view.nodes.size} nodes`} />
+        <LiveGraph
+          nodes={nodes}
+          edges={edges}
+          selected={selected}
+          path={highlight}
+          onSelect={setSelected}
+          ariaLabel={`Neighbourhood of ${label(centreCard?.labels ?? {}, centre)}: ${view.nodes.size} nodes`}
+        />
+        <p className={s.canvasHint}>
+          drag to move · scroll to zoom · hover to light a node&apos;s facts · click to choose
+        </p>
       </div>
       <aside className={s.panel}>
         <p className={s.budget}>
-          <span className="num">{fmt(view.nodes.size)}</span> nodes and <span className="num">{fmt(view.bundles.size)}</span>{" "}
-          bundles on screen, of at most <span className="num">{GLOBAL_BUDGET}</span>.{" "}
+          <span className="num">{fmt(view.nodes.size)}</span> nodes · <span className="num">{fmt(view.bundles.size)}</span>{" "}
+          bundles · two steps out{first.second_ring ? "" : " (a hub opens one step)"} ·{" "}
           <button className={s.linkish} onClick={() => go(null)}>
-            back to communities
+            all communities
           </button>
         </p>
         {first.center_is_hub ? (
           <p className={s.hubNote}>
-            <Seal kind="pending">hub</Seal> This node joins <span className="num">{fmt(first.neighbours)}</span> others.
-            Only its <span className="num">{fmt(first.shown)}</span> most connected are drawn; the rest are folded into
-            bundles.
+            <Seal kind="pending">hub</Seal> This node joins <span className="num">{fmt(first.neighbours)}</span> others; its{" "}
+            <span className="num">{fmt(first.shown)}</span> most connected are drawn and the rest folded into bundles.
           </p>
         ) : null}
         {message ? <p className={s.message}>{message}</p> : null}
@@ -293,6 +346,7 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
         {sel ? (
           <div className={s.card}>
             <p className={s.kind}>
+              <i className={s[`g_${groupOf(sel.kind, sel.type)}`]} aria-hidden />
               {KINDS[sel.kind]}
               {sel.type ? ` · ${sel.type}` : ""}
               {sel.hub ? " · hub" : ""}
@@ -300,35 +354,29 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
             <h2 className={s.cardTitle}>
               <Names labels={sel.labels} fallback={sel.id} size="title" />
             </h2>
+            {sel.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className={s.cardImage} src={sel.image.thumb} alt="" referrerPolicy="no-referrer" onError={(e) => (e.currentTarget.style.display = "none")} />
+            ) : null}
             <p className={s.muted}>
-              <code>{sel.id}</code> · <span className="num">{fmt(sel.degree)}</span> connections
+              <span className="num">{fmt(sel.degree)}</span> connections
               {sel.documents ? (
                 <>
                   {" "}
                   · <span className="num">{fmt(sel.documents)}</span> documents about it
                 </>
               ) : null}
-              {sel.lat != null ? (
-                <>
-                  {" "}
-                  ·{" "}
-                  <Link href={`/atlas/?lat=${sel.lat}&lon=${sel.lon}`}>
-                    on the atlas
-                  </Link>
-                </>
-              ) : null}
             </p>
             <div className={s.actions}>
               {sel.id !== centre ? <button onClick={() => go(sel.id)}>Centre here</button> : null}
               <button onClick={() => expand(sel.id)} disabled={busy}>
-                Expand here
+                Grow from here
               </button>
               {sel.id !== centre ? (
                 <button onClick={() => findPath(sel.id)} disabled={busy}>
-                  Path from the centre
+                  Walk the path
                 </button>
               ) : null}
-              {sel.kind === "document" ? <Link href={`/document/?id=${encodeURIComponent(sel.id)}`}>Read the document</Link> : null}
             </div>
             <EdgesOf id={sel.id} view={view} onPick={setSelected} />
             <NextSteps
@@ -355,7 +403,7 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
             </h2>
             <p className={s.muted}>
               All linked to <Names labels={view.nodes.get(bundle.owner)?.labels ?? {}} fallback={bundle.owner} /> by “
-              {bundle.relation_label}”. They are folded so the picture stays readable. A few of them:
+              {bundle.relation_label}”, folded so the picture stays readable. A few of them:
             </p>
             <ul className={s.members}>
               {bundle.sample.map((n) => (
@@ -369,6 +417,7 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
           </div>
         ) : null}
 
+        {!sel && !bundle ? <p className={s.muted}>Choose a node to see its facts, grow the graph from it, or walk a path to it.</p> : null}
         {path ? <PathCard path={path} onClear={() => setPath(null)} /> : null}
 
         <MarginNote>
@@ -377,8 +426,8 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
             about. Nothing here is drawn because two texts look alike.
           </p>
           <p>
-            Expanding adds a node&apos;s neighbours to the picture; when a node has more neighbours than fit, the least
-            connected are folded into a bundle. Hubs such as centuries and India are never drawn with all their lines.
+            Colours group the entity types in three: sites and places, people and polities, culture and style; the type is
+            always named in words too. Photographs are museum objects under open licences.
           </p>
         </MarginNote>
         <TextList
@@ -402,11 +451,7 @@ function EdgesOf({ id, view, onPick }: { id: string; view: Merged; onPick: (id: 
         const n = view.nodes.get(other);
         return (
           <li key={edgeKey(e)}>
-            <span className={s.rel}>
-              {e.source === id ? "" : "← "}
-              {e.relation_label}
-              {e.source === id ? " →" : ""}
-            </span>
+            <span className={s.rel}>{stepLabel(e, id)}</span>
             <button onClick={() => onPick(other)}>{n ? label(n.labels, other) : other}</button>
             <span className={s.rev} title="Wikidata revision the fact was read at">
               {e.layer} · r{e.revision}
@@ -423,29 +468,26 @@ function PathCard({ path, onClear }: { path: PathView; onClear: () => void }) {
     <div className={`${s.card} ${s.pathCard}`}>
       <p className={s.kind}>
         path{" "}
-        {path.through_hubs ? (
-          <Seal kind="pending">only through a hub</Seal>
-        ) : path.through_hubs === false ? (
-          <Seal kind="graph">avoids hubs</Seal>
-        ) : null}
+        {path.through_hubs ? <Seal kind="pending">only through a hub</Seal> : path.through_hubs === false ? <Seal kind="graph">avoids hubs</Seal> : null}
       </p>
       {path.paths.length === 0 ? (
         <p>No path of four steps or fewer joins them.</p>
       ) : (
-        path.paths.map((p, i) => (
-          <ol key={i} className={s.ribbon}>
-            {p.nodes.map((n, j) => (
-              <li key={n.id}>
-                <span>{label(n.labels, n.id)}</span>
-                {p.edges[j] ? <em>{stepLabel(p.edges[j]!, n.id)}</em> : null}
-              </li>
-            ))}
-          </ol>
-        ))
+        <ol className={s.ribbon}>
+          {path.paths[0]!.nodes.map((n, j) => (
+            <li key={n.id}>
+              <span>{label(n.labels, n.id)}</span>
+              {path.paths[0]!.edges[j] ? <em>{stepLabel(path.paths[0]!.edges[j]!, n.id)}</em> : null}
+            </li>
+          ))}
+        </ol>
       )}
       <button className={s.linkish} onClick={onClear}>
         clear the path
       </button>
+      <Link className={s.linkish} href={`/lab/`}>
+        why hubs matter
+      </Link>
     </div>
   );
 }

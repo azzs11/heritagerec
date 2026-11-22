@@ -55,6 +55,8 @@ export interface EgoView {
   neighbours: number;
   shown: number;
   center_is_hub: boolean;
+  ring?: Record<string, number>;
+  second_ring?: number;
 }
 
 export interface Community {
@@ -294,8 +296,8 @@ export const api = {
   corpusStats: () => get<CorpusStats>("/api/corpus/stats"),
   ledger: () => get<LedgerRow[]>("/api/ledger"),
   overview: (minSize = 10) => get<Overview>("/api/graph/overview", { min_size: minSize }),
-  ego: (id: string, budget?: number, relations?: string) =>
-    get<EgoView>(`/api/graph/ego/${enc(id)}`, { budget, relations }),
+  ego: (id: string, budget?: number, relations?: string, depth?: 1 | 2) =>
+    get<EgoView>(`/api/graph/ego/${enc(id)}`, { budget, relations, depth }),
   node: (id: string) => get<NodeCard>(`/api/graph/node/${enc(id)}`),
   path: (source: string, target: string) => get<PathView>("/api/graph/path", { source, target }),
   rank: (seeds: string, hubPower: number, restart: number, k = 10) =>

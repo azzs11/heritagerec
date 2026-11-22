@@ -218,12 +218,15 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
         relations: str | None = None,
         layers: str | None = None,
         kinds: str | None = None,
+        depth: Annotated[int, Query(ge=1, le=2)] = 1,
     ) -> dict:
         g: Graph = need("graph")
 
         def split(v: str | None) -> set[str] | None:
             return {x for x in v.split(",") if x} if v else None
 
+        if depth == 2:
+            return graph_views.ego2(g, node(g, node_id), budget, split(relations))
         return graph_views.ego(g, node(g, node_id), budget, split(relations), split(layers), split(kinds))
 
     @app.get("/api/graph/path")

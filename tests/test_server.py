@@ -71,6 +71,17 @@ def test_ego_never_exceeds_its_budget(budget):
     assert view["shown"] + sum(b["count"] for b in view["bundles"]) == view["neighbours"]
 
 
+def test_two_steps_out_stay_under_the_budget_and_skip_hubs():
+    g = small_graph()
+    view = graph_views.ego2(g, "a", budget=10)
+    ids = {n["id"] for n in view["nodes"]}
+    assert view["ring"]["a"] == 0 and view["ring"]["b"] == 1 and view["ring"]["c"] == 2
+    assert "hub" not in {m for m, r in view["ring"].items() if r == 2}
+    assert len(view["nodes"]) + len(view["bundles"]) <= 10
+    assert all(e["source"] in ids and e["target"] in ids for e in view["edges"])
+    assert "second_ring" not in graph_views.ego2(g, "hub", budget=50)  # a hub never grows a second ring
+
+
 def test_a_hub_is_never_drawn_as_all_its_spokes():
     view = graph_views.ego(small_graph(), "hub", budget=600)
     assert view["center_is_hub"] and view["shown"] <= 20

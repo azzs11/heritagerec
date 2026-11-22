@@ -113,6 +113,56 @@ def ego(
     }
 
 
+SECOND_RING_PER_NODE = 6
+
+
+def ego2(g: Graph, node_id: str, budget: int = DEFAULT_BUDGET, relations: set[str] | None = None) -> dict:
+    """Two steps out, under the same budget: the first ring as in `ego`, then the second ring grown from the first
+    ring's non-hub entities (most connected first), and every fact among the visible nodes, so a neighbourhood shows
+    its shape rather than a star. Hubs never grow a second ring; a hub at the centre gets the first ring only."""
+    view = ego(g, node_id, budget, relations)
+    view["ring"] = {node_id: 0, **{n["id"]: 1 for n in view["nodes"][1:]}}
+    if view["center_is_hub"]:
+        return view
+    present = set(view["ring"])
+    room = view["budget"] - len(view["nodes"]) - len(view["bundles"])
+    growers = sorted(
+        (n for n in view["nodes"][1:] if n["kind"] in ("entity", "connector") and not n["hub"]),
+        key=lambda n: (-n["degree"], n["id"]),
+    )
+    added: list[str] = []
+    for n in growers:
+        if room <= 0:
+            break
+        candidates = sorted(
+            {
+                e.other
+                for e in g.adjacency.get(n["id"], [])
+                if e.other not in present
+                and not g.meta.get(e.other, {}).get("hub", False)
+                and (relations is None or e.relation in relations)
+            },
+            key=lambda m: (KIND_ORDER.get(g.nodes[m]["kind"], 9), -g.meta.get(m, {}).get("degree", 0), m),
+        )
+        for m in candidates[: min(SECOND_RING_PER_NODE, room)]:
+            present.add(m)
+            added.append(m)
+            view["ring"][m] = 2
+            room -= 1
+    view["nodes"] += [g.card(m) for m in added]
+    seen = {(x["source"], x["relation"], x["target"]) for x in view["edges"]}
+    for a in sorted(present):
+        for e in g.adjacency.get(a, []):
+            if e.direction == "out" and e.other in present and (relations is None or e.relation in relations):
+                ej = edge_json(a, e)
+                k = (ej["source"], ej["relation"], ej["target"])
+                if k not in seen:
+                    seen.add(k)
+                    view["edges"].append(ej)
+    view["second_ring"] = len(added)
+    return view
+
+
 def path(g: Graph, a: str, b: str, max_len: int = 4, k: int = 3) -> dict:
     """Up to k shortest paths from a to b (undirected), first without stepping through hubs, then allowing them."""
     for through_hubs in (False, True):
