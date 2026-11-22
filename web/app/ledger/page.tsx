@@ -13,7 +13,6 @@ export default function Ledger() {
   return (
     <article className="page">
       <header className={s.head}>
-        <p className={s.kicker}>Ledger</p>
         <h1 className={s.title}>Where every number comes from</h1>
         <p className={s.lede}>
           Each figure on this site is read from a file that a script in the repository wrote. Here they are, with the

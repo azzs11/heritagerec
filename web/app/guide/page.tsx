@@ -8,7 +8,6 @@ export default function Guide() {
   return (
     <article className="page">
       <header className={s.head}>
-        <p className={s.kicker}>Guide</p>
         <h1 className={s.title}>Five minutes with HeritageRec</h1>
         <p className={s.lede}>
           What the site does, a first case to walk through, how to run it on your own machine, and what to do when a part
