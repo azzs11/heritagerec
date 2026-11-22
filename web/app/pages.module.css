@@ -1,0 +1,153 @@
+.head {
+  border-bottom: 1px solid var(--rule-strong);
+  padding-bottom: 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.kicker {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--lac);
+  margin: 0 0 0.3rem;
+}
+
+.title {
+  font-size: var(--step-3);
+  max-width: 22ch;
+}
+
+.lede {
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+.h2 {
+  font-size: var(--step-2);
+  border-top: 2px solid var(--ink);
+  padding-top: 0.6rem;
+  margin-top: 2.4rem;
+}
+
+.h3 {
+  font-size: var(--step-0);
+  margin: 1.4rem 0 0.4rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: baseline;
+}
+
+.group {
+  margin-bottom: 1rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+
+.table th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--rule-strong);
+  padding: 0.3rem 0.5rem 0.3rem 0;
+}
+
+.table td {
+  border-bottom: 1px solid var(--rule);
+  padding: 0.35rem 0.5rem 0.35rem 0;
+  vertical-align: top;
+}
+
+.file {
+  overflow-wrap: anywhere;
+}
+
+.small {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.faint {
+  color: var(--ink-faint);
+}
+
+.steps {
+  list-style: none;
+  counter-reset: step;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.6rem;
+}
+
+.steps > li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  gap: 0.6rem;
+}
+
+.steps > li::before {
+  content: counter(step);
+  font-family: var(--mono);
+  font-size: var(--step-1);
+  border-top: 1px solid var(--ink);
+  padding-top: 0.2rem;
+  height: fit-content;
+}
+
+.steps h3 {
+  margin: 0 0 0.3rem;
+  font-size: var(--step-1);
+}
+
+.code {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  background: var(--paper-deep);
+  border-left: 2px solid var(--ink);
+  padding: 0.7rem 0.9rem;
+  overflow-x: auto;
+  white-space: pre;
+  max-width: 100%;
+}
+
+.case {
+  border-top: 2px solid var(--turmeric);
+  padding-top: 0.6rem;
+  margin: 1.6rem 0;
+}
+
+.case h3 {
+  font-size: var(--step-1);
+  margin: 0.2rem 0 0.4rem;
+}
+
+.evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  align-items: baseline;
+  font-size: var(--step--1);
+}
+
+.tokens {
+  display: inline-flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.tokens code {
+  border: 1px solid var(--rule-strong);
+  padding: 0 0.35rem;
+}
+
+/* Wide tables scroll inside their own box on narrow screens; the page itself never scrolls sideways. */
+.scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
