@@ -333,3 +333,99 @@ nav {
     animation: none;
   }
 }
+
+/* ---------- motion and feel, site-wide ---------- */
+
+/* Pages: the old one fades quickly, the new one rises in. Only the page content takes part. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(.page) {
+  animation: page-out 140ms ease-in both;
+}
+
+::view-transition-new(.page) {
+  animation: page-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Every interactive thing eases its colours; buttons press in slightly. */
+a,
+button,
+input,
+select,
+summary {
+  transition:
+    color 150ms,
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms,
+    opacity 150ms;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+/* Slim scrollbars in the page's own colours. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rule-strong);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ink-faint);
+}
+
+summary {
+  cursor: pointer;
+}
+
+details > summary::marker {
+  color: var(--ink-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(.page),
+  ::view-transition-new(.page) {
+    animation: none;
+  }
+
+  button:active:not(:disabled) {
+    transform: none;
+  }
+}
