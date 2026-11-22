@@ -22,7 +22,6 @@ dependencies = [
     # Visualisation
     "matplotlib>=3.7",
     "seaborn>=0.12",
-    "plotly>=5.18",
     # Similarity search
     "faiss-cpu>=1.7",
     # Metaheuristic optimisation
@@ -30,11 +29,9 @@ dependencies = [
     # Configuration
     "pyyaml>=6.0",
     # Web UI
-    "streamlit>=1.29",
     # API
     "fastapi>=0.104",
     "uvicorn>=0.24",
-    "slowapi>=0.1",
     "httpx>=0.25",             # required by FastAPI TestClient
     # Utilities
     "tqdm>=4.66",
@@ -68,9 +65,6 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# api/main.py uses sys.path manipulation before imports (intentional);
-# import ordering and E402 are suppressed until a dedicated refactor/ branch.
-"api/main.py" = ["E402", "I001", "F841"]
 # Pre-existing test files: suppress until they are individually refactored.
 "tests/test_recommender.py"               = ["E402", "I001", "F541"]
 "tests/system_check.py"                   = ["E402", "I001", "F401", "F541", "F841"]

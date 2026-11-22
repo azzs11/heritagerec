@@ -169,8 +169,6 @@ def main():
         "faiss",
         "torch",
         "sklearn",
-        "streamlit",
-        "plotly",
         "pyvis",
     ]
 
