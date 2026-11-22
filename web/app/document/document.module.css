@@ -1,8 +1,26 @@
-.kicker {
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
+.meta {
+  font-size: var(--step--1);
   color: var(--ink-soft);
   margin-bottom: 0.3rem;
+}
+
+.figure {
+  margin: 1rem 0 1.4rem;
+  max-width: 34rem;
+}
+
+.figure img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 70vh;
+}
+
+.figure figcaption {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+  margin-top: 0.4rem;
 }
 
 .title {
@@ -45,6 +63,7 @@
 }
 
 .passages li {
+  font-family: var(--serif);
   padding: 0.7rem 0;
   border-bottom: 1px solid var(--rule);
   max-width: var(--measure);
@@ -75,4 +94,11 @@
 .pager button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.noImage {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  background: var(--paper-deep);
+  padding: 1.2rem 1rem;
 }

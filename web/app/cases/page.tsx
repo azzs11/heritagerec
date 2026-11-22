@@ -46,8 +46,7 @@ function Cases() {
   return (
     <article className="page">
       <header className={s.head}>
-        <p className={s.kicker}>Cases</p>
-        <h1 className={s.title}>Put a question to both lenses</h1>
+        <h1 className={s.title}>Search</h1>
         <form className={s.form} onSubmit={submit} role="search">
           <label htmlFor="q" className="visually-hidden">
             Query
@@ -119,10 +118,6 @@ function Case({
 
   return (
     <section aria-label={`Case: ${q}`}>
-      <div className={s.caseLine}>
-        <span className={s.caseNo}>case</span>
-        <q className={s.caseQuery}>{q}</q>
-      </div>
 
       <Load res={res} what="the text lens">
         {(r) => (
@@ -139,12 +134,9 @@ function Case({
                   <div className={s.tokens}>
                     <Tokens q={q} lang={r.language} />
                   </div>
-                  <MissingSlip
-                    title="not built yet"
-                    part="query linker"
-                    reason="The entities this question names are not linked yet, so the graph lens has no place to start from."
-                    fix="decision 0025; the linker and its evaluation come in phase 1, week 7"
-                  />
+<p className={s.muted}>
+                    <Seal kind="pending">entities not linked</Seal> the query linker is not built yet (decision 0026)
+                  </p>
                 </div>
               </li>
               <li>
