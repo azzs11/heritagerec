@@ -97,7 +97,6 @@ To be added.
 | `docs/` | Data card, data notes, decision records, specification |
 | `tests/` | Tests (`uv run --group dev pytest tests/`) |
 | `legacy/` | Superseded conference-version files, kept for traceability |
-| `api/`, `frontend/` | Demo application from the conference version |
 
 ## Licence
 
