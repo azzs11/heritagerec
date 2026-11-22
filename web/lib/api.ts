@@ -152,6 +152,13 @@ export interface Explanation {
   note?: string;
 }
 
+export interface GraphRank {
+  seeds: NodeCard[];
+  settings: { restart: number; hub_power: number; decision: string };
+  results: { rank: number; score: number; document: NodeCard; path: PathView | null }[];
+  walk_spends_time_at: { node: NodeCard; share: number }[];
+}
+
 export interface DocumentView {
   id: string;
   title: string;
@@ -269,6 +276,8 @@ export const api = {
     get<EgoView>(`/api/graph/ego/${enc(id)}`, { budget, relations }),
   node: (id: string) => get<NodeCard>(`/api/graph/node/${enc(id)}`),
   path: (source: string, target: string) => get<PathView>("/api/graph/path", { source, target }),
+  rank: (seeds: string[], hubPower: number, restart: number, k = 10) =>
+    get<GraphRank>("/api/graph/rank", { seeds: seeds.join(";"), hub_power: hubPower, restart, k }),
   find: (q: string) => get<NodeCard[]>("/api/graph/find", { q }),
   places: () => get<Place[]>("/api/atlas/places"),
   near: (lat: number, lon: number, k = 25) => get<NearView>("/api/atlas/near", { lat, lon, k }),
@@ -281,4 +290,9 @@ export const api = {
 
 export function label(labels: Labels, fallback: string): string {
   return labels.en ?? labels.hi ?? labels.kn ?? fallback;
+}
+
+/** How a fact reads when walked from `from` to the next node: forward ("founded by →") or backward ("← founded by"). */
+export function stepLabel(edge: GraphEdge, from: string): string {
+  return edge.source === from ? `${edge.relation_label} →` : `← ${edge.relation_label}`;
 }
