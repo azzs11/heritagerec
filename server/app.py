@@ -7,6 +7,7 @@ fuzz tests in `tests/test_server.py` try to make it.
 Run: uv run python -m server  (then open http://127.0.0.1:8000/docs for the route list)
 """
 
+import hashlib
 import json
 from typing import Annotated
 
@@ -139,6 +140,8 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
             g.card(q) if g and q in g.nodes else {"id": q, "labels": {}} for q in record.get("entity_ids") or []
         ]
         meta["in_graph"] = bool(g and doc_id in g.nodes)
+        if g and doc_id in g.images:
+            meta["image"] = g.images[doc_id]
         return meta
 
     # ---------- graph ----------
@@ -197,6 +200,26 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
     def graph_find(q: Annotated[str, Query(max_length=200)], limit: Annotated[int, Query(ge=1, le=100)] = 20) -> list:
         return graph_views.find(need("graph"), q, limit)
 
+    @app.get("/api/collection")
+    def collection(
+        offset: Annotated[int, Query(ge=0)] = 0,
+        limit: Annotated[int, Query(ge=1, le=60)] = 24,
+    ) -> dict:
+        """Museum objects with an open image, in a fixed shuffled order (by a hash of the id, so it is the same
+        for everyone and every visit, and does not favour one museum or one collection batch)."""
+        g: Graph = need("graph")
+        order = sorted(g.images, key=lambda d: hashlib.sha1(d.encode()).hexdigest())
+        corpus = optional("corpus")
+        items = []
+        for doc in order[offset : offset + limit]:
+            card = g.card(doc) if doc in g.nodes else {"id": doc, "labels": {}, "image": g.images[doc]}
+            if corpus and doc in corpus.records:
+                r = corpus.records[doc]
+                card["period"] = [r.get("period_start"), r.get("period_end")]
+                card["source"] = r["source"]
+            items.append(card)
+        return {"total": len(order), "offset": offset, "items": items}
+
     # ---------- atlas ----------
 
     @app.get("/api/atlas/places")
@@ -243,6 +266,10 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
         chosen, detected = language(text, lang)
         searchable(kw, text, chosen)
         out = keyword.search(kw, optional("corpus"), text, chosen, system == "bm25_rm3", k)
+        g = optional("graph")
+        for r in out["results"]:
+            if g and r["doc_id"] in g.images:
+                r["image"] = g.images[r["doc_id"]]
         out["query"], out["detected"] = text, detected
         return out
 
