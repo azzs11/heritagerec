@@ -7,6 +7,8 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { GraphCanvas, type CanvasEdge, type CanvasNode } from "@/components/GraphCanvas";
 import { Load, MarginNote, Names, Seal, fmt } from "@/components/ui";
 import { api, label, type NearView, type Place } from "@/lib/api";
+import { NextSteps } from "@/components/Wayfinding";
+import { useTrailStep } from "@/lib/trail";
 import { useResource } from "@/lib/useResource";
 
 import s from "./atlas.module.css";
@@ -284,6 +286,8 @@ function InkMap({ places, point, lit, onPick }: { places: Place[]; point: { lat:
 }
 
 function Nearby({ n }: { n: NearView }) {
+  const here = n.places[0];
+  useTrailStep(here ? { kind: "place", label: label(here.labels, here.id), href: `/atlas/?lat=${n.point.lat}&lon=${n.point.lon}` } : null);
   const far = n.places.length ? n.places[n.places.length - 1]!.distance_km : 0;
   const { nodes, edges } = useMemo(() => {
     const tied = new Set([...n.shared.flatMap((x) => x.members), ...n.links.flatMap((e) => [e.source, e.target])]);
@@ -360,6 +364,19 @@ function Nearby({ n }: { n: NearView }) {
             ))}
           </ul>
         </>
+      ) : null}
+      {here ? (
+        <NextSteps
+          title="From here"
+          steps={[
+            {
+              label: `Documents about ${label(here.labels, here.id)}`,
+              href: `/cases/?q=${encodeURIComponent(label(here.labels, here.id))}&seeds=${encodeURIComponent(here.id)}`,
+              hint: "both lenses, starting here",
+            },
+            { label: "Open it in the graph", href: `/graph/?node=${encodeURIComponent(here.id)}`, hint: "its facts and neighbours" },
+          ]}
+        />
       ) : null}
       <MarginNote>
         <p>

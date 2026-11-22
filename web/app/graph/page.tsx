@@ -8,6 +8,8 @@ import { GraphCanvas, type CanvasEdge, type CanvasNode } from "@/components/Grap
 import { Load, MarginNote, Names, Seal, fmt } from "@/components/ui";
 import { api, label, stepLabel, type Bundle, type EgoView, type GraphEdge, type NodeCard, type Overview, type PathView } from "@/lib/api";
 import { KINDS, KINDS_PLURAL } from "@/lib/names";
+import { NextSteps } from "@/components/Wayfinding";
+import { useTrailStep } from "@/lib/trail";
 import { useResource } from "@/lib/useResource";
 
 import s from "./graph.module.css";
@@ -186,6 +188,16 @@ function Neighbourhood({ centre, go }: { centre: string; go: (id: string | null)
 }
 
 function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (id: string | null) => void }) {
+  const centreCard = first.nodes[0];
+  useTrailStep(
+    centreCard
+      ? {
+          kind: centreCard.kind === "document" ? "document" : "entity",
+          label: label(centreCard.labels, centreCard.id),
+          href: `/graph/?node=${encodeURIComponent(centreCard.id)}`,
+        }
+      : null,
+  );
   const [view, setView] = useState<Merged>(() => merge({ nodes: new Map(), edges: new Map(), bundles: new Map() }, first));
   const [selected, setSelected] = useState<string>(centre);
   const [path, setPath] = useState<PathView | null>(null);
@@ -319,6 +331,19 @@ function Growing({ centre, first, go }: { centre: string; first: EgoView; go: (i
               {sel.kind === "document" ? <Link href={`/document/?id=${encodeURIComponent(sel.id)}`}>Read the document</Link> : null}
             </div>
             <EdgesOf id={sel.id} view={view} onPick={setSelected} />
+            <NextSteps
+              title="From this node"
+              steps={[
+                sel.kind === "document"
+                  ? { label: "Read the document", href: `/document/?id=${encodeURIComponent(sel.id)}` }
+                  : {
+                      label: "Documents about it",
+                      href: `/cases/?q=${encodeURIComponent(label(sel.labels, sel.id))}&seeds=${encodeURIComponent(sel.id)}`,
+                      hint: "both lenses, starting here",
+                    },
+                ...(sel.lat != null ? [{ label: "On the atlas", href: `/atlas/?lat=${sel.lat}&lon=${sel.lon}`, hint: "what lies near it" }] : []),
+              ]}
+            />
           </div>
         ) : null}
 
