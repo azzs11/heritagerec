@@ -7,6 +7,6 @@
 | `explorer/` | Files the interface's atlas and graph views read (decision 0025): coordinates from the raw Wikidata responses, degrees, display hubs, communities. Run with `uv run python -m src.explorer.build` |
 | `queries/` | Benchmark queries (decision 0021): the grid of information needs, the fixed generation prompts, and the generator trial's blind rating sheet and summary |
 | `retrieval/` | Retrieval systems on corpus v1: the shared passage file and BM25 / BM25+RM3 over per-language Lucene indexes (decision 0023) |
-| `2_preprocessing/` … `8_streamlit_app/`, `fallback/` | Pipeline of the conference version (preprocessing, representation, knowledge graph, ranking, query system, evaluation, Streamlit app), to be replaced by the corpus v1 systems |
+| `2_preprocessing/` … `7_evaluation/`, `fallback/` | Pipeline of the conference version (preprocessing, representation, knowledge graph, ranking, query system, evaluation), to be replaced by the corpus v1 systems |
 
 The numbered folders are inherited; new code goes in folders with descriptive names.
