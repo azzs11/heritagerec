@@ -478,3 +478,6 @@ web/next-env.d.ts
 web/tsconfig.tsbuildinfo
 web/test-results/
 web/playwright-report/
+
+# Neo4j export: rebuilt on demand by src/graph/neo4j_export.py, published with the snapshots
+data/graph/neo4j_v1/
