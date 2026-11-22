@@ -11,6 +11,7 @@ import { useStored } from "@/lib/stored";
 import { useResource } from "@/lib/useResource";
 
 import s from "./home.module.css";
+import { ThreadFromTheGraph } from "./Thread";
 
 const EXAMPLES = ["Hoysala temples Belur", "Mughal miniature painting", "मुगल किला आगरा", "ಹಂಪೆ ದೇವಾಲಯ"];
 const PAGE = 24;
@@ -55,6 +56,8 @@ export default function Home() {
       </section>
 
       <Doors />
+
+      <ThreadFromTheGraph />
 
       <Wall />
 

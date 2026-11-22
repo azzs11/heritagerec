@@ -95,7 +95,7 @@ export function Masthead() {
               width="15"
               height="15"
               aria-hidden
-              initial={reduce ? false : { rotate: -90, opacity: 0 }}
+              initial={{ rotate: -90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
               transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
             >

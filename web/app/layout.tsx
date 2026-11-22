@@ -20,6 +20,7 @@ import type { Metadata, Viewport } from "next";
 import { ViewTransition, type ReactNode } from "react";
 
 import { Masthead } from "@/components/Masthead";
+import { MotionRoot } from "@/components/MotionRoot";
 import { SkyField } from "@/components/SkyField";
 import { Trail } from "@/components/Wayfinding";
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
+        <MotionRoot>
         <SkyField />
         <Masthead />
         <Trail />
@@ -52,6 +54,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Code under Apache-2.0. Each document keeps its source&apos;s licence; images are shown from the museums&apos; own
           servers under their open licences.
         </footer>
+        </MotionRoot>
       </body>
     </html>
   );

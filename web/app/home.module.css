@@ -274,3 +274,199 @@
     transform: none;
   }
 }
+
+/* ---------- a thread from the graph ---------- */
+
+.thread {
+  margin: 1.6rem 0 0.8rem;
+  padding: 1rem 1.1rem 0.8rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.threadHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.threadTitle {
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--lac);
+  margin: 0;
+}
+
+.another {
+  background: none;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.1rem 0.7rem;
+  font-size: var(--step--1);
+}
+
+.another:hover {
+  border-color: var(--ink);
+}
+
+.threadRow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.tCard a {
+  display: grid;
+  gap: 0.15rem;
+  height: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+  text-decoration: none;
+  transition:
+    border-color 160ms,
+    transform 160ms;
+}
+
+.tCard a:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.tCard img {
+  width: 100%;
+  height: 7.5rem;
+  object-fit: cover;
+  border-radius: 5px;
+  background: var(--paper-deep);
+  margin-bottom: 0.25rem;
+}
+
+.tKind {
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.tName {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.tMeta {
+  font-size: var(--step--2);
+  color: var(--ink-soft);
+}
+
+.tLink {
+  display: grid;
+  place-items: center;
+  position: relative;
+  min-width: 5.5rem;
+}
+
+.tLink::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rule-strong), var(--lac), var(--rule-strong));
+}
+
+.tLink span {
+  position: relative;
+  background: var(--card);
+  color: var(--lac);
+  font-size: var(--step--2);
+  font-style: italic;
+  padding: 0 0.35rem;
+  text-align: center;
+  max-width: 9rem;
+}
+
+.dot_built,
+.dot_people,
+.dot_culture,
+.dot_other {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+}
+
+.dot_built {
+  background: var(--type-built);
+}
+
+.dot_people {
+  background: var(--type-people);
+}
+
+.dot_culture {
+  background: var(--type-culture);
+}
+
+.dot_other {
+  background: var(--ink-soft);
+}
+
+.threadSkeleton {
+  height: 10rem;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--paper-deep), var(--paper), var(--paper-deep));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.threadNote {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+  margin: 0.6rem 0 0;
+}
+
+@media (max-width: 52rem) {
+  .threadRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tLink {
+    min-height: 2rem;
+  }
+
+  .tLink::before {
+    left: 50%;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--rule-strong), var(--lac), var(--rule-strong));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .threadSkeleton {
+    animation: none;
+  }
+
+  .tCard a:hover {
+    transform: none;
+  }
+}

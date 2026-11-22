@@ -271,6 +271,7 @@ function Case({
           </div>
         }
         onWorking={(lens, r) => setWorking({ lens, r })}
+        query={q}
       />
       {graph.state === "ready" && graphShown.length === 0 ? (
         <p className={s.muted}>The walk from these starting points reached no document.</p>
