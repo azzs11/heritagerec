@@ -1,6 +1,6 @@
 # 0028: Interface, second version: page by page, interactions, motion and the live graph
 
-- Status: proposed (plan for the author before building)
+- Status: accepted (author, 2026-11-22: "go"; design to be unique and senior-level, always tied to the project)
 - Date: 2026-11-22
 
 ## Context
@@ -137,4 +137,5 @@ transitions and visual appeal across pages. What the screens show:
 
 ## Decision
 
-Waiting for the author.
+The plan as written, in the order given. Every design choice should be original and specific to this project: it
+shows heritage, languages, the graph and the two lenses, not a generic product.
