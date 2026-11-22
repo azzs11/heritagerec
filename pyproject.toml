@@ -45,6 +45,8 @@ dependencies = [
     #   imbalanced-learn — used only in the balancing step (superseded)
     "pydantic>=2.6",
     "pyserini>=2.4.0",
+    "ir-measures>=0.4.3",
+    "statsmodels>=0.15",
 ]
 
 [dependency-groups]
