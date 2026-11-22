@@ -110,7 +110,9 @@ def graph_client():
 def test_health_names_every_part_and_what_is_not_built(graph_client):
     h = graph_client.get("/api/health").json()
     assert h["graph"]["status"] == "ok" and h["keyword"]["status"] == "missing"
-    assert h["keyword"]["fix"] and h["planned"]["ppr"]["status"] == "not built yet"
+    assert h["keyword"]["fix"] and h["planned"]["dense"]["status"] == "not built yet"
+    # The graph lens runs (linker and PageRank) but is not measured until the dev queries are judged.
+    assert h["graph_lens"]["status"] == "ok" and h["graph_lens"]["evaluated"] is False
 
 
 def test_search_without_its_part_says_why(graph_client):
@@ -139,6 +141,13 @@ def test_graph_rank_explains_each_result_with_a_path_from_a_seed(graph_client):
         assert x["path"]["paths"][0]["nodes"][0]["id"] == "Q466581"
         assert x["path"]["paths"][0]["nodes"][-1]["id"] == x["document"]["id"]
     assert all(w["node"]["kind"] != "document" for w in r["walk_spends_time_at"])
+
+
+def test_link_route_returns_cards_and_seeds(graph_client):
+    r = graph_client.get("/api/link", params={"q": "Hoysala temples Belur"}).json()
+    assert [m["candidates"][0]["id"] for m in r["mentions"]] == ["Q466581", "Q760603"]
+    assert r["seeds"] == {"Q466581": 1.0, "Q760603": 1.0}
+    assert graph_client.get("/api/link", params={"q": ""}).status_code == 400
 
 
 def test_graph_rank_refuses_unknown_seeds_and_settings(graph_client):
