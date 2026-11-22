@@ -1,0 +1,38 @@
+{
+  "built": "2026-11-22",
+  "commit": "9cdd411cb1f8ce85c1d9c1c73fda3b703fc2f303",
+  "h3": "4.5.0",
+  "settings": {
+    "resolution": 5,
+    "rings": 1,
+    "nearest": 8
+  },
+  "places": 4937,
+  "cells": 1930,
+  "edges": 17898,
+  "edges_by_ring": {
+    "0": 10624,
+    "1": 7274
+  },
+  "places_with_an_edge": 4557,
+  "degree": {
+    "median": 8,
+    "p99": 16,
+    "max": 20
+  },
+  "km": {
+    "median": 4.338
+  },
+  "components": {
+    "count": 751,
+    "largest": [
+      776,
+      598,
+      281,
+      171,
+      168
+    ],
+    "single_places": 380
+  },
+  "output_sha256": "a1dc9023a1f3924bea2fbfce61b12d7c7eac2518a2ceec3ff19a9a51099bbbfc"
+}
