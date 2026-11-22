@@ -24,6 +24,7 @@ export interface CanvasProps {
   selected?: string | null;
   onSelect: (id: string) => void;
   ariaLabel: string;
+  labelOnlyImportant?: boolean; // small, crowded pictures: label the marked nodes, the rest on hover
 }
 
 function tokens() {
@@ -41,7 +42,7 @@ function tokens() {
 }
 
 /** WebGL drawing of a small graph (sigma.js + graphology); laid out by ForceAtlas2 from a seeded circle. */
-export function GraphCanvas({ nodes, edges, highlight, selected, onSelect, ariaLabel }: CanvasProps) {
+export function GraphCanvas({ nodes, edges, highlight, selected, onSelect, ariaLabel, labelOnlyImportant }: CanvasProps) {
   const box = useRef<HTMLDivElement>(null);
   const pick = useRef(onSelect);
   useEffect(() => {
@@ -74,11 +75,11 @@ export function GraphCanvas({ nodes, edges, highlight, selected, onSelect, ariaL
 
       const s = new Sigma(g, box.current, {
         renderEdgeLabels: false,
-        labelFont: '"Source Serif 4", "Noto Serif Devanagari", "Noto Serif Kannada", serif',
+        labelFont: '"Noto Sans", "Noto Sans Devanagari", "Noto Sans Kannada", sans-serif',
         labelSize: 13,
         labelWeight: "500",
         labelDensity: n > 150 ? 0.5 : 1,
-        labelRenderedSizeThreshold: n > 150 ? 6 : 3,
+        labelRenderedSizeThreshold: labelOnlyImportant ? 1000 : n > 150 ? 6 : 3,
         zIndex: true,
         nodeReducer: (key, attr) => {
           const t = tokens();
@@ -115,7 +116,7 @@ export function GraphCanvas({ nodes, edges, highlight, selected, onSelect, ariaL
       media.removeEventListener("change", onScheme);
       renderer?.kill();
     };
-  }, [nodes, edges, highlight, selected]);
+  }, [nodes, edges, highlight, selected, labelOnlyImportant]);
 
   return <div ref={box} role="img" aria-label={ariaLabel} style={{ width: "100%", height: "100%" }} />;
 }

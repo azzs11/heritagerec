@@ -32,11 +32,10 @@ function Atlas() {
   const goTo = (p: { lat: number; lon: number }) => router.push(`/atlas/?lat=${p.lat.toFixed(5)}&lon=${p.lon.toFixed(5)}`, { scroll: false });
 
   return (
-    <article className="page">
+    <article className={s.full}>
       <header className={s.head}>
         <div>
-          <p className={s.kicker}>Atlas</p>
-          <h1 className={s.title}>Where the heritage is, and what ties it</h1>
+          <h1 className={s.title}>Atlas</h1>
         </div>
         <PlaceFinder onPick={goTo} />
       </header>
@@ -191,7 +190,7 @@ function InkMap({ places, point, lit, onPick }: { places: Place[]; point: { lat:
         });
         ctx.globalAlpha = 1;
         ctx.fillStyle = lac;
-        ctx.font = '12px "Source Serif 4", serif';
+        ctx.font = '500 12px "Noto Sans", "Noto Sans Devanagari", "Noto Sans Kannada", sans-serif';
         places.forEach((p, i) => {
           if (!on.has(p.id)) return;
           const [x0, y0] = xy[i]!;
@@ -303,7 +302,7 @@ function Nearby({ n }: { n: NearView }) {
         The <span className="num">{n.places.length}</span> nearest places, within <span className="num">{fmt(far, 1)}</span> km
       </h2>
       <div className={s.mini}>
-        <GraphCanvas nodes={nodes} edges={edges} onSelect={() => {}} ariaLabel="How the nearby places are tied in the graph" />
+        <GraphCanvas nodes={nodes} edges={edges} onSelect={() => {}} ariaLabel="How the nearby places are tied in the graph" labelOnlyImportant />
       </div>
       <p className={s.legend}>
         <Seal kind="graph">ties</Seal> places and what joins two or more of them; direct links between places are drawn too.
