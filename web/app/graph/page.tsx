@@ -6,7 +6,7 @@ import { Suspense, useMemo, useState } from "react";
 
 import { GraphCanvas, type CanvasEdge, type CanvasNode } from "@/components/GraphCanvas";
 import { Load, MarginNote, Names, Seal, fmt } from "@/components/ui";
-import { api, label, type Bundle, type EgoView, type GraphEdge, type NodeCard, type Overview, type PathView } from "@/lib/api";
+import { api, label, stepLabel, type Bundle, type EgoView, type GraphEdge, type NodeCard, type Overview, type PathView } from "@/lib/api";
 import { KINDS, KINDS_PLURAL } from "@/lib/names";
 import { useResource } from "@/lib/useResource";
 
@@ -413,7 +413,7 @@ function PathCard({ path, onClear }: { path: PathView; onClear: () => void }) {
             {p.nodes.map((n, j) => (
               <li key={n.id}>
                 <span>{label(n.labels, n.id)}</span>
-                {p.edges[j] ? <em>{p.edges[j]!.relation_label}</em> : null}
+                {p.edges[j] ? <em>{stepLabel(p.edges[j]!, n.id)}</em> : null}
               </li>
             ))}
           </ol>
