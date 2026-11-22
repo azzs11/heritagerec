@@ -262,3 +262,39 @@ def test_explanations_add_up_to_lucene_scores(full_client, q, system):
 def test_fuzz_search(full_client, q, lang, system):
     params = {"q": q, "system": system} | ({"lang": lang} if lang else {})
     assert full_client.get("/api/search", params=params).status_code in ALLOWED
+
+
+# ---------- dead ends, suggestions and downloads ----------
+
+
+def test_close_names_are_suggested_for_a_misspelling(graph_client):
+    r = graph_client.get("/api/suggest", params={"q": "hoysla"}).json()
+    assert r and r[0]["id"] == "Q466581" and r[0]["closeness"] >= 75
+
+
+@pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
+def test_a_document_downloads_with_its_attribution(graph_client):
+    t = graph_client.get("/api/documents/wikipedia:en:7051661/download", params={"format": "txt"})
+    assert t.status_code == 200 and "attachment" in t.headers["content-disposition"]
+    assert "licence: https://creativecommons.org/licenses/by-sa/4.0/" in t.text
+    assert "source: Wikipedia contributors" in t.text and "reference and link sections" in t.text
+    j = graph_client.get("/api/documents/wikipedia:en:7051661/download", params={"format": "json"}).json()
+    assert j["record"]["id"] == "wikipedia:en:7051661" and j["attribution"]["original"].startswith("https://")
+    assert graph_client.get("/api/documents/wikipedia:en:7051661/download", params={"format": "pdf"}).status_code == 422
+    assert graph_client.get("/api/documents/nope/download").status_code == 404
+
+
+@pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
+def test_documents_say_where_to_get_the_original(graph_client):
+    wiki = graph_client.get("/api/documents/wikipedia:en:7051661").json()["get_it"]
+    assert [x["label"] for x in wiki] == ["Original page", "PDF from Wikipedia"]
+    met = graph_client.get("/api/documents/met:38517").json()["get_it"]
+    assert met[-1]["label"] == "Full image (CC0)"
+
+
+@needs_keyword
+def test_a_partial_match_is_reported_honestly(full_client):
+    r = full_client.get("/api/search", params={"q": "colosseum gladiators rome", "k": 3}).json()
+    assert r["linked"]["mentions"] == []
+    assert r["top_match"]["in_best_passage"] < r["top_match"]["query_words"]
+    assert "rome" in r["top_match"]["missing"]
