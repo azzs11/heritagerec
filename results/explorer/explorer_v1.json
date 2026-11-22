@@ -1,0 +1,172 @@
+{
+  "built": "2026-11-22",
+  "commit": "6eed76d710465694f87a03aa04bec1f7a88e1364",
+  "inputs_sha256": {
+    "nodes": "e3d0fa1cda00bdb6410736343690694dc51cea824c07801c8ab3c38ad1d25af3",
+    "edges": "8880566d7d96124fa0e49bc3338dffb74c386437fa81138594b033aef5fb5382"
+  },
+  "networkx": "3.7",
+  "settings": {
+    "hub_percentile": 99,
+    "louvain_seed": 0,
+    "india_box": {
+      "lat": [
+        6.0,
+        37.5
+      ],
+      "lon": [
+        68.0,
+        97.5
+      ]
+    }
+  },
+  "nodes": 24006,
+  "edges": 42990,
+  "coordinates": {
+    "entities_and_connectors": {
+      "connector": 623,
+      "entity": 8858
+    },
+    "placed": 4989,
+    "not_placed": 4492,
+    "reasons": {
+      "none": 4491,
+      "not_earth": 1,
+      "ok": 4866,
+      "several": 123
+    },
+    "placed_inside_india_box": 4979,
+    "placed_outside_india_box": 10
+  },
+  "hubs": {
+    "degree_threshold": 33,
+    "period_nodes": 40,
+    "entities_and_connectors": 90,
+    "top": [
+      {
+        "id": "century:19",
+        "label": "19th century",
+        "degree": 2357
+      },
+      {
+        "id": "century:18",
+        "label": "18th century",
+        "degree": 2326
+      },
+      {
+        "id": "century:16",
+        "label": "16th century",
+        "degree": 2222
+      },
+      {
+        "id": "century:17",
+        "label": "17th century",
+        "degree": 2071
+      },
+      {
+        "id": "Q668",
+        "label": "India",
+        "degree": 1347
+      },
+      {
+        "id": "Q33296",
+        "label": "Mughal Empire",
+        "degree": 1291
+      },
+      {
+        "id": "century:12",
+        "label": "12th century",
+        "degree": 941
+      },
+      {
+        "id": "Q60466177",
+        "label": "Tuti-Nama (Tales of a Parrot)",
+        "degree": 658
+      },
+      {
+        "id": "Q1061",
+        "label": "Gujarat",
+        "degree": 603
+      },
+      {
+        "id": "century:20",
+        "label": "20th century",
+        "degree": 588
+      },
+      {
+        "id": "century:15",
+        "label": "15th century",
+        "degree": 567
+      },
+      {
+        "id": "Q1165",
+        "label": "Bihar",
+        "degree": 507
+      },
+      {
+        "id": "Q1445",
+        "label": "Tamil Nadu",
+        "degree": 486
+      },
+      {
+        "id": "Q1437",
+        "label": "Rajasthan",
+        "degree": 457
+      },
+      {
+        "id": "Q8441",
+        "label": "man",
+        "degree": 430
+      },
+      {
+        "id": "Q60514050",
+        "label": "Manuscript of the Perfection of Wisdom in Eight Thousand Lines (Ashtasahasrika Prajnaparamita-sutra)",
+        "degree": 379
+      },
+      {
+        "id": "Q162442",
+        "label": "Prayagraj",
+        "degree": 370
+      },
+      {
+        "id": "century:14",
+        "label": "14th century",
+        "degree": 340
+      },
+      {
+        "id": "Q467",
+        "label": "woman",
+        "degree": 271
+      },
+      {
+        "id": "century:11",
+        "label": "11th century",
+        "degree": 252
+      }
+    ]
+  },
+  "communities": {
+    "count": 8140,
+    "largest": [
+      1022,
+      318,
+      308,
+      220,
+      211,
+      209,
+      188,
+      183,
+      157,
+      154
+    ],
+    "with_10_or_more_nodes": 168,
+    "single_nodes": 2687,
+    "links_between": 86
+  },
+  "documents_about_an_entity": 21063,
+  "entities_with_documents": 8858,
+  "outputs_sha256": {
+    "nodes": "396997427b138805c47919a7771d7f4123e1cb045e90b6eb18f254acd6a7b1c8",
+    "communities": "25cc2d60e3f3d7d978f63d06882937c98a6976cbe1faa19b72a0a3baaf2a29d9"
+  }
+}

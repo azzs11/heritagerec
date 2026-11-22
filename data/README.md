@@ -7,6 +7,7 @@
 | `corpus_v1/staging/` | One file of validated records per collector, before the snapshot | No (rebuilt) |
 | `gazetteer/` | `gazetteer_v1.jsonl.gz`: Wikidata labels and aliases (en, hi, kn) by entity type, used for linking | Yes |
 | `graph/core_v1/` | Core Wikidata graph (decision 0020): `nodes.jsonl.gz` and `edges.tsv.gz` (source, relation, target, layer, origin, revision); later edge layers add rows with their own layer | Yes |
+| `explorer/v1/` | What the interface draws (decision 0025): `nodes.jsonl.gz` (degree, display hub, community, coordinates per graph node) and `communities.json.gz`; rebuilt from the graph and the raw responses | Yes |
 | `queries/` | Grid cells for query generation (`generator_trial_cells_v1.jsonl`); later the generated, curated and split benchmark queries | Yes |
 | `passages/` | `manifest_v1.json`: passage settings, counts and the SHA-256 of `passages_v1.jsonl.gz` (150-word passages shared by every retrieval system, rebuilt from the snapshot) | Manifest only |
 | `indexes/` | Lucene indexes for BM25, one per language, rebuilt from the passages | No |
