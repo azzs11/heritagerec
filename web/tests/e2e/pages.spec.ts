@@ -82,9 +82,30 @@ test("a hub is folded, never drawn whole", async ({ page }) => {
   await page.goto("/graph/?node=Q668");
   await settle(page);
   await expect(page.getByText(/This node joins/)).toBeVisible();
-  const text = await page.getByText(/nodes and .* bundles on screen/).innerText();
+  const text = await page.getByText(/nodes · .* bundles/).innerText();
   const [nodes, bundles] = (text.match(/[\d,]+/g) ?? []).map((n) => Number(n.replace(/,/g, "")));
   expect((nodes ?? 0) + (bundles ?? 0)).toBeLessThanOrEqual(400);
+  await expect(page.getByText(/a hub opens one step/)).toBeVisible();
+});
+
+test("a neighbourhood opens two steps out and a path can be walked", async ({ page }) => {
+  await page.goto("/graph/?node=Q466581");
+  await settle(page);
+  const text = await page.getByText(/nodes · .* bundles/).innerText();
+  expect(Number(text.match(/\d+/)?.[0])).toBeGreaterThan(20); // the first ring alone holds 14
+  await page.getByRole("button", { name: "Vijayanagara Empire" }).first().click();
+  await page.getByRole("button", { name: "Walk the path" }).click();
+  await expect(page.getByText("avoids hubs")).toBeVisible();
+  await expect(page.getByRole("button", { name: "clear the path" })).toBeVisible();
+});
+
+test("the overview draws the connected communities and shelves the rest", async ({ page }) => {
+  await page.goto("/graph/");
+  await settle(page);
+  const shelf = page.getByRole("list").filter({ has: page.getByRole("button", { name: /Mallabhum/ }) });
+  await expect(shelf).toBeVisible();
+  await shelf.getByRole("button", { name: /Mallabhum/ }).click();
+  await expect(page.getByText("its most connected members")).toBeVisible();
 });
 
 test("the atlas answers what is near Belur", async ({ page }) => {
