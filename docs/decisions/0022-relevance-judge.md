@@ -1,6 +1,6 @@
 # 0022: Which LLM judges relevance
 
-- Status: proposed (options for the author; nothing run yet)
+- Status: accepted (author, 2026-11-22)
 - Date: 2026-11-21
 
 ## Context
@@ -56,4 +56,15 @@ NonCommercial licences (for example Cohere's Aya Expanse, CC BY-NC) are left out
 
 ## Decision
 
-Waiting for the author.
+Option A, **Gemma 4 31B** (`google/gemma-4-31B-it`), the free choice. The author asked for whatever runs free; this
+is the strongest candidate that does.
+
+- Model card checked 22 Nov 2026: Apache-2.0, not gated, revision `842da3794eaa0b77d5f08bae87a17459d91ff475`
+  (31.3B parameters). The judging notebook records the revision it actually loads.
+- It is outside the generator's families (Qwen3, Sarvam-M on Mistral; decision 0021) and is not used inside any
+  compared system.
+- It runs on Kaggle (2 x T4) in 4-bit. Google also publishes quantization-aware 4-bit weights of this model; the
+  notebook uses them if they fit and load correctly, and records which weights it used.
+- With one candidate, the pilot is a check, not a choice: about 100 dev pairs labelled blind by the author, weighted
+  kappa (linear) overall and per language. Below about 0.4, the paid-API fallback runs as the rules say and both
+  runs are reported.
