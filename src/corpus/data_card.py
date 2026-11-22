@@ -26,6 +26,7 @@ SEED_LISTS = {
 }
 LINKS_REPORT = ROOT / "results/linking/object_links_v1.json"
 GRAPH_REPORT = ROOT / "results/graph/core_v1.json"
+PASSAGE_MANIFEST = ROOT / "data/passages/manifest_v1.json"
 SEED_REPORT = ROOT / "data/seeds/seed_report.md"
 OUT = ROOT / "docs/data_card.md"
 LICENCE_NAMES = {
@@ -107,6 +108,29 @@ def graph_section() -> list[str]:
     ]
 
 
+def passage_section() -> list[str]:
+    if not PASSAGE_MANIFEST.exists():
+        return []
+    m = json.load(open(PASSAGE_MANIFEST, encoding="utf-8"))
+    st = m["settings"]
+    return [
+        "## Passages for retrieval (decision 0023)",
+        "",
+        f"Every document is split into passages of {st['words']} words with a {st['stride']}-word stride, each"
+        " starting with the document's title; every retrieval system uses the same passages and scores a document"
+        f" by its best passage. {fmt(m['passages_total'])} passages (`{m['passages']['path']}`, SHA-256"
+        f" `{m['passages']['sha256']}`), built {m['built']} at commit `{m['commit']}`.",
+        "",
+        *table(
+            ["Language", "Documents", "Passages"],
+            [[k, fmt(m["documents_by_language"][k]), fmt(v)] for k, v in m["passages_by_language"].items()],
+        ),  # fmt: skip
+        "",
+        *table(["Source", "Passages"], [[k, fmt(v)] for k, v in m["passages_by_source"].items()]),
+        "",
+    ]
+
+
 def main() -> None:
     records = [json.loads(line) for line in gzip.open(SNAPSHOT, "rt", encoding="utf-8")]
     manifest = json.load(open(MANIFEST, encoding="utf-8"))
@@ -182,6 +206,7 @@ def main() -> None:
         "",
         *linking_section(),
         *graph_section(),
+        *passage_section(),
         "## Text length (characters)",
         "",
         *table(

@@ -483,3 +483,8 @@ data/corpus_v1/staging/
 # The corpus snapshot is archived on Zenodo and Hugging Face, not kept in git (decision 0004);
 # the manifest (checksums) and sample_v1.jsonl stay in git.
 data/corpus_v1/records.jsonl.gz
+
+# Passages and search indexes are rebuilt from the snapshot (decision 0023); the passage manifest is committed
+data/passages/*.jsonl.gz
+data/passages/pyserini_input/
+data/indexes/
