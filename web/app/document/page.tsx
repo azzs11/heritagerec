@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 
 import { Load, MarginNote, Names, Stamp, fmt } from "@/components/ui";
+import { HexRings } from "@/components/HexRings";
 import { LiveGraph, groupOf, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
 import { NextSteps } from "@/components/Wayfinding";
 import { api, downloadUrl, get, label, type DocumentView as Doc, type ImageRef } from "@/lib/api";
@@ -339,6 +340,29 @@ function InGraph({ d }: { d: Doc }) {
           </ul>
         </>
       ) : null}
+      <NearbyRings id={d.id} />
     </section>
+  );
+}
+
+/** Concentric recommendations (decision 0030): documents about places in this one's hexagon, then each ring out. */
+function NearbyRings({ id }: { id: string }) {
+  const r = useResource(() => api.documentRings(id, 2), `docrings|${id}`);
+  if (r.state !== "ready" || !r.data.rings.length) return null;
+  const from = (r.data.places ?? []).map((p) => label(p.labels, p.id)).join(", ");
+  return (
+    <HexRings
+      title={<>Nearby, ring by ring{from ? <span className={s.muted}> · from {from}</span> : null}</>}
+      unit="documents"
+      bands={r.data.rings.map((b) => ({
+        ring: b.ring,
+        total: b.total,
+        items: (b.documents ?? []).slice(0, 5).map((x) => (
+          <Link key={x.id} className={s.ringChip} href={`/document/?id=${encodeURIComponent(x.id)}`} title={`about ${label(x.place.labels, x.place.id)}`}>
+            {label(x.labels, x.id)}
+          </Link>
+        )),
+      }))}
+    />
   );
 }

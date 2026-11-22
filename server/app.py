@@ -287,6 +287,25 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
             items.append(card)
         return {"total": len(order), "offset": offset, "items": items}
 
+    # ---------- hexagons (decision 0030) ----------
+
+    @app.get("/api/atlas/hexes")
+    def atlas_hexes(res: Annotated[int, Query(ge=2, le=7)] = 4) -> list[dict]:
+        return graph_views.hexes(need("graph"), res)
+
+    @app.get("/api/atlas/rings")
+    def atlas_rings(
+        lat: Annotated[float, Query(ge=-90, le=90)],
+        lon: Annotated[float, Query(ge=-180, le=180)],
+        k: Annotated[int, Query(ge=0, le=graph_views.RING_MAX)] = 2,
+    ) -> dict:
+        return graph_views.rings(need("graph"), lat, lon, k)
+
+    @app.get("/api/graph/rings/{doc_id:path}")
+    def document_rings(doc_id: str, k: Annotated[int, Query(ge=0, le=graph_views.RING_MAX)] = 2) -> dict:
+        g: Graph = need("graph")
+        return graph_views.document_rings(g, node(g, doc_id), k)
+
     # ---------- atlas ----------
 
     @app.get("/api/atlas/places")

@@ -500,6 +500,19 @@
   color: var(--ink-soft);
 }
 
+.ringChip {
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0 0.5rem;
+  font-size: var(--step--2);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.ringChip:hover {
+  border-color: var(--ink);
+}
+
 @media (max-width: 48rem) {
   .bottomLeft,
   .hint {

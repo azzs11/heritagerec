@@ -227,6 +227,25 @@ test("the reader's path is drawn as they move, and the sky stays off the map", a
   await expect(page.locator(".sky")).toHaveCount(1);
 });
 
+// ---------- hexagons (decision 0030) ----------
+
+test("the atlas drawer counts the neighbourhood ring by ring", async ({ page }) => {
+  await page.goto("/atlas/?lat=13.16&lon=75.87");
+  await settle(page);
+  const drawer = page.getByRole("complementary", { name: "Places near the chosen point" });
+  await expect(drawer.getByText("Ring by ring")).toBeVisible({ timeout: 15_000 });
+  await expect(drawer.getByText("same hexagon")).toBeVisible();
+  await expect(drawer.getByText("1 ring out")).toBeVisible();
+});
+
+test("a document recommends nearby documents ring by ring", async ({ page }) => {
+  test.skip(!(await corpusRunning(page)), "needs the corpus");
+  await page.goto("/document/?id=wikipedia%3Aen%3A7051661");
+  await settle(page);
+  await expect(page.getByText("Nearby, ring by ring")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("2 rings out")).toBeVisible();
+});
+
 // ---------- screenshots: pages whose look should not change unnoticed (local only: fonts differ on CI's Linux) ----------
 
 test.describe("screenshots", () => {

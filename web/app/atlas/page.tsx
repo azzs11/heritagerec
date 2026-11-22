@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useMemo, useRef, useState } from "react";
 
+import { HexRings } from "@/components/HexRings";
 import { GROUP_NAMES, LiveGraph, groupOf, type Group, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
 import { Load, MarginNote, Names, fmt } from "@/components/ui";
 import { NextSteps } from "@/components/Wayfinding";
@@ -283,6 +284,7 @@ function Nearby({ n }: { n: NearView }) {
           </p>
         </>
       ) : null}
+      <AtlasRings lat={n.point.lat} lon={n.point.lon} />
       <h3 className={s.h3}>The places</h3>
       <ol className={s.places}>
         {n.places.map((p) => (
@@ -319,5 +321,26 @@ function Nearby({ n }: { n: NearView }) {
         </p>
       </MarginNote>
     </div>
+  );
+}
+
+/** The same neighbourhood counted in hexagons: the point's own cell, then each ring around it. */
+function AtlasRings({ lat, lon }: { lat: number; lon: number }) {
+  const r = useResource(() => api.rings(lat, lon, 2), `rings|${lat}|${lon}`);
+  if (r.state !== "ready") return null;
+  return (
+    <HexRings
+      title="Ring by ring"
+      unit="places"
+      bands={r.data.rings.map((b) => ({
+        ring: b.ring,
+        total: b.total,
+        items: (b.places ?? []).slice(0, 6).map((p) => (
+          <Link key={p.id} className={s.ringChip} href={`/graph/?node=${encodeURIComponent(p.id)}`}>
+            {label(p.labels, p.id)}
+          </Link>
+        )),
+      }))}
+    />
   );
 }

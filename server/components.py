@@ -80,6 +80,7 @@ class Graph:
     communities: dict = field(default_factory=dict)
     documents_about: Counter = field(default_factory=Counter)
     images: dict = field(default_factory=dict)
+    hex_cells: dict = field(default_factory=dict)  # resolution -> {node: H3 cell}, filled on first use
     walks: dict = field(default_factory=dict)
     walk_input: tuple | None = None
 

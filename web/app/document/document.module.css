@@ -372,3 +372,20 @@
     transform: none;
   }
 }
+
+.ringChip {
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0 0.55rem;
+  font-size: var(--step--1);
+  text-decoration: none;
+  color: var(--ink);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ringChip:hover {
+  border-color: var(--ink);
+}

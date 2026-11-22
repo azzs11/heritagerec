@@ -183,6 +183,19 @@ export interface GraphRank {
   walk_spends_time_at: { node: NodeCard; share: number }[];
 }
 
+export interface RingBand {
+  ring: number;
+  total: number;
+  places?: NodeCard[];
+  documents?: (NodeCard & { place: NodeCard })[];
+}
+
+export interface Rings {
+  resolution: number;
+  rings: RingBand[];
+  places?: NodeCard[];
+}
+
 export interface DocumentView {
   id: string;
   title: string;
@@ -305,6 +318,8 @@ export const api = {
   rank: (seeds: string, hubPower: number, restart: number, k = 10) =>
     get<GraphRank>("/api/graph/rank", { seeds, hub_power: hubPower, restart, k }),
   suggest: (q: string) => get<(NodeCard & { closeness: number })[]>("/api/suggest", { q }),
+  rings: (lat: number, lon: number, k = 2) => get<Rings>("/api/atlas/rings", { lat, lon, k }),
+  documentRings: (id: string, k = 2) => get<Rings>(`/api/graph/rings/${enc(id)}`, { k }),
   find: (q: string) => get<NodeCard[]>("/api/graph/find", { q }),
   places: () => get<Place[]>("/api/atlas/places"),
   near: (lat: number, lon: number, k = 25) => get<NearView>("/api/atlas/near", { lat, lon, k }),
