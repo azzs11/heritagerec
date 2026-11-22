@@ -96,8 +96,9 @@ How BGE-M3 B is run:
 - The candidates are then scored by the weighted sum on the model card,
   0.4 x dense + 0.2 x sparse + 0.4 x multi-vector, then MaxP to the top 100 documents.
 - Multi-vector embeddings are not stored for the whole corpus: one 1,024-number vector per token for 282,274
-  passages would be far larger than the notebook's disk. They are computed for the candidate passages only, at
-  query time. Sparse weights are small and are stored for all passages.
+  passages would be far larger than the notebook's disk. Sparse and multi-vector outputs are both computed for
+  the candidate passages only, at query time, so only dense vectors are stored. This costs one extra encoding of
+  3,000 passages per query.
 - Since the combined score includes keyword-like sparse matching, the paper names this row "BGE-M3
   (dense+sparse+multi-vector)", not a pure dense row.
 
@@ -108,3 +109,8 @@ How BGE-M3 B is run:
 - Runs on the 40 dev queries wait for the queries (decision 0021). Until then, only the passage embeddings are
   built.
 - The data card and `src/retrieval/README.md` gain the model revisions and truncation shares once measured.
+- Library versions on the notebook: FlagEmbedding 1.4.2 fails to import with transformers 5 (checked
+  22 Nov 2026), so the notebook pins transformers 4.57.6, sentence-transformers 5.7.0, FlagEmbedding 1.4.2 and
+  faiss-cpu 1.15.1. These are notebook-only and not added to `pyproject.toml`, whose lock keeps transformers 5
+  for the laptop. BGEM3FlagModel takes no revision argument, so every model is downloaded at its pinned commit
+  first and loaded from disk.
