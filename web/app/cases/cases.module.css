@@ -339,3 +339,138 @@
 .entities a {
   color: var(--lac);
 }
+
+.suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+  align-items: baseline;
+  font-size: var(--step--1);
+  max-width: none;
+}
+
+.chipAdd {
+  background: none;
+  border: 1px dashed var(--lac);
+  color: var(--lac);
+  padding: 0.05rem 0.45rem;
+  cursor: pointer;
+}
+
+.picker {
+  position: relative;
+  margin: 0.8rem 0;
+}
+
+.chips {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chips li {
+  border: 1px solid var(--lac);
+  background: var(--lac-wash);
+  padding: 0.1rem 0.2rem 0.1rem 0.55rem;
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  font-size: var(--step--1);
+}
+
+.chips button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: var(--step-0);
+  line-height: 1;
+}
+
+.seedInput {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  background: transparent;
+  padding: 0.35rem 0.1rem;
+}
+
+.seedFound {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0.3rem 0;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+}
+
+.seedFound button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.seedFound button:hover {
+  background: var(--paper-deep);
+}
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  margin: 0.8rem 0;
+  font-size: var(--step--1);
+}
+
+.switchSmall {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.switchSmall button {
+  background: none;
+  border: 1px solid var(--rule-strong);
+  padding: 0.05rem 0.45rem;
+  cursor: pointer;
+}
+
+.switchSmall button[aria-pressed="true"] {
+  background: var(--lac);
+  border-color: var(--lac);
+  color: var(--paper);
+}
+
+.scoreGraph {
+  color: var(--lac);
+  font-size: var(--step--1);
+}
+
+.pathLine {
+  font-size: var(--step--1);
+  margin: 0.3rem 0 0 2.6rem;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  align-items: baseline;
+  max-width: none;
+}
+
+.pathLine em {
+  color: var(--ink-faint);
+}
+
+.timeAt {
+  color: var(--lac);
+}
