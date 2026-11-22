@@ -20,6 +20,8 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
 import { Masthead } from "@/components/Masthead";
+import { SkyField } from "@/components/SkyField";
+import { Trail } from "@/components/Wayfinding";
 
 export const metadata: Metadata = {
   title: { default: "HeritageRec", template: "%s · HeritageRec" },
@@ -38,7 +40,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
+        <SkyField />
         <Masthead />
+        <Trail />
         <main id="main">{children}</main>
         <footer className="page" style={{ paddingTop: 0, paddingBottom: "2rem", color: "var(--ink-faint)", fontSize: "var(--step--1)" }}>
           <hr />
