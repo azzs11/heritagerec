@@ -1,0 +1,78 @@
+.kicker {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-bottom: 0.3rem;
+}
+
+.title {
+  font-size: var(--step-3);
+}
+
+.h2 {
+  font-size: var(--step-1);
+  border-top: 1px solid var(--rule-strong);
+  padding-top: 0.6rem;
+  margin-top: 2rem;
+}
+
+.entities {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+}
+
+.entities a {
+  color: var(--lac);
+}
+
+.etype {
+  margin-left: 0.4rem;
+  font-size: var(--step--1);
+  color: var(--ink-faint);
+}
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.passages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.passages li {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--rule);
+  max-width: var(--measure);
+  line-height: 1.6;
+}
+
+.pid {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--ink-faint);
+  margin-right: 0.6rem;
+}
+
+.pager {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.pager button {
+  background: none;
+  border: 1px solid var(--rule-strong);
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+}
+
+.pager button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

@@ -467,3 +467,12 @@ data/corpus_v1/records.jsonl.gz
 data/passages/*.jsonl.gz
 data/passages/pyserini_input/
 data/indexes/
+
+# Web interface (web/): dependencies, builds and test output
+web/node_modules/
+web/.next/
+web/out/
+web/next-env.d.ts
+web/tsconfig.tsbuildinfo
+web/test-results/
+web/playwright-report/

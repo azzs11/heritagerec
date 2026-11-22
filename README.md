@@ -95,6 +95,7 @@ To be added.
 | `data/corpus_v1/` | Manifest and links; the snapshot itself is rebuilt locally or downloaded at release |
 | `results/` | Probe counts, collection and linking reports, audit of the old corpus |
 | `server/` | Interface server (FastAPI): graph views, atlas, keyword search with explanations; `uv run python -m server` |
+| `web/` | Interface (Next.js, static): story, atlas, cases with explanations, graph explorer, ledger, lab, guide; see `web/README.md` |
 | `docs/` | Data card, data notes, decision records, specification |
 | `tests/` | Tests (`uv run --group dev pytest tests/`) |
 | `legacy/` | Superseded conference-version files, kept for traceability |
