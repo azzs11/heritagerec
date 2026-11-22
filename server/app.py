@@ -13,6 +13,7 @@ from typing import Annotated
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from server import graph_rank as graph_rank_module
 from server import graph_views, keyword
 from server.components import LANGS, Corpus, Graph, Keyword, Missing, Paths, load
 from src.retrieval.passages import passages
@@ -175,6 +176,22 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
     ) -> dict:
         g: Graph = need("graph")
         return graph_views.path(g, node(g, source), node(g, target), max_len, k)
+
+    @app.get("/api/graph/rank")
+    def graph_rank(
+        seeds: Annotated[str, Query(max_length=2000, description="entity ids separated by ;")],
+        k: Annotated[int, Query(ge=1, le=100)] = 10,
+        restart: Annotated[float, Query(gt=0, lt=1)] = 0.15,
+        hub_power: Annotated[float, Query(ge=0, le=1)] = 1.0,
+    ) -> dict:
+        g: Graph = need("graph")
+        chosen = list(dict.fromkeys(x.strip() for x in seeds.split(";") if x.strip()))
+        unknown = [x for x in chosen if x not in g.nodes]
+        if not chosen or unknown:
+            raise HTTPException(400, detail=f"not nodes of the graph: {', '.join(unknown) or 'no seed given'}")
+        if hub_power not in (0.0, 0.5, 1.0):
+            raise HTTPException(400, detail="hub_power must be 0, 0.5 or 1 (decision 0027)")
+        return graph_rank_module.rank(g, paths, chosen[:10], k, restart, hub_power)
 
     @app.get("/api/graph/find")
     def graph_find(q: Annotated[str, Query(max_length=200)], limit: Annotated[int, Query(ge=1, le=100)] = 20) -> list:

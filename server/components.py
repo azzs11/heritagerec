@@ -78,6 +78,8 @@ class Graph:
     meta: dict[str, dict] = field(default_factory=dict)
     communities: dict = field(default_factory=dict)
     documents_about: Counter = field(default_factory=Counter)
+    walks: dict = field(default_factory=dict)
+    walk_input: tuple | None = None
 
     @classmethod
     def load(cls, paths: Paths) -> "Graph":
@@ -104,6 +106,16 @@ class Graph:
         for edges in g.adjacency.values():
             edges.sort(key=lambda e: (e.relation, e.direction, e.other))
         return g
+
+    def walk(self, paths: "Paths", hub_power: float):
+        """The PPR transition matrix for one hub weighting, built once and kept (decision 0027)."""
+        from src.graph_retrieval.ppr import build, load_graph
+
+        if hub_power not in self.walks:
+            if self.walk_input is None:
+                self.walk_input = load_graph(paths.nodes, paths.edges)
+            self.walks[hub_power] = build(*self.walk_input, hub_power=hub_power)
+        return self.walks[hub_power]
 
     def label(self, node_id: str) -> dict:
         return self.nodes.get(node_id, {}).get("labels") or {}
@@ -217,7 +229,7 @@ def load(paths: Paths, keyword: bool = True) -> dict:
     parts["planned"] = {
         "query_linker": "decision 0025; the linker and its evaluation come in phase 1, week 7",
         "dense": "decision 0024; runs arrive from the Kaggle notebook",
-        "ppr": "decisions 0007 and 0008",
+        "ppr": "runs from entities a reader chooses (/api/graph/rank); from queries once the linker exists (0026)",
         "fusion": "decision 0008",
         "reranker": "decision 0008",
         "lambdamart": "decision 0008",
