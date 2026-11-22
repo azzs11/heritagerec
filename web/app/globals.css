@@ -25,6 +25,9 @@
   --turmeric-wash: rgba(200, 144, 27, 0.14);
   --verdigris: #2a6556;
   --verdigris-wash: rgba(47, 111, 95, 0.09);
+  --type-built: #2a78d6;
+  --type-people: #eb6834;
+  --type-culture: #1baf7a;
 
   --serif: "Noto Serif", "Noto Serif Devanagari", "Noto Serif Kannada", Georgia, serif;
   --sans: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Kannada", system-ui, sans-serif;
@@ -62,6 +65,9 @@
     --turmeric-wash: rgba(229, 176, 74, 0.12);
     --verdigris: #7cc4ae;
     --verdigris-wash: rgba(124, 196, 174, 0.09);
+    --type-built: #3987e5;
+    --type-people: #d95926;
+    --type-culture: #199e70;
     color-scheme: dark;
   }
 }
@@ -83,6 +89,9 @@
   --turmeric-wash: rgba(229, 176, 74, 0.12);
   --verdigris: #7cc4ae;
   --verdigris-wash: rgba(124, 196, 174, 0.09);
+  --type-built: #3987e5;
+  --type-people: #d95926;
+  --type-culture: #199e70;
   color-scheme: dark;
 }
 
