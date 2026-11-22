@@ -16,9 +16,9 @@ jobs:
       # The inherited folders in src/ have ~320 pre-existing violations; fix those in a separate
       # refactor/ branch. Until then, enforce lint only on the code we actively maintain.
       - name: Run ruff check
-        run: uvx ruff check tests/ src/corpus/ src/graph/ src/queries/ src/retrieval/ src/explorer/ src/benchmark/ server/
+        run: uvx ruff check tests/ src/corpus/ src/graph/ src/queries/ src/retrieval/ src/explorer/ src/benchmark/ src/graph_retrieval/ server/
       - name: Run ruff format check
-        run: uvx ruff format --check tests/ src/corpus/ src/graph/ src/queries/ src/retrieval/ src/explorer/ src/benchmark/ server/
+        run: uvx ruff format --check tests/ src/corpus/ src/graph/ src/queries/ src/retrieval/ src/explorer/ src/benchmark/ src/graph_retrieval/ server/
 
   test:
     name: Test

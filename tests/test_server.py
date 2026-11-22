@@ -129,6 +129,25 @@ def test_real_graph_views(graph_client):
     assert graph_client.get("/api/graph/ego/not-a-node").status_code == 404
 
 
+def test_graph_rank_explains_each_result_with_a_path_from_a_seed(graph_client):
+    r = graph_client.get("/api/graph/rank", params={"seeds": "Q466581", "k": 5}).json()
+    assert len(r["results"]) == 5 and r["seeds"][0]["id"] == "Q466581"
+    scores = [x["score"] for x in r["results"]]
+    assert scores == sorted(scores, reverse=True)
+    for x in r["results"]:
+        assert x["document"]["kind"] == "document"
+        assert x["path"]["paths"][0]["nodes"][0]["id"] == "Q466581"
+        assert x["path"]["paths"][0]["nodes"][-1]["id"] == x["document"]["id"]
+    assert all(w["node"]["kind"] != "document" for w in r["walk_spends_time_at"])
+
+
+def test_graph_rank_refuses_unknown_seeds_and_settings(graph_client):
+    assert graph_client.get("/api/graph/rank", params={"seeds": "Qnope"}).status_code == 400
+    assert graph_client.get("/api/graph/rank", params={"seeds": ";;"}).status_code == 400
+    assert graph_client.get("/api/graph/rank", params={"seeds": "Q466581", "hub_power": 0.3}).status_code == 400
+    assert graph_client.get("/api/graph/rank", params={"seeds": "Q466581", "restart": 1}).status_code == 422
+
+
 def test_every_route_degrades_when_nothing_is_on_disk(tmp_path):
     empty = Paths(
         root=tmp_path,
@@ -148,6 +167,7 @@ def test_every_route_degrades_when_nothing_is_on_disk(tmp_path):
         "/api/graph/ego/Q668",
         "/api/atlas/places",
         "/api/atlas/near?lat=1&lon=1",
+        "/api/graph/rank?seeds=Q1",
         "/api/search?q=fort",
         "/api/explain?q=fort&doc=x",
         "/api/documents/x",
@@ -181,6 +201,13 @@ def test_fuzz_near(graph_client, lat, lon, k):
 def test_fuzz_path_and_find(graph_client, a, b, q):
     assert graph_client.get("/api/graph/path", params={"source": a, "target": b}).status_code in ALLOWED
     assert graph_client.get("/api/graph/find", params={"q": q}).status_code in ALLOWED
+
+
+@FUZZ
+@given(seeds=TEXT, restart=st.floats(allow_nan=True), hub=st.sampled_from([0, 0.5, 1, 2, -1]))
+def test_fuzz_graph_rank(graph_client, seeds, restart, hub):
+    params = {"seeds": seeds, "restart": restart, "hub_power": hub}
+    assert graph_client.get("/api/graph/rank", params=params).status_code in ALLOWED
 
 
 @FUZZ

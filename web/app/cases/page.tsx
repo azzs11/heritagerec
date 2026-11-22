@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, type FormEvent } from "react";
 
-import { Evidence, Load, MarginNote, MissingSlip, Names, Seal, fmt } from "@/components/ui";
-import { api, type Explanation, type SearchResult } from "@/lib/api";
+import { Evidence, Load, MarginNote, MissingSlip, Seal, fmt } from "@/components/ui";
+import { api, type Explanation, type NodeCard, type SearchResult } from "@/lib/api";
 import { DOC_TYPES, SOURCES } from "@/lib/names";
 import { useResource } from "@/lib/useResource";
 
 import s from "./cases.module.css";
+import { GraphLens } from "./GraphLens";
 
 const SYSTEMS = { bm25: "BM25", bm25_rm3: "BM25 + RM3" } as const;
 type System = keyof typeof SYSTEMS;
@@ -31,14 +32,15 @@ function Cases() {
   const lang = params.get("lang") ?? "";
   const [draft, setDraft] = useState(q);
 
-  const go = (next: { q?: string; system?: string; lang?: string }) => {
-    const p = new URLSearchParams({ q, system, lang, ...next });
+  const seeds = (params.get("seeds") ?? "").split(";").filter(Boolean);
+  const go = (next: { q?: string; system?: string; lang?: string; seeds?: string }) => {
+    const p = new URLSearchParams({ q, system, lang, seeds: seeds.join(";"), ...next });
     for (const [k, v] of [...p.entries()]) if (!v) p.delete(k);
     router.push(`/cases/?${p.toString()}`);
   };
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    go({ q: draft.trim() });
+    go({ q: draft.trim(), seeds: "" });
   };
 
   return (
@@ -83,12 +85,35 @@ function Cases() {
           </p>
         ) : null}
       </header>
-      {q ? <Case q={q} system={system} lang={lang || undefined} onSystem={(x) => go({ system: x })} /> : null}
+      {q ? (
+        <Case
+          q={q}
+          system={system}
+          lang={lang || undefined}
+          onSystem={(x) => go({ system: x })}
+          seeds={seeds}
+          onSeeds={(x) => go({ seeds: x.join(";") })}
+        />
+      ) : null}
     </article>
   );
 }
 
-function Case({ q, system, lang, onSystem }: { q: string; system: System; lang?: string; onSystem: (s: System) => void }) {
+function Case({
+  q,
+  system,
+  lang,
+  onSystem,
+  seeds,
+  onSeeds,
+}: {
+  q: string;
+  system: System;
+  lang?: string;
+  onSystem: (s: System) => void;
+  seeds: string[];
+  onSeeds: (s: string[]) => void;
+}) {
   const res = useResource(() => api.search(q, system, lang, 10), `${q}|${system}|${lang}`);
   const [open, setOpen] = useState<string | null>(null);
 
@@ -167,21 +192,7 @@ function Case({ q, system, lang, onSystem }: { q: string; system: System; lang?:
                 <h2 className={s.lensTitle}>
                   <Seal kind="graph">graph lens</Seal> personalised PageRank
                 </h2>
-                <MissingSlip
-                  title="not built yet"
-                  part="ppr"
-                  reason="The graph ranking starts from the entities a question names and spreads through the graph. It is not built, so this column ranks nothing."
-                  fix="decisions 0007 and 0008"
-                />
-                <h3 className={s.subhead}>What the graph knows about the text lens&apos;s answers</h3>
-                <p className={s.muted}>
-                  Not a ranking: for each document the text lens found, the entities the graph says it is about.
-                </p>
-                <ol className={s.known}>
-                  {r.results.slice(0, 5).map((x) => (
-                    <GraphContext key={x.doc_id} docId={x.doc_id} title={x.title ?? x.doc_id} rank={x.rank} />
-                  ))}
-                </ol>
+                <GraphLensWithSuggestions docIds={r.results.slice(0, 5).map((x) => x.doc_id)} seeds={seeds} setSeeds={onSeeds} />
               </section>
             </div>
 
@@ -354,33 +365,22 @@ function WorkingBody({ e }: { e: Explanation }) {
   );
 }
 
-function GraphContext({ docId, title, rank }: { docId: string; title: string; rank: number }) {
-  const res = useResource(() => api.ego(docId, 12, "about"), `ctx|${docId}`);
-  return (
-    <li className={s.knownRow}>
-      <span className={`${s.rank} num`}>{rank}</span>
-      <div>
-        <span className={s.knownTitle}>{title}</span>
-        <Load res={res} what="its entities">
-          {(v) =>
-            v.nodes.length > 1 ? (
-              <span className={s.entities}>
-                is about{" "}
-                {v.nodes.slice(1).map((n, i) => (
-                  <span key={n.id}>
-                    {i ? ", " : ""}
-                    <Link href={`/graph/?node=${encodeURIComponent(n.id)}`}>
-                      <Names labels={n.labels} fallback={n.id} />
-                    </Link>
-                  </span>
-                ))}
-              </span>
-            ) : (
-              <span className={s.muted}>no entity in the graph</span>
-            )
-          }
-        </Load>
-      </div>
-    </li>
+/** The graph lens, offered the entities that the text lens's top answers are about as starting points. */
+function GraphLensWithSuggestions({ docIds, seeds, setSeeds }: { docIds: string[]; seeds: string[]; setSeeds: (s: string[]) => void }) {
+  const about = useResource(
+    () => Promise.all(docIds.map((d) => api.ego(d, 12, "about").catch(() => null))),
+    `about|${docIds.join(",")}`,
   );
+  const suggestions: NodeCard[] = [];
+  if (about.state === "ready") {
+    const seen = new Set<string>();
+    for (const v of about.data) {
+      for (const n of v?.nodes.slice(1) ?? []) {
+        if (seen.has(n.id) || n.kind === "document") continue;
+        seen.add(n.id);
+        suggestions.push(n);
+      }
+    }
+  }
+  return <GraphLens seeds={seeds} setSeeds={setSeeds} suggestions={suggestions} />;
 }
