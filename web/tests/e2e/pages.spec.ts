@@ -9,6 +9,17 @@ async function settle(page: Page) {
   await expect(page.getByText(/^Reading .*…$/)).toHaveCount(0);
 }
 
+// A 503 is the server saying a part is missing (no Java or no corpus, as in CI): the page shows why, which is
+// expected behaviour, not an error. Every other console error still fails the test.
+function realErrors(messages: string[]) {
+  return messages.filter((m) => !/status of 503/.test(m));
+}
+
+async function corpusRunning(page: Page) {
+  const h = await (await page.request.get("http://127.0.0.1:8000/api/health")).json();
+  return h.corpus.status === "ok";
+}
+
 async function keywordRunning(page: Page) {
   const h = await (await page.request.get("http://127.0.0.1:8000/api/health")).json();
   return h.keyword.status === "ok" && h.corpus.status === "ok";
@@ -19,9 +30,11 @@ for (const path of PAGES) {
     const errors: string[] = [];
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     page.on("pageerror", (e) => errors.push(String(e)));
+    // axe measures the settled page: with motion reduced, nothing is caught halfway through a fade.
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(path);
     await settle(page);
-    expect(errors).toEqual([]);
+    expect(realErrors(errors)).toEqual([]);
     const axe = await new AxeBuilder({ page }).analyze();
     const serious = axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
     expect(serious.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
@@ -195,9 +208,11 @@ test("a document can be taken away with its licence written in", async ({ page }
 test("an address that does not exist is answered, not left blank", async ({ page }) => {
   await page.goto("/no-such-page/");
   await expect(page.getByRole("heading", { name: "This page is not in the archive." })).toBeVisible();
-  await page.goto("/document/?id=nope");
-  await settle(page);
-  await expect(page.getByRole("heading", { name: "Not in the archive." })).toBeVisible();
+  if (await corpusRunning(page)) {
+    await page.goto("/document/?id=nope");
+    await settle(page);
+    await expect(page.getByRole("heading", { name: "Not in the archive." })).toBeVisible();
+  }
 });
 
 test("the reader's path is drawn as they move, and the sky stays off the map", async ({ page }) => {
@@ -210,4 +225,29 @@ test("the reader's path is drawn as they move, and the sky stays off the map", a
   await expect(page.locator(".sky")).toHaveCount(0);
   await page.goto("/guide/");
   await expect(page.locator(".sky")).toHaveCount(1);
+});
+
+// ---------- screenshots: pages whose look should not change unnoticed (local only: fonts differ on CI's Linux) ----------
+
+test.describe("screenshots", () => {
+  test.skip(!!process.env.CI, "baselines are drawn on macOS; Linux renders text differently");
+  for (const [name, path] of [
+    ["guide", "/guide/"],
+    ["not-found", "/no-such-page/"],
+  ] as const) {
+    test(`${name} looks as recorded`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.addInitScript(() => {
+        try {
+          sessionStorage.clear();
+          localStorage.setItem("guide-offered", "yes");
+        } catch {}
+      });
+      await page.goto(path);
+      await settle(page);
+      // The sky drifts (decoration), and Next's development badge is not part of the site.
+      await page.addStyleTag({ content: ".sky,nextjs-portal{display:none!important}" });
+      await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true, maxDiffPixelRatio: 0.01 });
+    });
+  }
 });
