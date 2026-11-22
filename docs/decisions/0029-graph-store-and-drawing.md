@@ -1,6 +1,6 @@
 # 0029: Where the graph lives, how it is queried, and how it is drawn (Neo4j or not)
 
-- Status: proposed (the author asked why the graph does not use Neo4j; options for the author)
+- Status: accepted (author, 2026-11-22)
 - Date: 2026-11-22
 
 ## Context
@@ -53,4 +53,6 @@ Separately, sigma.js 4 should be tried once it has been out for a few months; th
 
 ## Decision
 
-Waiting for the author.
+C. The graph stays in files, computed with scipy and drawn with sigma.js. The Neo4j export
+(`src/graph/neo4j_export.py`) is written now, not at release: it can be loaded any time for exploration, and its
+dumps are published with the 30 Nov interim snapshot (labelled interim) and with the corpus freeze.
