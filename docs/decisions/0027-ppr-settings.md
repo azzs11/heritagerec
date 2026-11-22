@@ -1,6 +1,6 @@
 # 0027: Personalised PageRank settings for the graph lens
 
-- Status: proposed (defaults for the author to confirm; built so every one can be changed)
+- Status: accepted (author, 2026-11-22: "best option")
 - Date: 2026-11-22
 
 ## Context
@@ -24,7 +24,9 @@ equally among them. A query with no linked entity gets an empty graph ranking, a
 
 ## Decision
 
-Waiting for the author.
+The proposed settings: walk in both directions, each pair of nodes counted once, hub power 1 by default and chosen
+on dev among 0, 0.5 and 1, restart 0.15 by default and chosen on dev among 0.1, 0.15 and 0.3; the untuned run is
+always reported.
 
 ## Consequences
 

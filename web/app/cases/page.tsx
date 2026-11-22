@@ -2,99 +2,110 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
-import { Evidence, Load, MarginNote, MissingSlip, Seal, fmt } from "@/components/ui";
-import { api, type Explanation, type NodeCard, type SearchResult } from "@/lib/api";
-import { DOC_TYPES, SOURCES } from "@/lib/names";
+import { Load, Names, fmt } from "@/components/ui";
+import { api, label, type Linked, type NodeCard } from "@/lib/api";
+import { DOC_TYPES, LANGUAGES } from "@/lib/names";
 import { useResource } from "@/lib/useResource";
 
-import s from "./cases.module.css";
-import { GraphLens } from "./GraphLens";
+import { Collation } from "./Collation";
+import { fromGraph, fromText, parseSeeds, seedString, type Lens, type Reading } from "./model";
+import { Pipeline, type Step } from "./Pipeline";
+import s from "./search.module.css";
+import { WorkingDrawer } from "./WorkingDrawer";
 
 const SYSTEMS = { bm25: "BM25", bm25_rm3: "BM25 + RM3" } as const;
 type System = keyof typeof SYSTEMS;
-const EXAMPLES = ["Hoysala temples Belur", "Mughal miniature painting", "मुगल किला आगरा", "ಹಂಪೆ ದೇವಾಲಯ"];
+const EXAMPLES = ["Hoysala temples Belur", "Mughal miniature painting", "मुगल किला आगरा", "ಹಂಪೆ ದೇವಾಲಯ", "jama masjid delhi"];
+const DEPTH = 20; // fetched per lens, so filters still leave ten to compare
+const SHOWN = 10;
 
-export default function CasesPage() {
+export default function SearchPage() {
   return (
-    <Suspense fallback={<p className="page">Opening the case…</p>}>
-      <Cases />
+    <Suspense fallback={<div className="page">Opening search…</div>}>
+      <Search />
     </Suspense>
   );
 }
 
-function Cases() {
+function Search() {
   const params = useSearchParams();
   const router = useRouter();
   const q = params.get("q") ?? "";
-  const system = (params.get("system") as System) in SYSTEMS ? (params.get("system") as System) : "bm25";
+  const system = ((params.get("system") as System) in SYSTEMS ? params.get("system") : "bm25") as System;
   const lang = params.get("lang") ?? "";
+  const explicitSeeds = params.get("seeds");
+  const hub = Number(params.get("hub") ?? 1);
+  const restart = Number(params.get("restart") ?? 0.15);
   const [draft, setDraft] = useState(q);
+  const input = useRef<HTMLInputElement>(null);
 
-  const seeds = (params.get("seeds") ?? "").split(";").filter(Boolean);
-  const go = (next: { q?: string; system?: string; lang?: string; seeds?: string }) => {
-    const p = new URLSearchParams({ q, system, lang, seeds: seeds.join(";"), ...next });
-    for (const [k, v] of [...p.entries()]) if (!v) p.delete(k);
-    router.push(`/cases/?${p.toString()}`);
+  const go = (next: Record<string, string | null>) => {
+    const p = new URLSearchParams(params.toString());
+    for (const [k, v] of Object.entries(next)) {
+      if (v == null || v === "") p.delete(k);
+      else p.set(k, v);
+    }
+    router.push(`/cases/?${p.toString()}`, { scroll: false });
   };
+
+  // "/" returns to the query from anywhere on the page.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
+      if (e.key === "/" && !typing) {
+        e.preventDefault();
+        input.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    go({ q: draft.trim(), seeds: "" });
+    if (draft.trim()) go({ q: draft.trim(), seeds: null });
   };
 
   return (
-    <article className="page">
-      <header className={s.head}>
-        <h1 className={s.title}>Search</h1>
-        <form className={s.form} onSubmit={submit} role="search">
-          <label htmlFor="q" className="visually-hidden">
-            Query
-          </label>
-          <input
-            id="q"
-            className={s.input}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="A question in English, हिन्दी or ಕನ್ನಡ"
-            maxLength={500}
-            autoComplete="off"
-          />
-          <label className={s.select}>
-            <span className="label">read as</span>
-            <select value={lang} onChange={(e) => go({ lang: e.target.value })}>
-              <option value="">script decides</option>
-              <option value="en">English</option>
-              <option value="hi">Hindi</option>
-              <option value="kn">Kannada</option>
-            </select>
-          </label>
-          <button className={s.submit} type="submit">
-            Open the case
-          </button>
-        </form>
-        {!q ? (
-          <p className={s.examples}>
-            <span className="label">or try</span>
-            {EXAMPLES.map((x) => (
-              <button key={x} onClick={() => (setDraft(x), go({ q: x }))} className={s.example}>
-                {x}
-              </button>
-            ))}
-          </p>
-        ) : null}
-      </header>
+    <div className={s.page}>
+      <form className={s.queryBar} onSubmit={submit} role="search">
+        <label htmlFor="q" className="visually-hidden">
+          Question
+        </label>
+        <input
+          id="q"
+          ref={input}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="Ask in English, हिन्दी or ಕನ್ನಡ"
+          maxLength={500}
+          autoComplete="off"
+          autoFocus={!q}
+        />
+        <select aria-label="Read the question as" value={lang} onChange={(e) => go({ lang: e.target.value || null })}>
+          <option value="">script decides</option>
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="kn">Kannada</option>
+        </select>
+        <button type="submit">Search</button>
+      </form>
       {q ? (
         <Case
           q={q}
           system={system}
           lang={lang || undefined}
-          onSystem={(x) => go({ system: x })}
-          seeds={seeds}
-          onSeeds={(x) => go({ seeds: x.join(";") })}
+          explicitSeeds={explicitSeeds}
+          hub={hub}
+          restart={restart}
+          go={go}
         />
-      ) : null}
-    </article>
+      ) : (
+        <Empty onPick={(x) => (setDraft(x), go({ q: x, seeds: null }))} />
+      )}
+    </div>
   );
 }
 
@@ -102,277 +113,373 @@ function Case({
   q,
   system,
   lang,
-  onSystem,
-  seeds,
-  onSeeds,
+  explicitSeeds,
+  hub,
+  restart,
+  go,
 }: {
   q: string;
   system: System;
   lang?: string;
-  onSystem: (s: System) => void;
-  seeds: string[];
-  onSeeds: (s: string[]) => void;
+  explicitSeeds: string | null;
+  hub: number;
+  restart: number;
+  go: (next: Record<string, string | null>) => void;
 }) {
-  const res = useResource(() => api.search(q, system, lang, 10), `${q}|${system}|${lang}`);
-  const [open, setOpen] = useState<string | null>(null);
+  const text = useResource(() => api.search(q, system, lang, DEPTH), `t|${q}|${system}|${lang}`);
+  const linked: Linked | null = text.state === "ready" ? text.data.linked : null;
+  const seeds = explicitSeeds != null ? parseSeeds(explicitSeeds) : (linked?.seeds ?? null);
+  const seedKey = seeds ? seedString(seeds) : "";
+  const graph = useResource(
+    seeds && seedKey ? () => api.rank(seedKey, hub, restart, DEPTH) : null,
+    seeds ? `g|${seedKey}|${hub}|${restart}` : "none",
+  );
+  const [filters, setFilters] = useState<{ language: Set<string>; kind: Set<string> }>({ language: new Set(), kind: new Set() });
+  const [working, setWorking] = useState<{ lens: Lens; r: Reading } | null>(null);
+
+  const textAll = useMemo(() => (text.state === "ready" ? fromText(text.data) : []), [text]);
+  const graphAll = useMemo(() => (graph.state === "ready" ? fromGraph(graph.data) : []), [graph]);
+  const keep = (r: Reading) =>
+    (!filters.language.size || filters.language.has(r.language)) && (!filters.kind.size || filters.kind.has(r.kind ?? ""));
+  const textShown = textAll.filter(keep).slice(0, SHOWN);
+  const graphShown = graphAll.filter(keep).slice(0, SHOWN);
+  const shared = textShown.filter((r) => graphShown.some((g) => g.id === r.id)).length;
+
+  if (text.state !== "ready") {
+    return text.state === "loading" ? <Skeleton /> : <Load res={text} what="the text lens">{() => null}</Load>;
+  }
+  const t = text.data;
+  const seedCards: NodeCard[] =
+    graph.state === "ready" ? graph.data.seeds : (linked?.mentions.flatMap((m) => m.candidates) ?? []);
+  const steps: Step[] = [
+    {
+      key: "read",
+      name: "Read",
+      value: `${{ en: "English", hi: "Hindi", kn: "Kannada" }[t.language] ?? t.language}${lang ? "" : " (script)"}`,
+      state: "done",
+      detail: <ReadDetail q={q} lang={t.language} />,
+    },
+    {
+      key: "link",
+      name: "Linked",
+      value: linked && linked.mentions.length ? `${linked.mentions.length} ${linked.mentions.length === 1 ? "name" : "names"}` : "none found",
+      state: linked && linked.mentions.length ? "done" : "pending",
+      detail: <LinkDetail linked={linked} />,
+    },
+    {
+      key: "text",
+      name: "Text lens",
+      value: `${SYSTEMS[system]} · ${fmt(t.passages_retrieved)} passages`,
+      state: "done",
+      detail: (
+        <p>
+          {SYSTEMS[system]} scored every passage of the {t.language} index and kept the best{" "}
+          <span className="num">{fmt(t.passage_depth)}</span>; a document scores as its best passage. Anserini&apos;s
+          defaults, untuned (decision 0023).
+        </p>
+      ),
+    },
+    {
+      key: "graph",
+      name: "Graph lens",
+      value: seeds && Object.keys(seeds).length ? `PageRank · restart ${restart}` : "no starting point",
+      state: seeds && Object.keys(seeds).length ? "done" : "pending",
+      detail: <GraphSettings hub={hub} restart={restart} go={go} />,
+    },
+    { key: "fusion", name: "Fusion", value: "not built", state: "missing", detail: <p>Reciprocal rank fusion, the reranker and LambdaMART come next (decision 0008).</p> },
+    {
+      key: "verdict",
+      name: "Verdict",
+      value: "not measured",
+      state: "missing",
+      detail: <p>Which lens is better needs the benchmark&apos;s judged questions; until then nothing is declared here.</p>,
+    },
+  ];
 
   return (
-    <section aria-label={`Case: ${q}`}>
-
-      <Load res={res} what="the text lens">
-        {(r) => (
-          <>
-            <ol className={s.stages}>
-              <li>
-                <span className={s.stageNo}>1</span>
-                <div>
-                  <h2 className={s.stageTitle}>Reading the question</h2>
-                  <p>
-                    Read as <strong>{{ en: "English", hi: "Hindi", kn: "Kannada" }[r.language] ?? r.language}</strong>
-                    {lang ? " (chosen by you)" : " (from its script)"}, then reduced to the forms the index stores:
-                  </p>
-                  <div className={s.tokens}>
-                    <Tokens q={q} lang={r.language} />
-                  </div>
-<p className={s.muted}>
-                    <Seal kind="pending">entities not linked</Seal> the query linker is not built yet (decision 0026)
-                  </p>
-                </div>
-              </li>
-              <li>
-                <span className={s.stageNo}>2</span>
-                <div>
-                  <h2 className={s.stageTitle}>Finding candidates</h2>
-                  <p>
-                    {SYSTEMS[r.system]} scored every passage of the {r.language} index;{" "}
-                    <span className="num">{fmt(r.passages_retrieved)}</span> passages were kept (the depth is{" "}
-                    <span className="num">{fmt(r.passage_depth)}</span>), and each document took the score of its best
-                    passage.
-                  </p>
-                  <div className={s.switch} role="group" aria-label="Text lens system">
-                    {(Object.keys(SYSTEMS) as System[]).map((x) => (
-                      <button key={x} aria-pressed={x === system} onClick={() => onSystem(x)}>
-                        {SYSTEMS[x]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </li>
-            </ol>
-
-            <div className={s.lenses}>
-              <section className={s.lens} aria-label="Text lens">
-                <h2 className={s.lensTitle}>
-                  <Seal kind="text">text lens</Seal> {SYSTEMS[r.system]}
-                </h2>
-                {r.results.length === 0 ? <p>No document matched any word of the question.</p> : null}
-                <ol className={s.results}>
-                  {r.results.map((x) => (
-                    <Result
-                      key={x.doc_id}
-                      x={x}
-                      open={open === x.doc_id}
-                      onOpen={() => setOpen(open === x.doc_id ? null : x.doc_id)}
-                      q={q}
-                      system={r.system}
-                      lang={r.language}
-                    />
-                  ))}
-                </ol>
-              </section>
-              <section className={s.lens} aria-label="Graph lens">
-                <h2 className={s.lensTitle}>
-                  <Seal kind="graph">graph lens</Seal> personalised PageRank
-                </h2>
-                <GraphLensWithSuggestions docIds={r.results.slice(0, 5).map((x) => x.doc_id)} seeds={seeds} setSeeds={onSeeds} />
-              </section>
+    <>
+      <Pipeline steps={steps} />
+      <Facets all={[...textAll.slice(0, DEPTH), ...graphAll.slice(0, DEPTH)]} filters={filters} setFilters={setFilters} />
+      <p className={s.agreement} aria-live="polite">
+        <span className={`${s.agreeNum} num`}>{shared}</span>
+        <span>
+          of the top {Math.max(textShown.length, graphShown.length)} found by both lenses
+          {graph.state !== "ready" ? " (graph lens still reading)" : ""}
+        </span>
+      </p>
+      <Collation
+        text={textShown}
+        graph={graphShown}
+        textHead={
+          <div className={s.lensHead}>
+            <span className={s.tagText}>text lens</span>
+            <div className={s.segmented} role="group" aria-label="Text lens system">
+              {(Object.keys(SYSTEMS) as System[]).map((x) => (
+                <button key={x} aria-pressed={x === system} onClick={() => go({ system: x === "bm25" ? null : x })}>
+                  {SYSTEMS[x]}
+                </button>
+              ))}
             </div>
-
-            <ol className={s.stages} start={3}>
-              <li>
-                <span className={s.stageNo}>3</span>
-                <div>
-                  <h2 className={s.stageTitle}>Fusing and re-ranking</h2>
-                  <MissingSlip
-                    title="not built yet"
-                    part="fusion, reranker, lambdamart"
-                    reason="Reciprocal rank fusion, the bge-reranker and LambdaMART will each appear here with their own share of the final order."
-                    fix="decision 0008"
-                  />
-                </div>
-              </li>
-              <li>
-                <span className={s.stageNo}>4</span>
-                <div>
-                  <h2 className={s.stageTitle}>Verdict</h2>
-                  <p>
-                    <Seal kind="pending">not measured yet</Seal> A verdict needs relevance judgements for this kind of
-                    question. Until the benchmark is judged, neither lens is declared better here.
-                  </p>
-                </div>
-              </li>
-            </ol>
-          </>
-        )}
-      </Load>
-    </section>
+          </div>
+        }
+        graphHead={
+          <div className={s.lensHead}>
+            <span className={s.tagGraph}>graph lens</span>
+            <SeedChips
+              cards={seedCards}
+              linkedSeeds={linked?.seeds ?? {}}
+              seeds={seeds ?? {}}
+              overridden={explicitSeeds != null}
+              set={(next) => go({ seeds: seedString(next) })}
+              reset={() => go({ seeds: null })}
+            />
+          </div>
+        }
+        onWorking={(lens, r) => setWorking({ lens, r })}
+      />
+      {graph.state === "ready" && graphShown.length === 0 ? (
+        <p className={s.muted}>The walk from these starting points reached no document.</p>
+      ) : null}
+      {!seeds || !Object.keys(seeds).length ? (
+        <p className={s.muted}>
+          No name in the question matched an entity of the graph, so the graph lens has nowhere to start. Add a starting
+          point above.
+        </p>
+      ) : null}
+      <WorkingDrawer
+        open={working != null}
+        onClose={() => setWorking(null)}
+        lens={working?.lens ?? "text"}
+        r={working?.r ?? null}
+        q={q}
+        system={system}
+        lang={lang}
+        settings={{ restart, hub, seeds: Object.keys(seeds ?? {}) }}
+      />
+    </>
   );
 }
 
-function Tokens({ q, lang }: { q: string; lang: string }) {
-  const res = useResource(() => api.analyse(q, lang).then((a) => a.tokens), `tok|${q}|${lang}`);
+function ReadDetail({ q, lang }: { q: string; lang: string }) {
+  const res = useResource(() => api.analyse(q, lang), `a|${q}|${lang}`);
   return (
     <Load res={res} what="the analysed words">
-      {(tokens) => (
-        <>
-          {tokens.map((t, i) => (
-            <code key={i} className={s.token}>
-              {t}
-            </code>
+      {(a) => (
+        <p className={s.tokens}>
+          The index keeps words in a reduced form; the question becomes:{" "}
+          {a.tokens.map((t, i) => (
+            <code key={i}>{t}</code>
           ))}
-        </>
+        </p>
       )}
     </Load>
   );
 }
 
-function Result({
-  x,
-  open,
-  onOpen,
-  q,
-  system,
-  lang,
-}: {
-  x: SearchResult;
-  open: boolean;
-  onOpen: () => void;
-  q: string;
-  system: string;
-  lang: string;
-}) {
+function LinkDetail({ linked }: { linked: Linked | null }) {
+  if (!linked || !linked.mentions.length) return <p>No name in the question matched an entity of the graph.</p>;
   return (
-    <li className={s.result}>
-      <div className={s.resultHead}>
-        <span className={`${s.rank} num`}>{x.rank}</span>
-        <div className={s.resultTitle}>
-          <Link href={`/document/?id=${encodeURIComponent(x.doc_id)}`} lang={x.language}>
-            {x.title ?? x.doc_id}
-          </Link>
-          <span className={s.meta}>
-            {SOURCES[x.source ?? ""] ?? x.source} · {DOC_TYPES[x.doc_type ?? ""] ?? x.doc_type}
-          </span>
-        </div>
-        <span className={`${s.score} num`} title="the score of its best passage">
-          {x.score.toFixed(3)}
-        </span>
-      </div>
-      {x.snippet ? <Evidence words={x.snippet} lang={x.language} /> : null}
-      <button className={s.why} aria-expanded={open} onClick={onOpen}>
-        {open ? "close the working" : "why here? show the working"}
-      </button>
-      {open ? <Working q={q} doc={x.doc_id} system={system} lang={lang} /> : null}
-    </li>
+    <ul className={s.mentions}>
+      {linked.mentions.map((m) => (
+        <li key={m.text}>
+          <q>{m.text}</q> <span className={s.method}>{m.method === "fuzzy" ? `close spelling, ${m.score}` : m.method}</span> →{" "}
+          {m.candidates.map((c, i) => (
+            <span key={c.id}>
+              {i ? ", " : ""}
+              <Link href={`/graph/?node=${encodeURIComponent(c.id)}`}>
+                <Names labels={c.labels} fallback={c.id} />
+              </Link>
+            </span>
+          ))}
+          {m.candidates.length > 1 ? <span className={s.method}> · weight split {m.candidates.length} ways</span> : null}
+        </li>
+      ))}
+    </ul>
   );
 }
 
-function Working({ q, doc, system, lang }: { q: string; doc: string; system: string; lang: string }) {
-  const res = useResource(() => api.explain(q, doc, system, lang), `ex|${q}|${doc}|${system}|${lang}`);
+function GraphSettings({ hub, restart, go }: { hub: number; restart: number; go: (n: Record<string, string | null>) => void }) {
   return (
-    <div className={s.working}>
-      <Load res={res} what="the working">
-        {(e) => <WorkingBody e={e} />}
-      </Load>
+    <div className={s.settings}>
+      <div role="group" aria-label="Hub down-weighting" className={s.segmented}>
+        <span className={s.setName}>hubs</span>
+        {[
+          [1, "1 / degree"],
+          [0.5, "1 / √degree"],
+          [0, "no weighting"],
+        ].map(([v, name]) => (
+          <button key={v} aria-pressed={hub === v} onClick={() => go({ hub: v === 1 ? null : String(v) })}>
+            {name}
+          </button>
+        ))}
+      </div>
+      <div role="group" aria-label="Restart probability" className={s.segmented}>
+        <span className={s.setName}>restart</span>
+        {[0.1, 0.15, 0.3].map((v) => (
+          <button key={v} aria-pressed={restart === v} onClick={() => go({ restart: v === 0.15 ? null : String(v) })}>
+            {v}
+          </button>
+        ))}
+      </div>
+      <p className={s.muted}>Defaults from decision 0027; they are tuned on the dev questions only.</p>
     </div>
   );
 }
 
-function WorkingBody({ e }: { e: Explanation }) {
-  if (!e.winner) return <p>{e.note}</p>;
-  const w = e.winner;
-  const max = Math.max(...w.terms.map((t) => Math.abs(t.contribution)), 1e-9);
-  const rm3 = e.system === "bm25_rm3";
+function SeedChips({
+  cards,
+  seeds,
+  overridden,
+  set,
+  reset,
+}: {
+  cards: NodeCard[];
+  linkedSeeds: Record<string, number>;
+  seeds: Record<string, number>;
+  overridden: boolean;
+  set: (next: Record<string, number>) => void;
+  reset: () => void;
+}) {
+  const [adding, setAdding] = useState("");
+  const found = useResource(adding.trim().length >= 2 ? () => api.find(adding.trim()) : null, `sf|${adding.trim()}`);
+  const byId = new Map(cards.map((c) => [c.id, c]));
   return (
-    <>
-      <h4 className={s.workTitle}>The best passage scored {w.score.toFixed(3)}, made of:</h4>
-      <table className={s.terms}>
-        <thead>
-          <tr>
-            <th scope="col">term</th>
-            <th scope="col">{rm3 ? "expansion weight" : "times in query"}</th>
-            <th scope="col">BM25 weight here</th>
-            <th scope="col">adds</th>
-            <th scope="col">
-              <span className="visually-hidden">share</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {w.terms.map((t) => (
-            <tr key={t.term} className={t.contribution === 0 ? s.zero : undefined}>
-              <td>
-                <code>{t.term}</code>
-              </td>
-              <td className="num">{rm3 ? t.multiplier.toFixed(3) : t.multiplier}</td>
-              <td className="num">{t.bm25_weight.toFixed(3)}</td>
-              <td className="num">{t.contribution.toFixed(3)}</td>
-              <td className={s.termBar}>
-                <span style={{ width: `${(100 * Math.abs(t.contribution)) / max}%` }} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className={s.check}>
-        {w.check.matches ? <Seal kind="measured">adds up</Seal> : <Seal kind="pending">does not add up</Seal>} the terms
-        sum to <span className="num">{w.check.recomputed.toFixed(4)}</span>; Lucene returned{" "}
-        <span className="num">{w.check.lucene.toFixed(4)}</span>.
-      </p>
-      <p className={s.muted}>
-        Passage <code>{w.passage}</code> of <span className="num">{fmt(e.passages_in_document ?? 0)}</span> in the
-        document; <span className="num">{fmt(e.passages_retrieved.length)}</span> of them were among the candidates. The
-        document ranks <span className="num">{e.rank}</span> because this is its best.
-      </p>
-      {e.passages_retrieved.length > 1 ? (
-        <ol className={s.passages}>
-          {e.passages_retrieved.slice(0, 8).map((p, i) => (
-            <li key={p.passage} className={i === 0 ? s.winner : undefined}>
-              <code>#{p.passage.split("#").pop()}</code> <span className="num">{p.score.toFixed(3)}</span>
-              {i === 0 ? <span className={s.muted}> best, counts</span> : null}
-            </li>
-          ))}
-        </ol>
+    <div className={s.seeds}>
+      <span className={s.setName}>starts from</span>
+      {Object.keys(seeds).map((id) => (
+        <span key={id} className={s.chip}>
+          {byId.get(id) ? label(byId.get(id)!.labels, id) : id}
+          <button
+            aria-label={`Remove ${byId.get(id) ? label(byId.get(id)!.labels, id) : id}`}
+            onClick={() => {
+              const next = { ...seeds };
+              delete next[id];
+              set(next);
+            }}
+          >
+            ×
+          </button>
+        </span>
+      ))}
+      <span className={s.addWrap}>
+        <input aria-label="Add a starting point" placeholder="+ add" value={adding} onChange={(e) => setAdding(e.target.value)} />
+        {adding.trim().length >= 2 && found.state === "ready" ? (
+          <ul className={s.addList}>
+            {found.data
+              .filter((n) => n.kind !== "document")
+              .slice(0, 7)
+              .map((n) => (
+                <li key={n.id}>
+                  <button onClick={() => (set({ ...seeds, [n.id]: 1 }), setAdding(""))}>
+                    <Names labels={n.labels} fallback={n.id} />
+                  </button>
+                </li>
+              ))}
+          </ul>
+        ) : null}
+      </span>
+      {overridden ? (
+        <button className={s.reset} onClick={reset}>
+          use the linked names
+        </button>
       ) : null}
-      {w.text ? <Evidence words={w.text} lang={e.language} /> : null}
-      <MarginNote>
-        <p>
-          BM25 gives each query term a weight for this passage: higher when the term is rare in the collection and
-          frequent in the passage, lower when the passage is long. The passage&apos;s score is the sum. RM3 first reads
-          the best passages, adds the words they share, and weighs every word, original or added; each row then adds
-          its weight times its BM25 weight.
-        </p>
-        <p>The check recomputes the sum from these rows and compares it with the score the search engine returned.</p>
-      </MarginNote>
-    </>
+    </div>
   );
 }
 
-/** The graph lens, offered the entities that the text lens's top answers are about as starting points. */
-function GraphLensWithSuggestions({ docIds, seeds, setSeeds }: { docIds: string[]; seeds: string[]; setSeeds: (s: string[]) => void }) {
-  const about = useResource(
-    () => Promise.all(docIds.map((d) => api.ego(d, 12, "about").catch(() => null))),
-    `about|${docIds.join(",")}`,
-  );
-  const suggestions: NodeCard[] = [];
-  if (about.state === "ready") {
-    const seen = new Set<string>();
-    for (const v of about.data) {
-      for (const n of v?.nodes.slice(1) ?? []) {
-        if (seen.has(n.id) || n.kind === "document") continue;
-        seen.add(n.id);
-        suggestions.push(n);
-      }
+function Facets({
+  all,
+  filters,
+  setFilters,
+}: {
+  all: Reading[];
+  filters: { language: Set<string>; kind: Set<string> };
+  setFilters: (f: { language: Set<string>; kind: Set<string> }) => void;
+}) {
+  const count = (key: "language" | "kind") => {
+    const seen = new Map<string, Set<string>>();
+    for (const r of all) {
+      const v = (key === "language" ? r.language : r.kind) ?? "";
+      if (!seen.has(v)) seen.set(v, new Set());
+      seen.get(v)!.add(r.id);
     }
-  }
-  return <GraphLens seeds={seeds} setSeeds={setSeeds} suggestions={suggestions} />;
+    return [...seen.entries()].map(([v, ids]) => [v, ids.size] as const).sort((a, b) => b[1] - a[1]);
+  };
+  const toggle = (key: "language" | "kind", v: string) => {
+    const next = new Set(filters[key]);
+    if (next.has(v)) next.delete(v);
+    else next.add(v);
+    setFilters({ ...filters, [key]: next });
+  };
+  const row = (key: "language" | "kind", names: Record<string, string>) => (
+    <div className={s.facetRow} role="group" aria-label={key === "language" ? "Language" : "Kind of document"}>
+      {count(key).map(([v, n]) => (
+        <button key={v} aria-pressed={filters[key].has(v)} onClick={() => toggle(key, v)}>
+          {names[v] ?? (v || "other")} <span className="num">{n}</span>
+        </button>
+      ))}
+    </div>
+  );
+  return (
+    <div className={s.facets}>
+      {row("language", LANGUAGES)}
+      {row("kind", DOC_TYPES)}
+    </div>
+  );
+}
+
+function Skeleton() {
+  return (
+    <div className={s.skeleton} aria-busy="true" aria-label="Reading the question">
+      <div className={s.skelStrip} />
+      <div className={s.skelCols}>
+        {[0, 1].map((c) => (
+          <div key={c}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className={s.skelCard} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Empty({ onPick }: { onPick: (q: string) => void }) {
+  return (
+    <section className={s.empty}>
+      <div className={s.emptyText}>
+        <h1 className={s.emptyTitle}>Two readings of every question</h1>
+        <p>
+          The text lens reads the words. The graph lens finds the places, dynasties and styles the question names and
+          walks the facts that join them. Their answers are set side by side, as scholars collate two copies of a
+          manuscript: a line joins every document both found.
+        </p>
+        <p className={s.examples}>
+          {EXAMPLES.map((x) => (
+            <button key={x} onClick={() => onPick(x)}>
+              {x}
+            </button>
+          ))}
+        </p>
+      </div>
+      <svg className={s.emptyArt} viewBox="0 0 240 180" aria-hidden>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <rect key={`l${i}`} x="8" y={14 + i * 32} width="74" height="20" rx="2" className={s.artCard} />
+        ))}
+        {[0, 1, 2, 3, 4].map((i) => (
+          <rect key={`r${i}`} x="158" y={14 + i * 32} width="74" height="20" rx="2" className={s.artCard} />
+        ))}
+        {(
+          [
+            [0, 1],
+            [1, 0],
+            [3, 2],
+          ] as const
+        ).map(([a, b]) => (
+          <path key={`${a}${b}`} d={`M 82 ${24 + a * 32} C 120 ${24 + a * 32}, 120 ${24 + b * 32}, 158 ${24 + b * 32}`} className={s.artLine} />
+        ))}
+      </svg>
+    </section>
+  );
 }

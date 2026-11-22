@@ -85,7 +85,9 @@ def marked_words(kw: Keyword, text: str, lang: str, terms: set[str], limit: int 
     The window starts a little before the first match, so a reader sees why the passage was chosen.
     """
     body = text.split("\n", 1)[1] if "\n" in text else text
-    words = body.split()
+    # Wikipedia's section markup ("== Location ==") survives in some extracts; it is hidden here, for display only,
+    # and recorded for the week-5 cleaning (docs/data_notes.md).
+    words = [w for w in body.split() if w.strip("=")]
     with kw.lock:
         forms = [list(kw.analyzers[lang].analyze(w)) for w in words]
     hits = [i for i, f in enumerate(forms) if terms.intersection(f)]

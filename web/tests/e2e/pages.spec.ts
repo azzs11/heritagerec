@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-const PAGES = ["/", "/atlas/", "/cases/?q=Hoysala%20temples%20Belur", "/graph/", "/graph/?node=Q668", "/ledger/", "/lab/", "/guide/", "/document/?id=wikipedia%3Aen%3A7051661"];
+const PAGES = ["/", "/atlas/", "/cases/", "/cases/?q=Hoysala%20temples%20Belur", "/graph/", "/graph/?node=Q668", "/ledger/", "/lab/", "/guide/", "/document/?id=wikipedia%3Aen%3A7051661"];
 
 async function settle(page: Page) {
   await page.waitForLoadState("networkidle");
@@ -30,24 +30,52 @@ for (const path of PAGES) {
   });
 }
 
-test("a case explains its first result, and the explanation adds up", async ({ page }) => {
+test("search reads the question twice and explains a result in a drawer that adds up", async ({ page }) => {
   test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
   await page.goto("/cases/?q=Hoysala%20temples%20Belur");
   await settle(page);
-  await expect(page.getByRole("region", { name: "Text lens" }).getByRole("listitem").first()).toBeVisible();
-  await page.getByRole("button", { name: /why here/ }).first().click();
-  await expect(page.getByText("adds up", { exact: true })).toBeVisible();
-  await expect(page.getByText("does not add up")).toHaveCount(0);
+  const text = page.getByRole("list", { name: "Text lens results" });
+  const graph = page.getByRole("list", { name: "Graph lens results" });
+  await expect(text.getByRole("article").first()).toBeVisible();
+  // The linker found the starting points by itself.
+  await expect(page.getByRole("button", { name: "Remove Hoysala Empire" })).toBeVisible();
+  await expect(graph.getByRole("article").first()).toBeVisible();
+  await text.getByRole("button", { name: "Working" }).first().click();
+  const drawer = page.getByRole("dialog");
+  await expect(drawer.getByText(/^Adds up/)).toBeVisible();
+  await expect(drawer.getByText(/^Does not add up/)).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await expect(drawer).toHaveCount(0);
 });
 
-test("unbuilt systems say so instead of showing anything", async ({ page }) => {
+test("a document both lenses found is joined across the spine on hover", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/cases/?q=Hoysala%20temples%20Belur");
+  await settle(page);
+  const both = page.locator("article", { hasText: "also graph" }).first();
+  await expect(both).toBeVisible();
+  const id = await both.getAttribute("data-doc");
+  await both.hover();
+  await expect(page.locator(`article[data-doc="${id}"]`)).toHaveCount(2);
+  await expect(page.locator("svg path[class*='lineLit']")).toHaveCount(1);
+});
+
+test("unbuilt steps say so instead of showing anything", async ({ page }) => {
   test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
   await page.goto("/cases/?q=Mughal%20miniature%20painting");
   await settle(page);
-  // The graph ranking exists; what is missing is the linker, and the lens says so.
-  await expect(page.getByRole("region", { name: "Graph lens" }).getByText("linker not built")).toBeVisible();
-  await expect(page.getByText("not built yet").first()).toBeVisible(); // fusion, reranker, LambdaMART
-  await expect(page.getByText("not measured yet")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Fusion\s*not built/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Verdict\s*not measured/ })).toBeVisible();
+});
+
+test("the slash key returns to the question", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
+  await page.goto("/cases/?q=Hoysala%20temples%20Belur");
+  await settle(page);
+  await page.locator("body").click({ position: { x: 5, y: 400 } });
+  await page.keyboard.press("/");
+  await expect(page.getByRole("textbox", { name: "Question" })).toBeFocused();
 });
 
 test("a hub is folded, never drawn whole", async ({ page }) => {
@@ -73,13 +101,14 @@ test("a refused query says why", async ({ page }) => {
   await expect(page.getByText(/no searchable words/)).toBeVisible();
 });
 
-test("the graph lens ranks documents from chosen entities and reads each path the right way", async ({ page }) => {
+test("chosen starting points rank documents and each chain reads the right way", async ({ page }) => {
   test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
   await page.goto("/cases/?q=Hoysala%20temples%20Belur&seeds=Q466581");
   await settle(page);
-  const lens = page.getByRole("region", { name: "Graph lens" });
-  await expect(lens.getByRole("listitem").filter({ hasText: "Hoysala" }).first()).toBeVisible();
+  const graph = page.getByRole("list", { name: "Graph lens results" });
+  await expect(graph.getByRole("article").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "use the linked names" })).toBeVisible();
   // Documents point to their entity ("document is about"), so walking from the entity reads it backward.
-  await expect(lens.getByText("← document is about").first()).toBeVisible();
-  await expect(lens.getByText("document is about →")).toHaveCount(0);
+  await expect(graph.getByText("← document is about").first()).toBeVisible();
+  await expect(graph.getByText("document is about →")).toHaveCount(0);
 });

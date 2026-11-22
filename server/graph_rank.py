@@ -12,9 +12,10 @@ from src.graph_retrieval.ppr import rank_documents, scores
 WHERE_TOP = 8
 
 
-def rank(g: Graph, paths: Paths, seeds: list[str], k: int, restart: float, hub_power: float) -> dict:
+def rank(g: Graph, paths: Paths, seeds: dict[str, float], k: int, restart: float, hub_power: float) -> dict:
+    """PageRank from weighted seeds (an ambiguous name's weight is split among its entities, decision 0027)."""
     walk = g.walk(paths, hub_power)
-    x = scores(walk, dict.fromkeys(seeds, 1.0), restart)
+    x = scores(walk, seeds, restart)
     results = []
     for i, (doc, score) in enumerate(rank_documents(walk, x, k), 1):
         best = None
@@ -30,7 +31,7 @@ def rank(g: Graph, paths: Paths, seeds: list[str], k: int, restart: float, hub_p
         if not walk.kinds[j] and walk.ids[j] not in seed_set and x[j] > 0
     ][:WHERE_TOP]
     return {
-        "seeds": [g.card(s) for s in seeds],
+        "seeds": [dict(g.card(s), weight=w) for s, w in seeds.items()],
         "settings": {"restart": restart, "hub_power": hub_power, "decision": "0027"},
         "results": results,
         "walk_spends_time_at": [{"node": g.card(n), "share": share} for share, n in places],
