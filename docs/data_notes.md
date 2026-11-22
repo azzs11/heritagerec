@@ -9,7 +9,7 @@ and who decided it. Counts come from the files named; nothing here replaces them
 author review" means the change was made while building the corpus and is marked
 in its file for the author to confirm or reverse.
 
-Last updated: 21 November 2026.
+Last updated: 22 November 2026.
 
 ## 1. Audit of the old corpus
 
@@ -126,9 +126,19 @@ Link precision per layer is measured on the author's check of
 | --- | --- | --- | --- | --- |
 | Museum objects' own Wikidata items say which museum holds them, so the holding museum became the top hub and linked objects by source | Cleveland Museum of Art, 2,797 "location" (P276) edges | Statement edges to the five source institutions (Cleveland, Met, Art Institute of Chicago, Wellcome Collection, Internet Archive) are skipped and counted (2,798) | `src/graph/core_graph.py`, `results/graph/core_v1.json` | Author (21 Nov 2026) |
 
-## 10. Checks waiting for the author
+## 10. Explorer data (interface)
+
+| Found | Example | Change | Recorded in | Decided by |
+| --- | --- | --- | --- | --- |
+| Some entities have more than one truthy coordinate (P625) | Rivers, regions, serial sites | The first truthy statement is the map point; the count is reported | `src/explorer/build.py`, `results/explorer/explorer_v1.json` (`several`) | Rule, during the build (22 Nov 2026), pending author review |
+| One coordinate is on another globe | A value with globe Q405 (the Moon) | Not placed | same files (`not_earth`) | Rule, during the build, pending author review |
+| Two corpus sites carry coordinates that look wrong on Wikidata | Kali Masjid (Q121843253) at longitude -77.5, likely a sign error; Jama Masjid, Kanchipuram (Q6127159) placed in Iran | Not changed: the map draws India only, so they do not show; to be corrected on Wikidata or by hand later | `results/explorer/explorer_v1.json` (outside the India box) | Pending author review |
+| A corpus site is placed in Liverpool | Sri Muthumariyamman Temple (Q19605756) | Not changed; possibly a different temple that passed the scope check, to be checked by hand | same file | Pending author review |
+
+## 11. Checks waiting for the author
 
 - Scope of the neighbour sample: `results/probes/neighbour_select_v1.md` (50 entities).
 - Scope of the class-based list sample: `results/probes/class_list_sample_v1.md` (50 entities).
 - Link check: `results/linking/link_check_sample_v1.csv` (200 links, `correct` column).
 - Hand-scan rows marked "pending author review" in `data/seeds/curated/people_scan.csv` and `style_scan.csv`.
+- Explorer coordinates: the three sites listed in section 10 (two likely wrong coordinates, one possibly out of scope).
