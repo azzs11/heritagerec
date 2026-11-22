@@ -136,6 +136,12 @@ export interface SearchView {
   passages_retrieved: number;
   passage_depth: number;
   results: SearchResult[];
+  linked: Linked;
+}
+
+export interface Linked {
+  mentions: { text: string; method: "exact" | "romanised" | "fuzzy"; score: number; candidates: NodeCard[] }[];
+  seeds: Record<string, number>;
 }
 
 export interface TermPart {
@@ -290,8 +296,8 @@ export const api = {
     get<EgoView>(`/api/graph/ego/${enc(id)}`, { budget, relations }),
   node: (id: string) => get<NodeCard>(`/api/graph/node/${enc(id)}`),
   path: (source: string, target: string) => get<PathView>("/api/graph/path", { source, target }),
-  rank: (seeds: string[], hubPower: number, restart: number, k = 10) =>
-    get<GraphRank>("/api/graph/rank", { seeds: seeds.join(";"), hub_power: hubPower, restart, k }),
+  rank: (seeds: string, hubPower: number, restart: number, k = 10) =>
+    get<GraphRank>("/api/graph/rank", { seeds, hub_power: hubPower, restart, k }),
   find: (q: string) => get<NodeCard[]>("/api/graph/find", { q }),
   places: () => get<Place[]>("/api/atlas/places"),
   near: (lat: number, lon: number, k = 25) => get<NearView>("/api/atlas/near", { lat, lon, k }),
