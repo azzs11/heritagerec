@@ -49,6 +49,7 @@ dependencies = [
     "statsmodels>=0.15",
     "rapidfuzz>=3.14",
     "indic-transliteration>=2.3",
+    "h3==4.5.0",
 ]
 
 [dependency-groups]
