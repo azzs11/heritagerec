@@ -22,6 +22,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+# web/lib/ is the site's own code (API client, helpers), not a Python build folder.
+!web/lib/
 parts/
 sdist/
 var/
