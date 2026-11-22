@@ -9,6 +9,7 @@
 | `graph/` | Core graph statistics: nodes and edges by kind, type and relation, degrees, components, hubs, build counts | `src/graph/core_graph.py` |
 | `explorer/` | Explorer data counts: coordinates placed and why not, display hubs and their threshold, communities, input and output checksums | `src/explorer/build.py` |
 | `queries/` | Query generator trial: model outputs, the author's blind ratings and the summary per model and language | `notebooks/query_generator_trial.ipynb`, `src/queries/generator_trial.py` |
+| `benchmark/` | One folder per evaluation: `summary.json` and `.md` (means, intervals, tests, unjudged counts, inputs with checksums) and `per_query.tsv` | `src/benchmark/evaluate.py` |
 | `retrieval/` | Index statistics, dense encoding reports (`dense_<model>_v1.json`: model revision, truncation counts, chunk checksums), and TREC run files of each retrieval system on the dev queries | `src/retrieval/` |
 | `evaluation_report.json` | Conference-version evaluation, superseded (see `legacy/`) | — |
 
