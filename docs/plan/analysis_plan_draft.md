@@ -59,9 +59,8 @@ Computed by `src/benchmark/evaluate.py` with ir-measures (trec_eval's code); non
 
 ## 6. Judging
 
-- One LLM judge, fixed prompt, temperature 0 (decision 0022 **[author]**: the record still reads "waiting for the
-  author"). The author's 15-query validation is reported with weighted kappa and raw agreement, overall, per
-  language and per system.
+- One LLM judge, Gemma 4 31B (decision 0022), fixed prompt, temperature 0. The author's 15-query validation is
+  reported with weighted kappa and raw agreement, overall, per language and per system.
 
 ## 7. Deviations
 
