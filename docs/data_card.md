@@ -104,6 +104,25 @@ Built by `src/graph/core_graph.py` on 2026-11-21 at commit `b4fbad7734634041e64e
 - connector candidates dropped (one corpus entity): 2,229
 - statement edges dropped with them: 2,234
 
+## Passages for retrieval (decision 0023)
+
+Every document is split into passages of 150 words with a 75-word stride, each starting with the document's title; every retrieval system uses the same passages and scores a document by its best passage. 282,274 passages (`data/passages/passages_v1.jsonl.gz`, SHA-256 `c78cbdcdd93e8327c9eb0c9b1e1f67c961f2fde10b289f360bcec7eba2e70ad2`), built 2026-11-21 at commit `5a7b35b71ee04b132e1de94982f3add8584f6548`.
+
+| Language | Documents | Passages |
+| --- | --- | --- |
+| en | 12,050 | 265,748 |
+| hi | 1,541 | 10,825 |
+| kn | 894 | 5,701 |
+
+| Source | Passages |
+| --- | --- |
+| internet_archive | 212,651 |
+| wikipedia | 62,365 |
+| cleveland | 3,954 |
+| met | 2,882 |
+| artic | 365 |
+| wellcome | 57 |
+
 ## Text length (characters)
 
 | Source | Document type | Documents | Median | Min | Max |
