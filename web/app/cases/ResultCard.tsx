@@ -23,8 +23,9 @@ export const ResultCard = forwardRef<
     lit: boolean;
     onHover: (id: string | null) => void;
     onWorking: () => void;
+    query?: string;
   }
->(function ResultCard({ r, lens, top, counterpart, dimmed, lit, onHover, onWorking }, ref) {
+>(function ResultCard({ r, lens, top, counterpart, dimmed, lit, onHover, onWorking, query }, ref) {
   const [imageFailed, setImageFailed] = useState(false);
   const p = r.path?.paths[0];
   return (
@@ -51,7 +52,7 @@ export const ResultCard = forwardRef<
         )}
       </div>
       <div className={s.body}>
-        <Link href={`/document/?id=${encodeURIComponent(r.id)}`} className={s.cardTitle} lang={r.language}>
+        <Link href={`/document/?id=${encodeURIComponent(r.id)}${query ? `&q=${encodeURIComponent(query)}` : ""}`} className={s.cardTitle} lang={r.language}>
           {r.title}
         </Link>
         <p className={s.meta}>

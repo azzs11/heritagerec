@@ -22,7 +22,9 @@ export function Collation({
   textHead,
   graphHead,
   onWorking,
+  query,
 }: {
+  query?: string;
   text: Reading[];
   graph: Reading[];
   textHead: React.ReactNode;
@@ -112,6 +114,7 @@ export function Collation({
                 lit={hover === r.id}
                 onHover={setHover}
                 onWorking={() => onWorking(lens, r)}
+                query={query}
               />
             </motion.li>
           ))}
