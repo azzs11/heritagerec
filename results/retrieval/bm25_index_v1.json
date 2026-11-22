@@ -1,0 +1,47 @@
+{
+  "built": "2026-11-21",
+  "commit": "5a7b35b71ee04b132e1de94982f3add8584f6548",
+  "passages_sha256": "c78cbdcdd93e8327c9eb0c9b1e1f67c961f2fde10b289f360bcec7eba2e70ad2",
+  "index_flags": {
+    "en": [
+      "-language",
+      "en"
+    ],
+    "hi": [
+      "-language",
+      "hi"
+    ],
+    "kn": [
+      "-language",
+      "en",
+      "-stemmer",
+      "none",
+      "-keepStopwords"
+    ]
+  },
+  "passages_written": {
+    "en": 265748,
+    "hi": 10825,
+    "kn": 5701
+  },
+  "index_stats": {
+    "en": {
+      "total_terms": 27646256,
+      "documents": 265748,
+      "non_empty_documents": 265748,
+      "unique_terms": 490479
+    },
+    "hi": {
+      "total_terms": 969726,
+      "documents": 10825,
+      "non_empty_documents": 10825,
+      "unique_terms": 59914
+    },
+    "kn": {
+      "total_terms": 821485,
+      "documents": 5701,
+      "non_empty_documents": 5701,
+      "unique_terms": 99998
+    }
+  }
+}
