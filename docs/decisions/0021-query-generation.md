@@ -117,9 +117,14 @@ Quotas and sampling:
 
 ## Generator trial
 
-The same 30 cells (10 English, 10 Hindi, 10 Kannada, across the four types) go to each candidate on Colab:
-Qwen2.5-7B-Instruct (Apache-2.0), Llama-3.1-8B-Instruct (Llama 3.1 Community Licence) and
-Gemma-2-9B-it (Gemma Terms of Use). Licences are checked on the model cards before the run. The author rates
+The same 30 cells (10 English, 10 Hindi, 10 Kannada, across the four types) go to each candidate:
+Qwen3-14B and Sarvam-M (24B, built on Mistral Small 3.1, post-trained on Indian languages), both Apache-2.0
+on their model cards, run in 4-bit with greedy decoding and thinking mode off.
+
+Change of candidates (author, 21 Nov 2026): the first list (Qwen2.5-7B, Llama-3.1-8B, Gemma-2-9B) was of older
+model generations and was replaced before any output was rated. Gemma is left out because Gemma 4 is the
+relevance judge (decision 0022). Sarvam-30B was considered, but its official weights are a 129 GB download,
+too large for free Colab or Kaggle machines, and the smaller copies are unofficial uploads with no licence. The author rates
 each output blind to the model: fluency (1–3), fits the backstory (yes or no), and is the requested type (yes or no).
 The model with the best Hindi and Kannada ratings is used. If none produces fluent Kannada, the choice comes
 back to the author. Ratings and outputs are saved in `results/queries/generator_trial_v1/`.
