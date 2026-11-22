@@ -119,9 +119,21 @@ def search(kw: Keyword, corpus: Corpus | None, text: str, lang: str, rm3: bool, 
                 "snippet": marked_words(kw, content, lang, terms) if content else None,
             }
         )
+    query_words = set(analyse(kw, text, lang))
+    top_match = None
+    if docs:
+        content = passage_text(corpus, best[docs[0][0]][0])
+        if content:
+            held = query_words & set(analyse(kw, content, lang))
+            top_match = {
+                "query_words": len(query_words),
+                "in_best_passage": len(held),
+                "missing": sorted(query_words - held),
+            }
     return {
         "system": "bm25_rm3" if rm3 else "bm25",
         "language": lang,
+        "top_match": top_match,
         "settings": {"bm25": kw.bm25, **({"rm3": kw.rm3} if rm3 else {})},
         "passages_retrieved": len(hits),
         "passage_depth": PASSAGE_DEPTH,

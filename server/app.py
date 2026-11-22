@@ -9,9 +9,10 @@ Run: uv run python -m server  (then open http://127.0.0.1:8000/docs for the rout
 
 import hashlib
 import json
+import re
 from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from server import graph_rank as graph_rank_module
@@ -77,6 +78,13 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
         out["seeds"] = {q: w for q, w in out["seeds"].items() if q in g.nodes}
         return out
 
+    @app.get("/api/suggest")
+    def suggest_route(q: Annotated[str, Query(max_length=500)]) -> list[dict]:
+        g: Graph = need("graph")
+        from src.graph_retrieval.linker import suggest
+
+        return [dict(g.card(qid), closeness=score) for qid, score in suggest(clean_query(q)) if qid in g.nodes]
+
     @app.get("/api/link")
     def link_route(q: Annotated[str, Query(max_length=500)]) -> dict:
         need("graph")
@@ -140,6 +148,28 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
 
     # ---------- documents ----------
 
+    @app.get("/api/documents/{doc_id:path}/download")
+    def document_download(doc_id: str, format: Annotated[str, Query(pattern="^(txt|json)$")] = "txt") -> Response:
+        """The record as a file, with its source, licence and attribution written in (CC BY-SA asks for it)."""
+        corpus: Corpus = need("corpus")
+        record = corpus.records.get(doc_id)
+        if record is None:
+            raise HTTPException(404, detail=f"{doc_id} is not in corpus v1")
+        credit = attribution(record)
+        stem = re.sub(r"[^A-Za-z0-9._-]+", "_", doc_id)[:80]
+        if format == "json":
+            body = json.dumps({"attribution": credit, "record": record}, ensure_ascii=False, indent=2) + "\n"
+            media, name = "application/json", f"{stem}.json"
+        else:
+            head = "\n".join(f"{k}: {v}" for k, v in credit.items())
+            body = f"{record['title']}\n\n{head}\n\n{'-' * 72}\n\n{record['text']}\n"
+            media, name = "text/plain; charset=utf-8", f"{stem}.txt"
+        return Response(
+            body.encode("utf-8"),
+            media_type=media,
+            headers={"Content-Disposition": f'attachment; filename="{name}"'},
+        )
+
     @app.get("/api/documents/{doc_id:path}/passages")
     def document_passages(
         doc_id: str, offset: Annotated[int, Query(ge=0)] = 0, limit: Annotated[int, Query(ge=1, le=PAGE_MAX)] = 10
@@ -165,6 +195,7 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
             g.card(q) if g and q in g.nodes else {"id": q, "labels": {}} for q in record.get("entity_ids") or []
         ]
         meta["in_graph"] = bool(g and doc_id in g.nodes)
+        meta["get_it"] = sources_for(record, g.images.get(doc_id) if g else None)
         if g and doc_id in g.images:
             meta["image"] = g.images[doc_id]
         return meta
@@ -321,6 +352,55 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
         return keyword.explain(kw, optional("corpus"), text, chosen, doc, system == "bm25_rm3")
 
     return app
+
+
+# How each source's text was made, so the attribution states the changes truthfully.
+CHANGES = {
+    "wikipedia": "plain-text extract from the TextExtracts API; the trailing reference and link sections removed "
+    "(decision 0003)",
+    "internet_archive": "the OCR text the Internet Archive publishes for the book, unchanged (decision 0016)",
+    "met": "text joined by HeritageRec from the fields of the museum's open-access record (decision 0017)",
+    "cleveland": "text joined by HeritageRec from the fields of the museum's open-access record (decision 0017)",
+    "artic": "text joined by HeritageRec from the fields of the museum's open-access record (decision 0017)",
+    "wellcome": "text joined by HeritageRec from the fields of the catalogue record (decision 0013)",
+}
+
+
+def attribution(record: dict) -> dict:
+    """What a reuser must keep with the text: where it came from and under which licence."""
+    authors = {
+        "wikipedia": "Wikipedia contributors",
+        "met": "The Metropolitan Museum of Art",
+        "cleveland": "The Cleveland Museum of Art",
+        "artic": "The Art Institute of Chicago",
+        "wellcome": "Wellcome Collection",
+        "internet_archive": "Internet Archive (digitised public-domain book)",
+    }
+    return {
+        "source": authors.get(record["source"], record["source"]),
+        "original": record["url"],
+        "licence": record["licence"],
+        "retrieved": record["fetched_at"][:10],
+        "changes": CHANGES.get(record["source"], "text assembled by HeritageRec from the source's record"),
+        "record id": record["id"],
+        "checksum (sha256)": record["sha256"],
+    }
+
+
+def sources_for(record: dict, image: dict | None) -> list[dict]:
+    """Where to get the original, by source: links only, nothing is fetched."""
+    url, source = record["url"], record["source"]
+    out = [{"label": "Original page", "url": url}]
+    if source == "wikipedia" and "/wiki/" in url:
+        site, title = url.split("/wiki/", 1)
+        out.append({"label": "PDF from Wikipedia", "url": f"{site}/api/rest_v1/page/pdf/{title}"})
+    if source == "internet_archive" and "/details/" in url:
+        out.append(
+            {"label": "Scans and files at the Internet Archive", "url": url.replace("/details/", "/download/", 1)}
+        )
+    if image:
+        out.append({"label": "Full image (CC0)", "url": image["full"]})
+    return out
 
 
 def main() -> None:
