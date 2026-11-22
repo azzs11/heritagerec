@@ -44,7 +44,9 @@ test("unbuilt systems say so instead of showing anything", async ({ page }) => {
   test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
   await page.goto("/cases/?q=Mughal%20miniature%20painting");
   await settle(page);
-  await expect(page.getByRole("region", { name: "Graph lens" }).getByText("not built yet").first()).toBeVisible();
+  // The graph ranking exists; what is missing is the linker, and the lens says so.
+  await expect(page.getByRole("region", { name: "Graph lens" }).getByText("linker not built")).toBeVisible();
+  await expect(page.getByText("not built yet").first()).toBeVisible(); // fusion, reranker, LambdaMART
   await expect(page.getByText("not measured yet")).toBeVisible();
 });
 
@@ -69,4 +71,15 @@ test("a refused query says why", async ({ page }) => {
   await page.goto("/cases/?q=%3A");
   await settle(page);
   await expect(page.getByText(/no searchable words/)).toBeVisible();
+});
+
+test("the graph lens ranks documents from chosen entities and reads each path the right way", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "keyword search or the corpus is not running");
+  await page.goto("/cases/?q=Hoysala%20temples%20Belur&seeds=Q466581");
+  await settle(page);
+  const lens = page.getByRole("region", { name: "Graph lens" });
+  await expect(lens.getByRole("listitem").filter({ hasText: "Hoysala" }).first()).toBeVisible();
+  // Documents point to their entity ("document is about"), so walking from the entity reads it backward.
+  await expect(lens.getByText("← document is about").first()).toBeVisible();
+  await expect(lens.getByText("document is about →")).toHaveCount(0);
 });
