@@ -49,6 +49,24 @@ Computed by `src/benchmark/evaluate.py` with ir-measures (trec_eval's code); non
 - Results by query type and by language are descriptive (no tests), so the paper does not hunt for significant
   subgroups.
 
+## 4a. Coverage tiers (decision 0031): secondary hypotheses
+
+- **Tiers.** Each entity's coverage score is the mean of its percentile ranks in statement count and total
+  sitelinks among the corpus's document entities; tertiles give rich, middle and sparse, fixed on the frozen
+  snapshot. A query takes the tier of the target entity the author marked at curation; queries with none form a
+  "no entity" group.
+- **Quotas.** At least 30 sparse-tier queries in test and 8 in dev; at least 4 of the 15 validation queries.
+- **H-tier-1.** RQ1 and RQ3 reported per tier: each system's NDCG@10 and the per-query difference (graph minus
+  text) with 95% bootstrap intervals.
+- **H-tier-2 (interaction).** The graph's advantage is smaller on sparse-tier than on rich-tier queries: two-sided
+  permutation test on the difference of the two tiers' mean per-query differences.
+- **H-tier-3 (regression).** The per-query difference regressed on the continuous coverage score (OLS); slope with
+  its 95% interval and p-value.
+- These sit outside the primary Holm family (Section 4) and are reported with their intervals whichever way they
+  go. Computed by `src/benchmark/tier_analysis.py`. **[author]**: which graph and text systems form the pairs (the
+  RQ1 pairs of Section 1 are proposed).
+- LLM-author agreement on the 15 validation queries is also reported per tier.
+
 ## 5. What may and may not be tuned
 
 - Tuning (BM25 parameters, RM3, PPR damping, hub down-weighting, fusion k, the reranker depth) uses the dev split

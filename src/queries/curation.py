@@ -186,6 +186,8 @@ def finalize() -> None:
                 "cell_id": r["cell_id"],
                 "target_entity": target if QID.match(target) else "",
                 "coverage_tier": tiers.get(target, {}).get("tier", "") if QID.match(target) else "",
+                # The continuous score behind the tier, for the regression of decision 0031.
+                "coverage_score": tiers.get(target, {}).get("score") if QID.match(target) else None,
                 "linkable": bool(mentions),
             }
         )

@@ -79,3 +79,17 @@ Model A, running B, checking B, systems B, as recommended.
   a test that every Hindi and Kannada query has exactly one translation.
 - The control's runs are named `<system>+translate` and sit beside the original runs in each results table.
 - The adequacy share is reported with the control's numbers, per language.
+
+## Implementation (23 Nov 2026)
+
+- `src/queries/translate.py`: `input` (every Hindi and Kannada query, dev and test), `check` (exactly one non-empty
+  translation each; writes the author's adequacy sheet as a separate file), `runs` (the dev translations as a runner
+  TSV), `adequacy` (share adequate per language, Wilson 95% intervals).
+- `notebooks/query_translation.ipynb`: IndicTrans2 1B with the model card's settings (5 beams, maximum length 256),
+  IndicTransToolkit 1.1.1, the revision read and recorded at run time. The card's flash-attention option is left
+  out: a T4 cannot run it. The model is gated, so a Hugging Face token is read from the notebook's secrets.
+- Run names: the translated dev file is `translate_dev_v1.tsv`, so the runs are `<system>_translate_dev_v1` (for
+  example `bm25_translate_dev_v1`) rather than `<system>+translate`. The new name keeps them in the dev pool, so the
+  control's documents are judged like every other system's. `scripts/run_dev_runs.sh` and the dense notebook run
+  them once the file exists.
+
