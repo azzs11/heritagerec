@@ -270,3 +270,44 @@ test.describe("screenshots", () => {
     });
   }
 });
+
+test("the home page shows one question four ways, and each door opens on what it shows", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "needs the keyword index and the corpus");
+  await page.goto("/");
+  await settle(page);
+  const doors = page.getByRole("region", { name: "One question, four ways of looking at it" });
+  await expect(doors.getByText("“Hoysala temples Belur”")).toBeVisible();
+  // Each door's picture is stated in words, so nothing rests on the drawing alone.
+  await expect(doors.getByText(/Text lens and graph lens, top 3 each/)).toBeVisible();
+  await expect(doors.getByText(/Belur, among [\d,]+ places/)).toBeVisible();
+  await expect(doors.getByText(/Hoysala Empire: \d+ neighbours/)).toBeVisible();
+  await expect(doors.getByText(/What the text lens searches for/)).toBeVisible();
+  await expect(doors.getByRole("link", { name: /Search/ })).toHaveAttribute("href", /\/cases\/\?q=Hoysala/);
+  await expect(doors.getByRole("link", { name: /Atlas/ })).toHaveAttribute("href", /\/atlas\/\?lat=.*&lon=/);
+  await expect(doors.getByRole("link", { name: /Graph/ })).toHaveAttribute("href", /\/graph\/\?node=Q/);
+  // Another question moves all four doors to it: the Hindi question shows Agra stemmed to "if".
+  await doors.getByRole("button", { name: "Another question" }).click();
+  await doors.getByRole("button", { name: "Another question" }).click();
+  await expect(doors.getByText("“मुगल किला आगरा”")).toBeVisible();
+  await expect(doors.locator("code", { hasText: "अगर" })).toBeVisible();
+});
+
+test("a reader can cite a document, take a ranking away, and get to a place", async ({ page }) => {
+  test.skip(!(await keywordRunning(page)), "needs the keyword index and the corpus");
+  // Cite it: plain and BibTeX, both naming the snapshot record.
+  await page.goto("/document/?id=wikipedia%3Aen%3A7051661");
+  await settle(page);
+  await page.getByText("Cite it").click();
+  await expect(page.getByLabel("Plain citation")).toHaveValue(/^Wikipedia contributors\. “.+” English Wikipedia\..*record wikipedia:en:7051661\.$/);
+  await expect(page.getByLabel("BibTeX citation")).toHaveValue(/@misc\{heritagerec_wikipedia_en_7051661,/);
+  // Both rankings as CSV, with a header.
+  await page.goto("/cases/?q=Hoysala%20temples%20Belur");
+  await settle(page);
+  const csv = page.getByRole("link", { name: "Both rankings as CSV" });
+  await expect(csv).toHaveAttribute("href", /^data:text\/csv;charset=utf-8,query%2Clens%2Csystem/);
+  // From the atlas to the place on OpenStreetMap.
+  await page.goto("/atlas/?lat=13.1625&lon=75.8597");
+  await settle(page);
+  await expect(page.getByRole("link", { name: "on OpenStreetMap ↗" })).toHaveAttribute("href", /openstreetmap\.org\/\?mlat=/);
+  await expect(page.getByRole("link", { name: "directions ↗" })).toHaveAttribute("href", /openstreetmap\.org\/directions/);
+});
