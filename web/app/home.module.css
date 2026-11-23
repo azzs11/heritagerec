@@ -192,85 +192,263 @@
   }
 }
 
-.doors {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.7rem;
-  margin: 1.4rem 0 0.4rem;
+/* ---------- one question, four doors (decision 0028) ---------- */
+
+.specimen {
+  margin: 1.6rem 0 0.6rem;
 }
 
-@media (max-width: 56rem) {
-  .doors {
+.specimenHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.specimenTitle {
+  font-size: var(--step-1);
+  margin: 0;
+}
+
+.specimenQ {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.specimenQText {
+  font-family: var(--serif);
+  font-size: var(--step-1);
+}
+
+.another {
+  font: inherit;
+  font-size: var(--step--1);
+  background: none;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.15rem 0.75rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.another:hover {
+  border-color: var(--ink);
+}
+
+.specimenDoors {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 0.7rem;
+}
+
+@media (max-width: 64rem) {
+  .specimenDoors {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.door {
+@media (max-width: 34rem) {
+  .specimenDoors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.sDoor {
   display: grid;
-  gap: 0.25rem;
-  padding: 0.85rem 0.9rem 0.9rem;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 0.45rem;
+  min-height: 13.5rem;
+  padding: 0.8rem 0.9rem 0.85rem;
   border: 1px solid var(--rule);
   border-radius: 8px;
   background: var(--card);
+  color: var(--ink);
   text-decoration: none;
   transition:
     border-color 180ms,
     transform 180ms;
 }
 
-.door:hover {
+.sDoor:hover,
+.sDoor:focus-visible {
   border-color: var(--ink);
   transform: translateY(-2px);
 }
 
-.doorArt {
-  width: 4.2rem;
-  height: 1.6rem;
-  overflow: visible;
-  fill: var(--ink-soft);
-  stroke: var(--ink-soft);
-  stroke-width: 0;
-  margin-bottom: 0.2rem;
-}
-
-.doorArt rect {
-  fill: none;
-  stroke-width: 1;
-}
-
-.artLine {
-  fill: none;
-  stroke-width: 1 !important;
-}
-
-.artLac {
-  fill: none;
-  stroke: var(--lac) !important;
-  stroke-width: 1.4 !important;
-}
-
-.artLacFill {
-  fill: var(--lac);
-}
-
-.artRing {
-  fill: none;
-  stroke: var(--lac) !important;
-  stroke-width: 1 !important;
-}
-
-.doorName {
+.sDoorName {
   font-weight: 700;
 }
 
-.doorWhat {
+.sDoorOpen {
+  font-size: var(--step--1);
+  color: var(--lac);
+}
+
+.sCaption {
   font-size: var(--step--1);
   color: var(--ink-soft);
   line-height: 1.35;
 }
 
+.sNote {
+  font-size: var(--step--1);
+  color: var(--ink-faint);
+  align-self: center;
+}
+
+.sMuted {
+  color: var(--ink-faint);
+}
+
+/* Skeletons in the shape of what they stand for (0028: no spinners). */
+.sSkeleton {
+  display: grid;
+  gap: 0.45rem;
+  align-content: center;
+}
+
+.sSkeleton i {
+  height: 0.7rem;
+  border-radius: 3px;
+  background: var(--paper-deep);
+}
+
+.sSkeleton i:nth-child(2) {
+  width: 80%;
+}
+
+.sSkeleton i:nth-child(3) {
+  width: 60%;
+}
+
+/* Search: the two lenses with a thread where they agree. */
+.lenses {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.5rem minmax(0, 1fr);
+  align-items: start;
+  /* The door stretches this row to fill the card; the lists keep their own height. */
+  align-content: start;
+}
+
+.lens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--step--2);
+  border-top: 2px solid var(--indigo);
+}
+
+.lensGraph {
+  border-top-color: var(--lac);
+}
+
+.lens li {
+  height: 22px;
+  line-height: 22px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid var(--rule);
+}
+
+.inBoth {
+  font-weight: 600;
+}
+
+.spine {
+  width: 100%;
+  height: 66px;
+  margin-top: 2px;
+  fill: none;
+  stroke: var(--lac);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Atlas: every place a speck; the question's places lit. */
+.miniMap {
+  width: 100%;
+  max-height: 7.5rem;
+  fill: var(--ink-faint);
+}
+
+.miniLit circle:first-child {
+  fill: var(--lac-wash);
+  stroke: var(--lac);
+  stroke-width: 0.6;
+}
+
+.miniLit circle:last-child {
+  fill: var(--lac);
+}
+
+/* Graph: a neighbourhood on a circle, coloured by kind (the atlas and graph colours). */
+.miniGraph {
+  width: 100%;
+  max-height: 7.5rem;
+}
+
+.miniGraph line {
+  stroke: var(--rule-strong);
+  stroke-width: 0.8;
+}
+
+.miniGraph circle {
+  stroke: var(--card);
+  stroke-width: 1;
+}
+
+.n_built {
+  fill: var(--type-built);
+}
+
+.n_people {
+  fill: var(--type-people);
+}
+
+.n_culture {
+  fill: var(--type-culture);
+}
+
+.n_other,
+.n_document,
+.n_time,
+.n_bundle {
+  fill: var(--ink-faint);
+}
+
+.nCentre {
+  fill: var(--lac);
+}
+
+/* Lab: the question as the analyser leaves it. */
+.tokens {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 0.3rem;
+}
+
+.tokens code {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+}
+
+.tokenChanged {
+  background: var(--turmeric-wash);
+  border-color: var(--turmeric) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .door:hover {
+  .sDoor:hover,
+  .sDoor:focus-visible {
     transform: none;
   }
 }
@@ -469,4 +647,23 @@
   .tCard a:hover {
     transform: none;
   }
+}
+
+.lensName {
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  margin-bottom: 0.15rem;
+}
+
+.lensNameGraph {
+  color: var(--lac);
+}
+
+.nBundle {
+  fill: none !important;
+  stroke: var(--ink-faint) !important;
+  stroke-width: 1 !important;
+  stroke-dasharray: 2 1.5;
 }
