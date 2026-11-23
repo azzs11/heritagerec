@@ -42,6 +42,12 @@ SOURCES = {
         "publisher": "Directorate of Archaeology, Archives and Museums, Government of Madhya Pradesh",
         "title": "Protected Monuments",
     },
+    "unesco_ich_india": {
+        "url": "https://ich.unesco.org/en/state/india-IN",
+        "file": "unesco_ich_india.html",
+        "publisher": "UNESCO Intangible Cultural Heritage",
+        "title": "India: elements inscribed on the Lists",
+    },
 }
 
 
