@@ -359,6 +359,14 @@ def main() -> None:
     (RESULTS / "sample_v1.md").write_text("\n".join(lines) + "\n")
     print(f"drew {len(sample)} entries")
 
+    sheet_path = RESULTS / "match_sheet_v1.csv"
+    if not args.limit and sheet_path.exists():
+        with open(sheet_path, encoding="utf-8-sig") as f:
+            filled = sum(1 for r in csv.DictReader(f) if (r.get("match") or "").strip())
+        if filled:
+            # The author's matches are hand work; a rerun must never write over them.
+            print(f"kept {sheet_path.name}: {filled} entries already matched by the author")
+            return
     rows = sample[: args.limit] if args.limit else sample
     wm = Wikimedia(RAW, pause=1.0)
     found_per_row = []
