@@ -11,6 +11,7 @@ import { useStored } from "@/lib/stored";
 import { useResource } from "@/lib/useResource";
 
 import s from "./home.module.css";
+import { Specimen } from "./Specimen";
 import { ThreadFromTheGraph } from "./Thread";
 
 const EXAMPLES = ["Hoysala temples Belur", "Mughal miniature painting", "मुगल किला आगरा", "ಹಂಪೆ ದೇವಾಲಯ"];
@@ -55,7 +56,7 @@ export default function Home() {
         </p>
       </section>
 
-      <Doors />
+      <Specimen />
 
       <ThreadFromTheGraph />
 
@@ -207,91 +208,5 @@ function FirstVisit() {
         ×
       </button>
     </aside>
-  );
-}
-
-/** What the site offers, in four doors, each with a small drawing of what lies behind it. */
-function Doors() {
-  const doors = [
-    {
-      href: "/cases/",
-      name: "Search",
-      what: "Ask a question; read the text lens and the graph lens side by side.",
-      art: (
-        <>
-          <rect x="2" y="4" width="18" height="5" rx="1" />
-          <rect x="2" y="12" width="18" height="5" rx="1" />
-          <rect x="34" y="4" width="18" height="5" rx="1" />
-          <rect x="34" y="12" width="18" height="5" rx="1" />
-          <path d="M20 6.5 C27 6.5, 27 14.5, 34 14.5" className={s.artLac} />
-        </>
-      ),
-    },
-    {
-      href: "/atlas/",
-      name: "Atlas",
-      what: "Click a place; see the heritage near it and the facts that tie it together.",
-      art: (
-        <>
-          {[
-            [10, 6],
-            [16, 9],
-            [24, 5],
-            [30, 12],
-            [22, 15],
-            [36, 8],
-            [42, 14],
-            [14, 16],
-          ].map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r="1.6" />
-          ))}
-          <circle cx="24" cy="10" r="6" className={s.artRing} />
-        </>
-      ),
-    },
-    {
-      href: "/graph/",
-      name: "Graph",
-      what: "Walk the knowledge graph: dynasties, sites, styles, centuries, and how they join.",
-      art: (
-        <>
-          <path d="M8 14 L20 6 L32 12 L44 5 M20 6 L24 17 L32 12" className={s.artLine} />
-          {[
-            [8, 14],
-            [20, 6],
-            [32, 12],
-            [44, 5],
-            [24, 17],
-          ].map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r="2.2" className={i === 1 ? s.artLacFill : undefined} />
-          ))}
-        </>
-      ),
-    },
-    {
-      href: "/lab/",
-      name: "Lab",
-      what: "See where the system breaks, run live: stemming, query expansion, hubs.",
-      art: (
-        <>
-          <path d="M4 14 L12 9 L20 12 L28 4 L36 11 L44 8" className={s.artLine} />
-          <path d="M28 4 L30 8" className={s.artLac} />
-          <circle cx="28" cy="4" r="2" className={s.artLacFill} />
-        </>
-      ),
-    },
-  ];
-  return (
-    <nav className={s.doors} aria-label="What you can do here">
-      {doors.map((d) => (
-        <Link key={d.href} href={d.href} className={s.door}>
-          <svg viewBox="0 0 54 20" className={s.doorArt} aria-hidden>
-            {d.art}
-          </svg>
-          <span className={s.doorName}>{d.name}</span>
-          <span className={s.doorWhat}>{d.what}</span>
-        </Link>
-      ))}
-    </nav>
   );
 }
