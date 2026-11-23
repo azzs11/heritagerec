@@ -92,3 +92,50 @@ def test_parsed_lists_match_the_figures_the_lists_state():
     )
     assert checks["total"]["stated"] - checks["total"]["parsed"] == district_gap
     assert checks["serial numbers missing from the listing, Kolar"]["ids"] == [2, 3, 4, 14]
+
+
+# ---------------------------------------------------------------- sample and sheet (src/coverage_audit/sample.py)
+
+from src.coverage_audit.sample import allocate, core_words, keep_candidate, place_name, rank  # noqa: E402
+
+
+def test_allocation_is_proportional_and_sums_to_n():
+    # Karnataka's ASI circles: 133, 282 and 91 monuments, 75 draws.
+    out = allocate({"Bangalore Circle": 133, "Dharwad Circle": 282, "Hampi Circle": 91}, 75)
+    assert sum(out.values()) == 75
+    assert out == {"Bangalore Circle": 20, "Dharwad Circle": 42, "Hampi Circle": 13}
+    assert allocate({"a": 1, "b": 1}, 1) == {"a": 1, "b": 0}  # a tie goes by name
+
+
+def test_search_text_helpers():
+    assert core_words("Temples of Brahmanatha and Satvai.") == "Brahmanatha Satvai"
+    assert place_name("Samalkot, (Bhimavaram)") == "Samalkot"
+    assert place_name("Virakuppam (Birakuppam)") == "Virakuppam"
+
+
+def entity(qid, p31=(), p17=(), codes=(), desc=""):
+    def claims(values):
+        return [{"mainsnak": {"datavalue": {"value": {"id": v} if v.startswith("Q") else v}}} for v in values]
+
+    return {
+        "id": qid,
+        "claims": {"P31": claims(p31), "P17": claims(p17), "P1371": claims(codes)},
+        "descriptions": {"en": {"value": desc}} if desc else {},
+    }
+
+
+def test_candidates_drop_people_books_settlements_and_other_countries():
+    assert keep_candidate(entity("Q1", p17=["Q668"], codes=["S-KA-45"]))
+    assert not keep_candidate(entity("Q2", p31=["Q5"]))  # a person
+    assert not keep_candidate(entity("Q3", p31=["Q571"]))  # a book
+    assert not keep_candidate(entity("Q4", desc="village in Belgaum district, Karnataka, India"))
+    assert not keep_candidate(entity("Q5", p17=["Q843"]))  # Pakistan
+    assert not keep_candidate({"id": "Q6", "missing": ""})
+
+
+def test_rank_prefers_the_entry_state_code_and_district():
+    row = {"state": "Karnataka", "district": "Bidar"}
+    own = entity("Q1", codes=["S-KA-111"])
+    other = entity("Q2", codes=["S-AP-265"])
+    described = entity("Q3", desc="fort in Bidar district")
+    assert rank(own, row) > rank(described, row) > rank(other, row)
