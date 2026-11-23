@@ -139,3 +139,39 @@ def test_rank_prefers_the_entry_state_code_and_district():
     other = entity("Q2", codes=["S-AP-265"])
     described = entity("Q3", desc="fort in Bidar district")
     assert rank(own, row) > rank(described, row) > rank(other, row)
+
+
+# ---------------------------------------------------------------- coverage facts (src/coverage_audit/fill.py)
+
+from src.coverage_audit.fill import facts, wilson  # noqa: E402
+
+
+def test_wilson_interval_bounds():
+    assert wilson(0, 0) == (None, None)
+    lo, hi = wilson(10, 10)
+    assert hi == 1.0 and 0.6 < lo < 0.8  # all ten: the interval still allows misses
+    lo, hi = wilson(0, 10)
+    assert lo == 0.0 and hi < 0.35
+
+
+def test_facts_reads_labels_articles_and_counts():
+    entity = {
+        "labels": {"en": {"value": "Tomb of pir Kazi"}, "kn": {"value": "ಪೀರ್ ಕಾಜಿ ಗೋರಿ"}},
+        "descriptions": {},
+        "claims": {
+            "P1371": [{"mainsnak": {"datavalue": {"value": "S-KA-45"}}}],
+            "P31": [{"mainsnak": {}}, {"mainsnak": {}}],
+            "P625": [{"mainsnak": {}}],
+        },
+        "sitelinks": {"knwiki": {"title": "ಪೀರ್ ಕಾಜಿ"}, "commonswiki": {"title": "Category:X"}},
+    }
+    row = facts(entity, "kn", {"kn": {"ಪೀರ್ ಕಾಜಿ": 2048}})
+    assert row["monument_code"] == "S-KA-45"
+    assert row["statements"] == 4 and row["properties"] == 3
+    assert row["sitelinks"] == 2 and row["wikipedias"] == 1  # Commons is not a Wikipedia
+    assert row["label_kn"] is True and row["label_hi"] is False
+    assert row["article_kn"] is True and row["article_kn_bytes"] == 2048
+    assert row["article_en"] is False and row["has_coordinates"] is True and row["has_image"] is False
+    assert row["label_local"] is True  # Karnataka's local language is Kannada
+    # A state with no local-language edition gets empty local columns, not False.
+    assert facts(entity, "", {})["article_local"] == ""
