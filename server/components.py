@@ -31,6 +31,7 @@ class Paths:
     edges: Path = ROOT / "data/graph/core_v1/edges.tsv.gz"
     explorer_nodes: Path = ROOT / "data/explorer/v1/nodes.jsonl.gz"
     communities: Path = ROOT / "data/explorer/v1/communities.json.gz"
+    images: Path = ROOT / "data/explorer/v1/images.jsonl.gz"
     indexes: Path = ROOT / "data/indexes/bm25_v1"
     results: Path = ROOT / "results"
 
@@ -78,6 +79,10 @@ class Graph:
     meta: dict[str, dict] = field(default_factory=dict)
     communities: dict = field(default_factory=dict)
     documents_about: Counter = field(default_factory=Counter)
+    images: dict = field(default_factory=dict)
+    hex_cells: dict = field(default_factory=dict)  # resolution -> {node: H3 cell}, filled on first use
+    walks: dict = field(default_factory=dict)
+    walk_input: tuple | None = None
 
     @classmethod
     def load(cls, paths: Paths) -> "Graph":
@@ -100,10 +105,25 @@ class Graph:
             m = json.loads(line)
             g.meta[m["id"]] = m
         g.communities = json.loads(gzip.open(paths.communities, "rt", encoding="utf-8").read())
+        # Open-licence images of museum objects (src/explorer/images.py); optional, so their absence costs only pictures.
+        if paths.images.exists():
+            for line in gzip.open(paths.images, "rt", encoding="utf-8"):
+                im = json.loads(line)
+                g.images[im.pop("doc_id")] = im
         # Neighbour lists in a fixed order, so every view of the same node is the same.
         for edges in g.adjacency.values():
             edges.sort(key=lambda e: (e.relation, e.direction, e.other))
         return g
+
+    def walk(self, paths: "Paths", hub_power: float):
+        """The PPR transition matrix for one hub weighting, built once and kept (decision 0027)."""
+        from src.graph_retrieval.ppr import build, load_graph
+
+        if hub_power not in self.walks:
+            if self.walk_input is None:
+                self.walk_input = load_graph(paths.nodes, paths.edges)
+            self.walks[hub_power] = build(*self.walk_input, hub_power=hub_power)
+        return self.walks[hub_power]
 
     def label(self, node_id: str) -> dict:
         return self.nodes.get(node_id, {}).get("labels") or {}
@@ -123,6 +143,8 @@ class Graph:
         }
         if "lat" in m:
             out["lat"], out["lon"] = m["lat"], m["lon"]
+        if node_id in self.images:
+            out["image"] = self.images[node_id]
         return out
 
     def status(self) -> dict:
@@ -131,6 +153,7 @@ class Graph:
             "nodes": len(self.nodes),
             "edges": sum(len(e) for e in self.adjacency.values()) // 2,
             "placed": sum(1 for m in self.meta.values() if "lat" in m),
+            "images": len(self.images),
         }
 
 
@@ -215,9 +238,7 @@ def load(paths: Paths, keyword: bool = True) -> dict:
             )
     # Systems that are planned but not built: named so the interface can say so, with their decision record.
     parts["planned"] = {
-        "query_linker": "decision 0025; the linker and its evaluation come in phase 1, week 7",
         "dense": "decision 0024; runs arrive from the Kaggle notebook",
-        "ppr": "decisions 0007 and 0008",
         "fusion": "decision 0008",
         "reranker": "decision 0008",
         "lambdamart": "decision 0008",

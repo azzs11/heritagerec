@@ -39,6 +39,18 @@ export const SUPERSEDED: Record<string, string> = {
   "results/evaluation_report.json": "conference version, superseded: one evaluated query and a circular ground truth",
 };
 
+// Licence links as their usual names; anything else is shown as its link.
+export const LICENCES: Record<string, string> = {
+  "https://creativecommons.org/publicdomain/zero/1.0/": "CC0 1.0",
+  "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
+  "https://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
+  "https://creativecommons.org/publicdomain/mark/1.0/": "Public domain",
+};
+
+export function plural(n: number, one: string, many: string): string {
+  return n === 1 ? one : many;
+}
+
 export function rowsOf(counts: Record<string, number>, names: Record<string, string>) {
   return Object.entries(counts)
     .map(([key, value]) => ({ key, label: names[key] ?? key, value }))

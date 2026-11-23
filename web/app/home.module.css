@@ -1,0 +1,472 @@
+.search {
+  padding: 1.6rem 0 1.4rem;
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.form {
+  max-width: 46rem;
+}
+
+.prompt {
+  display: block;
+  font-size: var(--step-1);
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.row input {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--step-1);
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  background: var(--card);
+}
+
+.row button {
+  background: var(--ink);
+  color: var(--paper);
+  border: 0;
+  border-radius: 3px;
+  padding: 0 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  margin: 0.7rem 0 0;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  max-width: none;
+}
+
+.wallSection {
+  padding-top: 1.2rem;
+}
+
+.wallHead {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  margin-bottom: 0.8rem;
+  max-width: none;
+}
+
+/* Masonry by columns: tiles keep their own proportions, as the objects do. */
+.wall {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 5 12rem;
+  column-gap: 0.9rem;
+}
+
+.tile {
+  break-inside: avoid;
+  margin: 0 0 0.9rem;
+}
+
+.tile a {
+  display: block;
+  text-decoration: none;
+}
+
+.tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--paper-deep);
+  min-height: 6rem;
+}
+
+.tile a:hover img {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.caption {
+  display: block;
+  padding: 0.35rem 0 0;
+}
+
+.title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--step--1);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.meta {
+  display: block;
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+  margin-top: 0.1rem;
+}
+
+.more {
+  display: block;
+  margin: 0.6rem auto 0;
+  background: none;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  padding: 0.45rem 1.2rem;
+  cursor: pointer;
+}
+
+.study {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  border-top: 1px solid var(--rule-strong);
+  margin-top: 2.5rem;
+  padding-top: 1.6rem;
+}
+
+@media (max-width: 52rem) {
+  .study {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.studyTitle {
+  font-family: var(--sans);
+  font-size: var(--step-1);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.4rem;
+  margin: 0;
+  align-content: start;
+}
+
+.facts dt {
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+
+.facts dd {
+  margin: 0.15rem 0 0;
+  font-size: var(--step-2);
+}
+
+.firstVisit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: var(--card);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  padding: 0.45rem 0.8rem;
+  font-size: var(--step--1);
+}
+
+.firstVisit button {
+  background: none;
+  border: 0;
+  font-size: var(--step-1);
+  cursor: pointer;
+  line-height: 1;
+}
+
+@media (max-width: 30rem) {
+  .wall {
+    columns: 2;
+    column-gap: 0.6rem;
+  }
+}
+
+.doors {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 1.4rem 0 0.4rem;
+}
+
+@media (max-width: 56rem) {
+  .doors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.door {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 0.9rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--card);
+  text-decoration: none;
+  transition:
+    border-color 180ms,
+    transform 180ms;
+}
+
+.door:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.doorArt {
+  width: 4.2rem;
+  height: 1.6rem;
+  overflow: visible;
+  fill: var(--ink-soft);
+  stroke: var(--ink-soft);
+  stroke-width: 0;
+  margin-bottom: 0.2rem;
+}
+
+.doorArt rect {
+  fill: none;
+  stroke-width: 1;
+}
+
+.artLine {
+  fill: none;
+  stroke-width: 1 !important;
+}
+
+.artLac {
+  fill: none;
+  stroke: var(--lac) !important;
+  stroke-width: 1.4 !important;
+}
+
+.artLacFill {
+  fill: var(--lac);
+}
+
+.artRing {
+  fill: none;
+  stroke: var(--lac) !important;
+  stroke-width: 1 !important;
+}
+
+.doorName {
+  font-weight: 700;
+}
+
+.doorWhat {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door:hover {
+    transform: none;
+  }
+}
+
+/* ---------- a thread from the graph ---------- */
+
+.thread {
+  margin: 1.6rem 0 0.8rem;
+  padding: 1rem 1.1rem 0.8rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.threadHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.threadTitle {
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--lac);
+  margin: 0;
+}
+
+.another {
+  background: none;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.1rem 0.7rem;
+  font-size: var(--step--1);
+}
+
+.another:hover {
+  border-color: var(--ink);
+}
+
+.threadRow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.tCard a {
+  display: grid;
+  gap: 0.15rem;
+  height: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+  text-decoration: none;
+  transition:
+    border-color 160ms,
+    transform 160ms;
+}
+
+.tCard a:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.tCard img {
+  width: 100%;
+  height: 7.5rem;
+  object-fit: cover;
+  border-radius: 5px;
+  background: var(--paper-deep);
+  margin-bottom: 0.25rem;
+}
+
+.tKind {
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.tName {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.tMeta {
+  font-size: var(--step--2);
+  color: var(--ink-soft);
+}
+
+.tLink {
+  display: grid;
+  place-items: center;
+  position: relative;
+  min-width: 5.5rem;
+}
+
+.tLink::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rule-strong), var(--lac), var(--rule-strong));
+}
+
+.tLink span {
+  position: relative;
+  background: var(--card);
+  color: var(--lac);
+  font-size: var(--step--2);
+  font-style: italic;
+  padding: 0 0.35rem;
+  text-align: center;
+  max-width: 9rem;
+}
+
+.dot_built,
+.dot_people,
+.dot_culture,
+.dot_other {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+}
+
+.dot_built {
+  background: var(--type-built);
+}
+
+.dot_people {
+  background: var(--type-people);
+}
+
+.dot_culture {
+  background: var(--type-culture);
+}
+
+.dot_other {
+  background: var(--ink-soft);
+}
+
+.threadSkeleton {
+  height: 10rem;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--paper-deep), var(--paper), var(--paper-deep));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.threadNote {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+  margin: 0.6rem 0 0;
+}
+
+@media (max-width: 52rem) {
+  .threadRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tLink {
+    min-height: 2rem;
+  }
+
+  .tLink::before {
+    left: 50%;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--rule-strong), var(--lac), var(--rule-strong));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .threadSkeleton {
+    animation: none;
+  }
+
+  .tCard a:hover {
+    transform: none;
+  }
+}

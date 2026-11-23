@@ -24,7 +24,6 @@ export default function Lab() {
   return (
     <article className="page">
       <header className={s.head}>
-        <p className={s.kicker}>Lab</p>
         <h1 className={s.title}>Where the system tries to break itself</h1>
         <p className={s.lede}>
           A system that is only shown working is not tested. The Lab runs the same searches with their input bent out of

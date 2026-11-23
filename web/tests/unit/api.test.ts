@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { Refused, Unavailable, api, get } from "@/lib/api";
+import { Refused, Unavailable, api, get, stepLabel } from "@/lib/api";
 
 function answer(status: number, body: unknown) {
   return vi.fn().mockImplementation(
@@ -46,5 +46,15 @@ describe("the API client", () => {
     await api.search("x", "bm25", undefined);
     expect(f.mock.calls[0]?.[0]).toContain("/api/graph/ego/wikipedia%3Aen%3A7051661%233?budget=150");
     expect(f.mock.calls[1]?.[0]).not.toContain("lang=");
+  });
+});
+
+describe("path steps", () => {
+  const fact = { source: "temple", target: "dynasty", relation: "P112", relation_label: "founded by", layer: "core", revision: "1" };
+  it("read forward when walked from the fact's subject", () => {
+    expect(stepLabel(fact, "temple")).toBe("founded by →");
+  });
+  it("read backward when walked from its object", () => {
+    expect(stepLabel(fact, "dynasty")).toBe("← founded by");
   });
 });

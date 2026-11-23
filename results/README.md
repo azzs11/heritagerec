@@ -7,7 +7,7 @@
 | `collection/` | One report per collector: records looked at, kept, and left out with the reason | `src/corpus/*_collector.py` |
 | `linking/` | Gazetteer counts, object-linking counts by layer, and the 200-link sample for the hand check | `src/corpus/gazetteer.py`, `src/corpus/link_objects.py` |
 | `graph/` | Core graph statistics: nodes and edges by kind, type and relation, degrees, components, hubs, build counts | `src/graph/core_graph.py` |
-| `explorer/` | Explorer data counts: coordinates placed and why not, display hubs and their threshold, communities, input and output checksums | `src/explorer/build.py` |
+| `explorer/` | `images_v1.json`: objects with an open image per museum, and why the others have none. Explorer data counts: coordinates placed and why not, display hubs and their threshold, communities, input and output checksums | `src/explorer/build.py` |
 | `queries/` | Query generator trial: model outputs, the author's blind ratings and the summary per model and language | `notebooks/query_generator_trial.ipynb`, `src/queries/generator_trial.py` |
 | `coverage_audit/` | Coverage audit (decisions 0031, 0032): the official lists checked against their own totals (`lists_v1`), the seeded sample (`sample_v1`), the author's matching sheet with Wikidata candidates, and the coverage rates from the matches (`coverage_v1`) | `src/coverage_audit/` |
 | `benchmark/` | One folder per evaluation: `summary.json` and `.md` (means, intervals, tests, unjudged counts, inputs with checksums) and `per_query.tsv` | `src/benchmark/evaluate.py` |

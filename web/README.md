@@ -39,12 +39,19 @@ Set `NEXT_PUBLIC_API_BASE` to use a server elsewhere. `npm run build` writes the
 
 ## Design
 
-Archival print rather than app chrome. Paper and lamp-black ink, with four pigments that each mean one thing:
-indigo for the text lens, lac red for the graph lens, turmeric for anything not built, not measured or failing a
-check, verdigris for what is measured or verified. Latin, Devanagari and Kannada are set as equals (Source Serif 4,
-Noto Serif Devanagari, Noto Serif Kannada; IBM Plex Mono for evidence; all SIL Open Font Licence, bundled, no font
-requests at run time). A dark "night archive" theme is defined from the same tokens. Colour contrast is checked by
-axe in both themes.
+A working collection instrument rather than an essay: the home page is a search box over a wall of real objects
+(open-licence images from The Met and the Cleveland Museum of Art, shown from the museums' own servers with their
+credit lines), and each page has the layout its job needs: Search as a two-lens instrument, the Atlas and the Graph
+full-bleed with a side drawer, the Ledger as dense tables. Explanations appear when the reader turns on Notes.
+
+Four pigments, each with one meaning: indigo for the text lens, lac red for the graph lens, turmeric for anything
+not built, not measured or failing a check, verdigris for what is running or verified. Type is Noto Sans for the
+interface and Noto Serif for reading, chosen because their Latin, Devanagari and Kannada are drawn as one family;
+IBM Plex Mono for evidence (all SIL Open Font Licence, bundled, no font requests at run time). A dark theme is
+defined from the same tokens. Colour contrast is checked by axe in both themes.
+
+The Met's image server sometimes answers automated or unfamiliar visitors with a bot check instead of the picture;
+the wall then drops that tile, and a document page says so and links to the object on the museum's site.
 
 The atlas draws no political boundaries: India's boundary must follow the Survey of India's depiction and its
 boundary data needs a licence (see decision 0025). The places themselves, as dots, make the map.

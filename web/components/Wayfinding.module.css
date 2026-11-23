@@ -1,0 +1,276 @@
+/* ---------- the reader's path ---------- */
+
+.trail {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem var(--gutter);
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(6px);
+  font-size: var(--step--1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.trailName {
+  flex: none;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+
+.trail ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+}
+
+.trail li {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+/* the line between steps, like an edge in the graph */
+.trail li + li::before {
+  content: "";
+  width: 1.1rem;
+  height: 1px;
+  background: var(--rule-strong);
+  margin: 0 0.25rem;
+}
+
+.trail a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  color: var(--ink-soft);
+  max-width: 14rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+}
+
+.trail a:hover {
+  background: var(--paper-deep);
+  color: var(--ink);
+}
+
+.trail a[aria-current="step"] {
+  color: var(--ink);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+}
+
+.stepLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.glyph {
+  font-size: 0.8em;
+  flex: none;
+}
+
+.g_search {
+  color: var(--indigo);
+}
+
+.g_entity {
+  color: var(--lac);
+}
+
+.g_place,
+.g_document {
+  color: var(--ink-soft);
+}
+
+.clear {
+  flex: none;
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+
+/* ---------- notices ---------- */
+
+.notice {
+  position: relative;
+  margin: 1.6rem 0;
+  padding: 1.6rem 1.6rem 1.4rem;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+/* A faint torn-edge rule along the top, like the missing part of a folio. */
+.notice::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, var(--rule-strong) 0 10px, transparent 10px 16px);
+}
+
+.n_partial::before {
+  background: repeating-linear-gradient(90deg, #c8901b 0 10px, transparent 10px 16px);
+}
+
+.n_error::before {
+  background: #c8901b;
+}
+
+.noticeTitle {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  line-height: 1.25;
+  margin: 0 0 0.6rem;
+  max-width: 34ch;
+}
+
+.n_partial .noticeTitle {
+  font-size: var(--step-1);
+  font-style: normal;
+  font-family: var(--sans);
+  font-weight: 600;
+}
+
+.noticeBody {
+  color: var(--ink-soft);
+  max-width: 62ch;
+}
+
+.noticeBody p:last-child {
+  margin-bottom: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.actions a,
+.actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--paper);
+  padding: 0.25rem 0.8rem;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: var(--step--1);
+}
+
+.actions a:hover,
+.actions button:hover {
+  border-color: var(--ink);
+}
+
+/* ---------- elsewhere and next steps ---------- */
+
+.small {
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.elsewhere ul,
+.next ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.elsewhere li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.7rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--step--1);
+}
+
+.why {
+  color: var(--ink-faint);
+  font-size: var(--step--1);
+}
+
+.next {
+  margin-top: 2rem;
+}
+
+.next ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.6rem;
+}
+
+.next a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  column-gap: 0.6rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--card);
+  text-decoration: none;
+  transition:
+    border-color 160ms,
+    transform 160ms;
+}
+
+.next a:hover {
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.nextLabel {
+  font-weight: 600;
+}
+
+.next .why {
+  grid-column: 1;
+}
+
+.arrow {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+  color: var(--ink-faint);
+  transition: transform 160ms;
+}
+
+.next a:hover .arrow {
+  transform: translateX(3px);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .next a:hover,
+  .next a:hover .arrow {
+    transform: none;
+  }
+}

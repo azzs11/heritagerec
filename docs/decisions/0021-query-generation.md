@@ -129,6 +129,11 @@ each output blind to the model: fluency (1–3), fits the backstory (yes or no),
 The model with the best Hindi and Kannada ratings is used. If none produces fluent Kannada, the choice comes
 back to the author. Ratings and outputs are saved in `results/queries/generator_trial_v1/`.
 
+Result (author's blind ratings, 23 Nov 2026; `results/queries/generator_trial_v1/summary_v1.md`): Sarvam-M
+(`sarvamai/sarvam-m`, revision `01534a53c4`) has the best Hindi and Kannada ratings and writes fluent Kannada, so
+by the rule above it is the generator. The full table, by model and language, is in the summary file and is not
+copied here.
+
 ## Consequences
 
 - The LLM judge (separate options comparison) must come from a different model family from the generator,

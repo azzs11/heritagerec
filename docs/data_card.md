@@ -69,6 +69,13 @@ Layer 1: links the museum gives. Layer 2: structured fields matched against the 
 
 Built by `src/graph/core_graph.py` on 2026-11-21 at commit `b4fbad7734634041e64e198cc4eeb4857948ac7b`: 24,006 nodes and 42,990 edges. 12,063 of 14,485 documents are in the largest connected component (1,609 components). Hubs are down-weighted at retrieval time (decision 0007), not in the graph. Full statistics: `results/graph/core_v1.md`.
 
+## Knowledge graph: proximity layer (decision 0030)
+
+A separate layer, never part of the headline core result. Built by `src/graph/proximity_layer.py`: each placed entity
+that is not a hub is put in its resolution-5 H3 hexagon (Uber's grid, about 10 km across) and joined by a `near` edge
+to its 8 nearest places within one ring of hexagons; each edge keeps its ring distance and length in km. It holds no
+text similarity. Counts, degrees and components: `results/graph/proximity_v1.md`.
+
 | Node kind | Nodes |
 | --- | --- |
 | document | 14,485 |

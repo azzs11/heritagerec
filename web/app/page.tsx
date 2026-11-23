@@ -1,220 +1,297 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, type FormEvent } from "react";
 
-import { BarList } from "@/components/BarList";
-import { Load, MarginNote, Names, Seal, fmt } from "@/components/ui";
-import { api, label } from "@/lib/api";
-import { DOC_TYPES, LANGUAGES, SOURCES, rowsOf } from "@/lib/names";
+import { Load, fmt } from "@/components/ui";
+import { api, get, label, type NodeCard } from "@/lib/api";
+import { SOURCES } from "@/lib/names";
 import { useStored } from "@/lib/stored";
 import { useResource } from "@/lib/useResource";
 
-import s from "./story.module.css";
+import s from "./home.module.css";
+import { ThreadFromTheGraph } from "./Thread";
 
-export default function Story() {
+const EXAMPLES = ["Hoysala temples Belur", "Mughal miniature painting", "मुगल किला आगरा", "ಹಂಪೆ ದೇವಾಲಯ"];
+const PAGE = 24;
+
+interface Item extends NodeCard {
+  period?: [number | null, number | null];
+  source?: string;
+}
+
+export default function Home() {
+  const router = useRouter();
+  const [q, setQ] = useState("");
   const stats = useResource(api.corpusStats, "stats");
   const health = useResource(api.health, "health");
-  const overview = useResource(() => api.overview(10), "overview");
-  const hampi = useResource(() => api.find("Hampi"), "hampi");
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    if (q.trim()) router.push(`/cases/?q=${encodeURIComponent(q.trim())}`);
+  };
 
   return (
-    <article className="page">
+    <div className="page">
       <FirstVisit />
-      <section className={s.opening}>
-        <p className={s.kicker}>A study of one question</p>
-        <h1 className={s.headline}>
-          Does the <em>shape</em> of knowledge find what <em>words</em> miss?
-        </h1>
-        <p className={s.lede}>
-          Indian heritage is written about in many languages and kept in many places: an article in Kannada, a
-          gazetteer printed in 1908, a painting in Cleveland, a temple&apos;s entry on Wikidata. A search engine that
-          reads only words treats them as strangers. A knowledge graph knows that they share a dynasty, a style, a
-          century, a river. This site tests, in the open, whether that knowledge finds better documents than the words
-          alone, and shows every step it takes to answer.
+      <section className={s.search}>
+        <form onSubmit={submit} role="search" className={s.form}>
+          <label htmlFor="home-q" className={s.prompt}>
+            Search{" "}
+            {stats.state === "ready" ? <span className="num">{fmt(Number(stats.data.snapshot.records))}</span> : null}{" "}
+            documents on India&apos;s heritage, in English, हिन्दी or ಕನ್ನಡ
+          </label>
+          <div className={s.row}>
+            <input id="home-q" value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" placeholder="Hoysala temples Belur" />
+            <button type="submit">Search</button>
+          </div>
+        </form>
+        <p className={s.examples}>
+          {EXAMPLES.map((x) => (
+            <Link key={x} href={`/cases/?q=${encodeURIComponent(x)}`}>
+              {x}
+            </Link>
+          ))}
         </p>
-        <Load res={hampi} what="a name in three scripts">
-          {(nodes) => {
-            const n = nodes.find((x) => x.kind === "entity" && x.labels.hi && x.labels.kn) ?? nodes[0];
-            return n ? (
-              <p className={s.triad}>
-                <span className="label">one place, three scripts</span>
-                <Names labels={n.labels} fallback={n.id} size="title" />
-                <Link href={`/graph/?node=${encodeURIComponent(n.id)}`} className={s.small}>
-                  see it in the graph →
-                </Link>
-              </p>
-            ) : null;
-          }}
-        </Load>
       </section>
 
-      <section className={`folio ${s.chapter}`}>
-        <div>
-          <p className={s.chapterNo}>I</p>
-          <h2>The documents</h2>
-          <Load res={stats} what="the corpus manifest">
+      <Doors />
+
+      <ThreadFromTheGraph />
+
+      <Wall />
+
+      <section className={s.study}>
+        <div className="read">
+          <h2 className={s.studyTitle}>What this is</h2>
+          <p>
+            A test of one question: does a knowledge graph find better documents than words alone? Every search here
+            is answered twice, by a text lens that reads words and a graph lens that follows facts from Wikidata, and
+            every step of both is shown.
+          </p>
+          <p>
+            No verdict yet. The benchmark&apos;s questions and judgements are still being made, so the site measures
+            nothing it cannot show. <Link href="/ledger/">The Ledger</Link> lists what exists, and{" "}
+            <Link href="/lab/">the Lab</Link> where it already breaks.
+          </p>
+        </div>
+        <dl className={s.facts}>
+          <Load res={stats} what="the counts">
             {(m) => (
               <>
-                <p>
-                  The corpus holds <strong className="num">{fmt(Number(m.snapshot.records))}</strong> documents about the
-                  Republic of India&apos;s heritage, gathered from{" "}
-                  <span className="num">{Object.keys(m.by_source).length}</span> open sources. Every one keeps its source, its
-                  licence and a checksum of the response it came from; {fmt(m.duplicates_merged)} copies that arrived
-                  twice were merged.
-                </p>
-                <BarList title="Documents by source" rows={rowsOf(m.by_source, SOURCES)} source={m.source_file} />
-                <div className={s.pair}>
-                  <BarList title="By language" rows={rowsOf(m.by_language, LANGUAGES)} source={m.source_file} />
-                  <BarList title="By kind of document" rows={rowsOf(m.by_doc_type, DOC_TYPES)} source={m.source_file} />
+                <div title={`from ${m.source_file}`}>
+                  <dt>documents</dt>
+                  <dd className="num">{fmt(Number(m.snapshot.records))}</dd>
+                </div>
+                <div title={`from ${m.source_file}`}>
+                  <dt>sources</dt>
+                  <dd className="num">{Object.keys(m.by_source).length}</dd>
+                </div>
+                <div title={`from ${m.source_file}`}>
+                  <dt>Hindi · Kannada</dt>
+                  <dd className="num">
+                    {fmt(m.by_language.hi ?? 0)} · {fmt(m.by_language.kn ?? 0)}
+                  </dd>
                 </div>
               </>
             )}
           </Load>
-        </div>
-        <aside>
-          <MarginNote>
-            <p>
-              These counts are read from the snapshot&apos;s manifest, written by the script that built the corpus. The
-              snapshot itself is a single compressed file with a fixed checksum, so anyone can confirm they have the
-              same documents.
-            </p>
-          </MarginNote>
-        </aside>
+          {health.state === "ready" && health.data.graph.status === "ok" ? (
+            <>
+              <div title="from data/graph/core_v1 and data/explorer/v1">
+                <dt>graph nodes · facts</dt>
+                <dd className="num">
+                  {fmt(Number(health.data.graph.nodes))} · {fmt(Number(health.data.graph.edges))}
+                </dd>
+              </div>
+              <div title="from data/explorer/v1/nodes.jsonl.gz">
+                <dt>places on the map</dt>
+                <dd className="num">{fmt(Number(health.data.graph.placed))}</dd>
+              </div>
+            </>
+          ) : null}
+        </dl>
       </section>
-
-      <section className={`folio ${s.chapter}`}>
-        <div>
-          <p className={s.chapterNo}>II</p>
-          <h2>The graph, and what holds it together</h2>
-          <Load res={health} what="the graph">
-            {(h) =>
-              h.graph.status === "ok" ? (
-                <p>
-                  From Wikidata&apos;s statements about these places, people, dynasties and styles, the graph has{" "}
-                  <strong className="num">{fmt(Number(h.graph.nodes))}</strong> nodes and{" "}
-                  <strong className="num">{fmt(Number(h.graph.edges))}</strong> edges;{" "}
-                  <span className="num">{fmt(Number(h.graph.placed))}</span> of its places carry coordinates and appear
-                  on the atlas. It holds facts only: who built what, what lies within what, which century. No edge was
-                  drawn because two texts look alike.
-                </p>
-              ) : null
-            }
-          </Load>
-          <Load res={overview} what="the communities">
-            {(o) => (
-              <>
-                <p>
-                  Set aside its most connected nodes, the <em>hubs</em>, and group what is left into communities:
-                  there are <span className="num">{fmt(o.communities.length + o.others.communities)}</span>, and only{" "}
-                  <span className="num">{fmt(o.communities.length)}</span> have ten or more members. Between those
-                  larger communities, only <span className="num">{fmt(o.links.length)}</span> pairs share an edge at
-                  all. Most of what joins one part of the graph to another is a century, a state or an empire. Whether
-                  a graph like this can still help a search is the heart of the question.
-                </p>
-                <HubStrip ids={o.hubs.slice(0, 12)} />
-              </>
-            )}
-          </Load>
-        </div>
-        <aside>
-          <MarginNote>
-            <p>
-              A hub here is every century node and every entity above the 99th percentile of connections. The hubs
-              are kept in the graph; the explorer only folds them so they do not swallow the picture.
-            </p>
-          </MarginNote>
-        </aside>
-      </section>
-
-      <section className={`folio ${s.chapter}`}>
-        <div>
-          <p className={s.chapterNo}>III</p>
-          <h2>Two lenses, one case</h2>
-          <p>
-            Each search is heard as a case. The <Seal kind="text">text lens</Seal> reads words: BM25 counts them, RM3
-            adds words from the best first answers. The <Seal kind="graph">graph lens</Seal> walks from the entities a
-            query names to the documents about their neighbours. Both are shown side by side, with every step that
-            made each ranking, and a check that the explanation adds up to the score.
-          </p>
-          <p className={s.doors}>
-            <Link href="/cases/?q=Hoysala%20temples%20Belur" className={s.door}>
-              Open a case <span>Hoysala temples at Belur</span>
-            </Link>
-            <Link href="/atlas/" className={s.door}>
-              Walk the atlas <span>click a place, see what ties it to its neighbours</span>
-            </Link>
-            <Link href="/graph/" className={s.door}>
-              Enter the graph <span>communities, neighbourhoods and paths</span>
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      <section className={`folio ${s.chapter}`}>
-        <div>
-          <p className={s.chapterNo}>IV</p>
-          <h2>What is not measured yet</h2>
-          <p>
-            The verdict needs judged queries, and some systems are still being built. Until they exist, the site says
-            so rather than guessing.
-          </p>
-          <Load res={health} what="the status of each system">
-            {(h) => (
-              <ul className={s.status}>
-                {(["corpus", "graph", "keyword"] as const).map((k) => (
-                  <li key={k}>
-                    <Seal kind={h[k].status === "ok" ? "measured" : "missing"}>{h[k].status === "ok" ? "running" : "missing"}</Seal>
-                    <span>{k === "keyword" ? "keyword search (BM25, RM3)" : k}</span>
-                  </li>
-                ))}
-                {Object.entries(h.planned).map(([k, v]) => (
-                  <li key={k}>
-                    <Seal kind="pending">not built yet</Seal>
-                    <span>
-                      {k.replace(/_/g, " ")} <span className={s.see}>{v.see}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Load>
-        </div>
-      </section>
-    </article>
+    </div>
   );
 }
 
-/** Offered once: a pointer to the five-step guide, dismissed for good when closed. */
+function Wall() {
+  const [pages, setPages] = useState(1);
+  const first = useResource(() => get<{ total: number; items: Item[] }>("/api/collection", { offset: 0, limit: PAGE }), "wall0");
+  const [more, setMore] = useState<Item[]>([]);
+  const [busy, setBusy] = useState(false);
+  const loadMore = async () => {
+    setBusy(true);
+    try {
+      const r = await get<{ items: Item[] }>("/api/collection", { offset: pages * PAGE, limit: PAGE });
+      setMore((m) => [...m, ...r.items]);
+      setPages((p) => p + 1);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <section aria-label="Objects from the collection" className={s.wallSection}>
+      <Load res={first} what="the collection">
+        {(r) => (
+          <>
+            <p className={s.wallHead}>
+              From the collection: <span className="num">{fmt(r.total)}</span> objects with open images, from The Met and
+              the Cleveland Museum of Art
+            </p>
+            <ul className={s.wall}>
+              {[...r.items, ...more].map((x) => (
+                <Tile key={x.id} x={x} />
+              ))}
+            </ul>
+            {pages * PAGE < r.total ? (
+              <button className={s.more} onClick={loadMore} disabled={busy}>
+                {busy ? "Loading…" : "More objects"}
+              </button>
+            ) : null}
+          </>
+        )}
+      </Load>
+    </section>
+  );
+}
+
+function Tile({ x }: { x: Item }) {
+  // A museum's server can refuse an image (the Met's bot protection sometimes does); such a tile is dropped
+  // rather than shown broken.
+  const [failed, setFailed] = useState(false);
+  const im = x.image;
+  if (!im || failed) return null;
+  const [from, to] = x.period ?? [null, null];
+  const when = from == null ? null : to != null && to !== from ? `${from}–${to}` : `${from}`;
+  return (
+    <li className={s.tile}>
+      <Link href={`/document/?id=${encodeURIComponent(x.id)}`}>
+        {/* Remote museum images in a static site: next/image's optimiser is not available here. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={im.thumb}
+          alt={label(x.labels, x.id)}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          width={im.width ?? undefined}
+          height={im.height ?? undefined}
+          onError={() => setFailed(true)}
+        />
+        <span className={s.caption}>
+          <span className={s.title}>{label(x.labels, x.id)}</span>
+          <span className={s.meta}>
+            {when ? <span className="num">{when}</span> : null}
+            {when ? " · " : null}
+            {SOURCES[x.source ?? ""] ?? x.source}
+          </span>
+        </span>
+      </Link>
+    </li>
+  );
+}
+
+/** Offered once: a pointer to the five-step guide. */
 function FirstVisit() {
   const [offered, setOffered] = useStored("guide-offered", "unknown");
   if (offered === "yes") return null;
-  const close = () => setOffered("yes");
   return (
     <aside className={s.firstVisit} aria-label="First visit">
       <span>
-        New here? <Link href="/guide/" onClick={close}>A first case in five steps</Link> shows what every panel means.
+        First time here? <Link href="/guide/" onClick={() => setOffered("yes")}>Five steps</Link> show what each part
+        does.
       </span>
-      <button onClick={close} aria-label="Dismiss the guide offer">
+      <button onClick={() => setOffered("yes")} aria-label="Dismiss">
         ×
       </button>
     </aside>
   );
 }
 
-function HubStrip({ ids }: { ids: string[] }) {
-  const cards = useResource(() => Promise.all(ids.map((id) => api.node(id))), `hubs:${ids.join(",")}`);
-  return (
-    <Load res={cards} what="the hubs">
-      {(nodes) => (
-        <ol className={s.hubs}>
-          {nodes.map((n) => (
-            <li key={n.id}>
-              <Link href={`/graph/?node=${encodeURIComponent(n.id)}`}>{label(n.labels, n.id)}</Link>
-              <span className="num">{fmt(n.degree)}</span>
-            </li>
+/** What the site offers, in four doors, each with a small drawing of what lies behind it. */
+function Doors() {
+  const doors = [
+    {
+      href: "/cases/",
+      name: "Search",
+      what: "Ask a question; read the text lens and the graph lens side by side.",
+      art: (
+        <>
+          <rect x="2" y="4" width="18" height="5" rx="1" />
+          <rect x="2" y="12" width="18" height="5" rx="1" />
+          <rect x="34" y="4" width="18" height="5" rx="1" />
+          <rect x="34" y="12" width="18" height="5" rx="1" />
+          <path d="M20 6.5 C27 6.5, 27 14.5, 34 14.5" className={s.artLac} />
+        </>
+      ),
+    },
+    {
+      href: "/atlas/",
+      name: "Atlas",
+      what: "Click a place; see the heritage near it and the facts that tie it together.",
+      art: (
+        <>
+          {[
+            [10, 6],
+            [16, 9],
+            [24, 5],
+            [30, 12],
+            [22, 15],
+            [36, 8],
+            [42, 14],
+            [14, 16],
+          ].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="1.6" />
           ))}
-        </ol>
-      )}
-    </Load>
+          <circle cx="24" cy="10" r="6" className={s.artRing} />
+        </>
+      ),
+    },
+    {
+      href: "/graph/",
+      name: "Graph",
+      what: "Walk the knowledge graph: dynasties, sites, styles, centuries, and how they join.",
+      art: (
+        <>
+          <path d="M8 14 L20 6 L32 12 L44 5 M20 6 L24 17 L32 12" className={s.artLine} />
+          {[
+            [8, 14],
+            [20, 6],
+            [32, 12],
+            [44, 5],
+            [24, 17],
+          ].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="2.2" className={i === 1 ? s.artLacFill : undefined} />
+          ))}
+        </>
+      ),
+    },
+    {
+      href: "/lab/",
+      name: "Lab",
+      what: "See where the system breaks, run live: stemming, query expansion, hubs.",
+      art: (
+        <>
+          <path d="M4 14 L12 9 L20 12 L28 4 L36 11 L44 8" className={s.artLine} />
+          <path d="M28 4 L30 8" className={s.artLac} />
+          <circle cx="28" cy="4" r="2" className={s.artLacFill} />
+        </>
+      ),
+    },
+  ];
+  return (
+    <nav className={s.doors} aria-label="What you can do here">
+      {doors.map((d) => (
+        <Link key={d.href} href={d.href} className={s.door}>
+          <svg viewBox="0 0 54 20" className={s.doorArt} aria-hidden>
+            {d.art}
+          </svg>
+          <span className={s.doorName}>{d.name}</span>
+          <span className={s.doorWhat}>{d.what}</span>
+        </Link>
+      ))}
+    </nav>
   );
 }

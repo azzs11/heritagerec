@@ -71,6 +71,17 @@ def test_ego_never_exceeds_its_budget(budget):
     assert view["shown"] + sum(b["count"] for b in view["bundles"]) == view["neighbours"]
 
 
+def test_two_steps_out_stay_under_the_budget_and_skip_hubs():
+    g = small_graph()
+    view = graph_views.ego2(g, "a", budget=10)
+    ids = {n["id"] for n in view["nodes"]}
+    assert view["ring"]["a"] == 0 and view["ring"]["b"] == 1 and view["ring"]["c"] == 2
+    assert "hub" not in {m for m, r in view["ring"].items() if r == 2}
+    assert len(view["nodes"]) + len(view["bundles"]) <= 10
+    assert all(e["source"] in ids and e["target"] in ids for e in view["edges"])
+    assert "second_ring" not in graph_views.ego2(g, "hub", budget=50)  # a hub never grows a second ring
+
+
 def test_a_hub_is_never_drawn_as_all_its_spokes():
     view = graph_views.ego(small_graph(), "hub", budget=600)
     assert view["center_is_hub"] and view["shown"] <= 20
@@ -110,7 +121,9 @@ def graph_client():
 def test_health_names_every_part_and_what_is_not_built(graph_client):
     h = graph_client.get("/api/health").json()
     assert h["graph"]["status"] == "ok" and h["keyword"]["status"] == "missing"
-    assert h["keyword"]["fix"] and h["planned"]["ppr"]["status"] == "not built yet"
+    assert h["keyword"]["fix"] and h["planned"]["dense"]["status"] == "not built yet"
+    # The graph lens runs (linker and PageRank) but is not measured until the dev queries are judged.
+    assert h["graph_lens"]["status"] == "ok" and h["graph_lens"]["evaluated"] is False
 
 
 def test_search_without_its_part_says_why(graph_client):
@@ -127,6 +140,32 @@ def test_real_graph_views(graph_client):
     distances = [p["distance_km"] for p in near["places"]]
     assert distances == sorted(distances)
     assert graph_client.get("/api/graph/ego/not-a-node").status_code == 404
+
+
+def test_graph_rank_explains_each_result_with_a_path_from_a_seed(graph_client):
+    r = graph_client.get("/api/graph/rank", params={"seeds": "Q466581", "k": 5}).json()
+    assert len(r["results"]) == 5 and r["seeds"][0]["id"] == "Q466581"
+    scores = [x["score"] for x in r["results"]]
+    assert scores == sorted(scores, reverse=True)
+    for x in r["results"]:
+        assert x["document"]["kind"] == "document"
+        assert x["path"]["paths"][0]["nodes"][0]["id"] == "Q466581"
+        assert x["path"]["paths"][0]["nodes"][-1]["id"] == x["document"]["id"]
+    assert all(w["node"]["kind"] != "document" for w in r["walk_spends_time_at"])
+
+
+def test_link_route_returns_cards_and_seeds(graph_client):
+    r = graph_client.get("/api/link", params={"q": "Hoysala temples Belur"}).json()
+    assert [m["candidates"][0]["id"] for m in r["mentions"]] == ["Q466581", "Q760603"]
+    assert r["seeds"] == {"Q466581": 1.0, "Q760603": 1.0}
+    assert graph_client.get("/api/link", params={"q": ""}).status_code == 400
+
+
+def test_graph_rank_refuses_unknown_seeds_and_settings(graph_client):
+    assert graph_client.get("/api/graph/rank", params={"seeds": "Qnope"}).status_code == 400
+    assert graph_client.get("/api/graph/rank", params={"seeds": ";;"}).status_code == 400
+    assert graph_client.get("/api/graph/rank", params={"seeds": "Q466581", "hub_power": 0.3}).status_code == 400
+    assert graph_client.get("/api/graph/rank", params={"seeds": "Q466581", "restart": 1}).status_code == 422
 
 
 def test_every_route_degrades_when_nothing_is_on_disk(tmp_path):
@@ -148,6 +187,7 @@ def test_every_route_degrades_when_nothing_is_on_disk(tmp_path):
         "/api/graph/ego/Q668",
         "/api/atlas/places",
         "/api/atlas/near?lat=1&lon=1",
+        "/api/graph/rank?seeds=Q1",
         "/api/search?q=fort",
         "/api/explain?q=fort&doc=x",
         "/api/documents/x",
@@ -181,6 +221,13 @@ def test_fuzz_near(graph_client, lat, lon, k):
 def test_fuzz_path_and_find(graph_client, a, b, q):
     assert graph_client.get("/api/graph/path", params={"source": a, "target": b}).status_code in ALLOWED
     assert graph_client.get("/api/graph/find", params={"q": q}).status_code in ALLOWED
+
+
+@FUZZ
+@given(seeds=TEXT, restart=st.floats(allow_nan=True), hub=st.sampled_from([0, 0.5, 1, 2, -1]))
+def test_fuzz_graph_rank(graph_client, seeds, restart, hub):
+    params = {"seeds": seeds, "restart": restart, "hub_power": hub}
+    assert graph_client.get("/api/graph/rank", params=params).status_code in ALLOWED
 
 
 @FUZZ
@@ -226,3 +273,39 @@ def test_explanations_add_up_to_lucene_scores(full_client, q, system):
 def test_fuzz_search(full_client, q, lang, system):
     params = {"q": q, "system": system} | ({"lang": lang} if lang else {})
     assert full_client.get("/api/search", params=params).status_code in ALLOWED
+
+
+# ---------- dead ends, suggestions and downloads ----------
+
+
+def test_close_names_are_suggested_for_a_misspelling(graph_client):
+    r = graph_client.get("/api/suggest", params={"q": "hoysla"}).json()
+    assert r and r[0]["id"] == "Q466581" and r[0]["closeness"] >= 75
+
+
+@pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
+def test_a_document_downloads_with_its_attribution(graph_client):
+    t = graph_client.get("/api/documents/wikipedia:en:7051661/download", params={"format": "txt"})
+    assert t.status_code == 200 and "attachment" in t.headers["content-disposition"]
+    assert "licence: https://creativecommons.org/licenses/by-sa/4.0/" in t.text
+    assert "source: Wikipedia contributors" in t.text and "reference and link sections" in t.text
+    j = graph_client.get("/api/documents/wikipedia:en:7051661/download", params={"format": "json"}).json()
+    assert j["record"]["id"] == "wikipedia:en:7051661" and j["attribution"]["original"].startswith("https://")
+    assert graph_client.get("/api/documents/wikipedia:en:7051661/download", params={"format": "pdf"}).status_code == 422
+    assert graph_client.get("/api/documents/nope/download").status_code == 404
+
+
+@pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
+def test_documents_say_where_to_get_the_original(graph_client):
+    wiki = graph_client.get("/api/documents/wikipedia:en:7051661").json()["get_it"]
+    assert [x["label"] for x in wiki] == ["Original page", "PDF from Wikipedia"]
+    met = graph_client.get("/api/documents/met:38517").json()["get_it"]
+    assert met[-1]["label"] == "Full image (CC0)"
+
+
+@needs_keyword
+def test_a_partial_match_is_reported_honestly(full_client):
+    r = full_client.get("/api/search", params={"q": "colosseum gladiators rome", "k": 3}).json()
+    assert r["linked"]["mentions"] == []
+    assert r["top_match"]["in_best_passage"] < r["top_match"]["query_words"]
+    assert "rome" in r["top_match"]["missing"]

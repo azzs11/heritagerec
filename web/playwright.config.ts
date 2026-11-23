@@ -15,7 +15,14 @@ export default defineConfig({
     { name: "phone", use: { ...devices["Desktop Chrome"], viewport: { width: 390, height: 844 }, hasTouch: true } },
   ],
   webServer: [
-    { command: "cd .. && uv run python -m server", url: "http://127.0.0.1:8000/api/health", reuseExistingServer: true, timeout: 120_000 },
+    // In CI there is no Java and no corpus snapshot: the server starts without keyword search, and the tests that
+    // need it or the corpus skip themselves; every graph, atlas, layout and accessibility check still runs.
+    {
+      command: `cd .. && uv run python -m server${process.env.CI ? " --no-keyword" : ""}`,
+      url: "http://127.0.0.1:8000/api/health",
+      reuseExistingServer: true,
+      timeout: 180_000,
+    },
     { command: "npm run dev", url: "http://localhost:3000", reuseExistingServer: true, timeout: 120_000 },
   ],
 });

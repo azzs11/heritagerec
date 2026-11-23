@@ -1,86 +1,97 @@
-/* HeritageRec design tokens (decision 0025).
-   Archival print: paper and lamp-black ink, four pigments with one meaning each.
-     indigo     the text lens (keyword and dense systems)
+/* HeritageRec design tokens (decision 0025; redesigned 22 Nov 2026).
+   A working collection instrument: content first, few words about the site, no ornament.
+   Four pigments, one meaning each:
+     indigo     the text lens
      lac        the graph lens
-     turmeric   attention: not built, not measured, a check that failed
-     verdigris  measured or verified
-   Nothing else carries colour. */
+     turmeric   not built, not measured, or a failed check
+     verdigris  running, measured or verified
+   Noto Serif and Noto Sans are used because their Latin, Devanagari and Kannada are drawn as one family. */
 
 :root {
-  --paper: #f2ede2;
-  --paper-deep: #e8e1d2;
-  --paper-edge: #d9d0bd;
-  --ink: #1c1a17;
-  --ink-soft: #4a4640;
+  --paper: #f4f1ea;
+  --paper-deep: #ebe6db;
+  --card: #fbfaf6;
+  --ink: #1b1a17;
+  --ink-soft: #4b4740;
   --ink-faint: #67615a;
-  --rule: rgba(28, 26, 23, 0.16);
-  --rule-strong: rgba(28, 26, 23, 0.42);
+  --rule: rgba(27, 26, 23, 0.12);
+  --rule-strong: rgba(27, 26, 23, 0.3);
 
   --indigo: #2c3a74;
-  --indigo-wash: rgba(44, 58, 116, 0.09);
+  --indigo-wash: rgba(44, 58, 116, 0.08);
   --lac: #9b2a22;
-  --lac-wash: rgba(155, 42, 34, 0.08);
+  --lac-wash: rgba(155, 42, 34, 0.07);
   --turmeric: #725004;
-  --turmeric-wash: rgba(200, 144, 27, 0.16);
+  --turmeric-wash: rgba(200, 144, 27, 0.14);
   --verdigris: #2a6556;
-  --verdigris-wash: rgba(47, 111, 95, 0.1);
+  --verdigris-wash: rgba(47, 111, 95, 0.09);
+  --type-built: #2a78d6;
+  --type-people: #eb6834;
+  --type-culture: #1baf7a;
 
-  --serif: "Source Serif 4", "Noto Serif Devanagari", "Noto Serif Kannada", Georgia, serif;
-  --mono: "IBM Plex Mono", "Noto Serif Devanagari", "Noto Serif Kannada", ui-monospace, monospace;
+  --serif: "Noto Serif", "Noto Serif Devanagari", "Noto Serif Kannada", Georgia, serif;
+  --sans: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Kannada", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", "Noto Sans Devanagari", "Noto Sans Kannada", ui-monospace, monospace;
 
-  --measure: 68ch;
-  --gutter: clamp(16px, 4vw, 48px);
-  --margin-col: 15rem;
+  --measure: 66ch;
+  --gutter: clamp(16px, 3vw, 32px);
+  --step--2: 0.74rem;
   --step--1: 0.84rem;
-  --step-0: 1.02rem;
-  --step-1: 1.24rem;
-  --step-2: 1.6rem;
-  --step-3: clamp(2rem, 4.4vw, 3.1rem);
-  --step-4: clamp(2.6rem, 7vw, 5.4rem);
+  --step-0: 0.98rem;
+  --step-1: 1.15rem;
+  --step-2: 1.4rem;
+  --step-3: clamp(1.6rem, 3vw, 2.1rem);
+  --head: 3.25rem;
 
-  --focus: 0 0 0 3px var(--paper), 0 0 0 5px #c8901b;
+  --focus: 0 0 0 2px var(--paper), 0 0 0 4px #c8901b;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #15140f;
-    --paper-deep: #1d1b15;
-    --paper-edge: #2c2920;
-    --ink: #ebe4d4;
-    --ink-soft: #bdb5a4;
-    --ink-faint: #8c8576;
-    --rule: rgba(235, 228, 212, 0.14);
-    --rule-strong: rgba(235, 228, 212, 0.38);
-    --indigo: #9aaaf0;
-    --indigo-wash: rgba(154, 170, 240, 0.1);
-    --lac: #ee8a7c;
-    --lac-wash: rgba(238, 138, 124, 0.1);
+    --paper: #141310;
+    --paper-deep: #1c1a16;
+    --card: #1a1915;
+    --ink: #ece6d8;
+    --ink-soft: #bfb7a6;
+    --ink-faint: #918a7b;
+    --rule: rgba(236, 230, 216, 0.12);
+    --rule-strong: rgba(236, 230, 216, 0.3);
+    --indigo: #a3b1f2;
+    --indigo-wash: rgba(163, 177, 242, 0.09);
+    --lac: #f0907f;
+    --lac-wash: rgba(240, 144, 127, 0.09);
     --turmeric: #e5b04a;
-    --turmeric-wash: rgba(229, 176, 74, 0.13);
+    --turmeric-wash: rgba(229, 176, 74, 0.12);
     --verdigris: #7cc4ae;
-    --verdigris-wash: rgba(124, 196, 174, 0.1);
+    --verdigris-wash: rgba(124, 196, 174, 0.09);
+    --type-built: #3987e5;
+    --type-people: #d95926;
+    --type-culture: #199e70;
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --paper: #15140f;
-  --paper-deep: #1d1b15;
-  --paper-edge: #2c2920;
-  --ink: #ebe4d4;
-  --ink-soft: #bdb5a4;
-  --ink-faint: #8c8576;
-  --rule: rgba(235, 228, 212, 0.14);
-  --rule-strong: rgba(235, 228, 212, 0.38);
-  --indigo: #9aaaf0;
-  --indigo-wash: rgba(154, 170, 240, 0.1);
-  --lac: #ee8a7c;
-  --lac-wash: rgba(238, 138, 124, 0.1);
+  --paper: #141310;
+  --paper-deep: #1c1a16;
+  --card: #1a1915;
+  --ink: #ece6d8;
+  --ink-soft: #bfb7a6;
+  --ink-faint: #918a7b;
+  --rule: rgba(236, 230, 216, 0.12);
+  --rule-strong: rgba(236, 230, 216, 0.3);
+  --indigo: #a3b1f2;
+  --indigo-wash: rgba(163, 177, 242, 0.09);
+  --lac: #f0907f;
+  --lac-wash: rgba(240, 144, 127, 0.09);
   --turmeric: #e5b04a;
-  --turmeric-wash: rgba(229, 176, 74, 0.13);
+  --turmeric-wash: rgba(229, 176, 74, 0.12);
   --verdigris: #7cc4ae;
-  --verdigris-wash: rgba(124, 196, 174, 0.1);
+  --verdigris-wash: rgba(124, 196, 174, 0.09);
+  --type-built: #3987e5;
+  --type-people: #d95926;
+  --type-culture: #199e70;
   color-scheme: dark;
 }
 
@@ -99,55 +110,31 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: var(--step-0);
-  line-height: 1.55;
-  font-optical-sizing: auto;
-  font-kerning: normal;
+  line-height: 1.5;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
-}
-
-/* A faint laid-paper grain, drawn, not an image file. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.5;
-  background-image: repeating-linear-gradient(0deg, transparent 0 3px, var(--rule) 3px 3.5px);
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.05));
-}
-
-main,
-header,
-footer {
-  position: relative;
-  z-index: 1;
 }
 
 h1,
 h2,
 h3,
 h4 {
+  font-family: var(--sans);
   font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.012em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   margin: 0 0 0.5em;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: var(--step-4);
-  font-weight: 500;
-  letter-spacing: -0.03em;
+  font-size: var(--step-3);
 }
 
 h2 {
-  font-size: var(--step-3);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-size: var(--step-2);
 }
 
 h3 {
@@ -158,6 +145,13 @@ p {
   margin: 0 0 1em;
   max-width: var(--measure);
   text-wrap: pretty;
+}
+
+/* Reading text (passages, descriptions, the short account of the study) is set in the serif. */
+.read {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  line-height: 1.6;
 }
 
 a {
@@ -174,7 +168,7 @@ a:hover {
 :focus-visible {
   outline: none;
   box-shadow: var(--focus);
-  border-radius: 1px;
+  border-radius: 2px;
 }
 
 hr {
@@ -187,15 +181,13 @@ code,
 kbd,
 .mono {
   font-family: var(--mono);
-  font-size: 0.88em;
+  font-size: 0.86em;
 }
 
-/* Small capitals for labels, set from lowercase so they stay small in every script. */
 .label {
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.06em;
-  font-size: var(--step-0);
+  font-size: var(--step--1);
   color: var(--ink-soft);
+  font-weight: 500;
 }
 
 .num {
@@ -213,12 +205,18 @@ kbd,
 }
 
 .page {
-  max-width: 76rem;
+  max-width: 78rem;
   margin: 0 auto;
-  padding: 0 var(--gutter) 6rem;
+  padding: 1.5rem var(--gutter) 5rem;
 }
 
-/* The ledger grid: text column, and a margin column for notes on wide screens. */
+/* Map and graph pages use the whole width. */
+.page-wide {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
 .folio {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -227,7 +225,7 @@ kbd,
 
 @media (min-width: 64rem) {
   .folio {
-    grid-template-columns: minmax(0, 1fr) var(--margin-col);
+    grid-template-columns: minmax(0, 1fr) 15rem;
   }
 }
 
@@ -253,5 +251,181 @@ select {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- the sky: placed entities as faint points behind every page ---------- */
+
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sky-field {
+  position: absolute;
+  top: -6%;
+  left: -6%;
+  opacity: 0.07;
+  animation: sky-drift 120s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.sky-glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(42% 38% at 18% 22%, var(--indigo-wash), transparent 70%),
+    radial-gradient(38% 42% at 82% 78%, var(--lac-wash), transparent 70%);
+  opacity: 0.7;
+  animation: sky-glow 60s ease-in-out infinite alternate;
+}
+
+:root[data-theme="dark"] .sky-field {
+  opacity: 0.28;
+}
+
+:root[data-theme="dark"] .sky-glow {
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sky-field {
+    opacity: 0.28;
+  }
+
+  :root:not([data-theme="light"]) .sky-glow {
+    opacity: 1;
+  }
+}
+
+@keyframes sky-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-3%, 2%, 0) scale(1.03);
+  }
+}
+
+@keyframes sky-glow {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(4%, -3%, 0) rotate(8deg);
+  }
+}
+
+main,
+header,
+footer,
+nav {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky-field,
+  .sky-glow {
+    animation: none;
+  }
+}
+
+/* ---------- motion and feel, site-wide ---------- */
+
+/* Pages: the old one fades quickly, the new one rises in. Only the page content takes part. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(.page) {
+  animation: page-out 140ms ease-in both;
+}
+
+::view-transition-new(.page) {
+  animation: page-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Every interactive thing eases its colours; buttons press in slightly. */
+a,
+button,
+input,
+select,
+summary {
+  transition:
+    color 150ms,
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms,
+    opacity 150ms;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+/* Slim scrollbars in the page's own colours. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rule-strong);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ink-faint);
+}
+
+summary {
+  cursor: pointer;
+}
+
+details > summary::marker {
+  color: var(--ink-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(.page),
+  ::view-transition-new(.page) {
+    animation: none;
+  }
+
+  button:active:not(:disabled) {
+    transform: none;
   }
 }

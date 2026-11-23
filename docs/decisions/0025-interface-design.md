@@ -54,6 +54,14 @@ licence, revision), margin notes that explain a panel when asked, a path ribbon,
 None of these: gradient hero sections, glass cards, emoji icons, stock illustrations, mandala or temple
 clichés. A dark "night archive" theme is defined from the same tokens.
 
+*Redesign, 22 Nov 2026 (author: "make the designs not look AI-generated").* The first build read as a stock
+editorial template: kicker labels, roman-numeral folios, paper grain, boxed status stamps, a "what am I looking
+at?" chip on every panel, and more prose about the site than heritage on it. Changes: the home page became a
+search box over a wall of real objects (open-licence Met and Cleveland images, credited, loaded from the museums'
+servers; `src/explorer/images.py`); ornaments removed; status as a dot and words; explanations behind one Notes
+switch; type changed to Noto Sans and Noto Serif, whose three scripts are one family; the Atlas and the Graph made
+full-bleed with a side drawer. The four pigments and their meanings are unchanged.
+
 ### 2. What to do with the old interface (author's choice)
 
 Removed entirely; git history and the `v0-icicacs-2026` tag keep it. The new interface is built clean.

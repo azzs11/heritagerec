@@ -8,7 +8,7 @@ say so when they pass through one.
 """
 
 import math
-from collections import defaultdict, deque
+from collections import Counter, defaultdict, deque
 
 from server.components import RELATION_LABELS, Edge, Graph
 
@@ -113,6 +113,56 @@ def ego(
     }
 
 
+SECOND_RING_PER_NODE = 6
+
+
+def ego2(g: Graph, node_id: str, budget: int = DEFAULT_BUDGET, relations: set[str] | None = None) -> dict:
+    """Two steps out, under the same budget: the first ring as in `ego`, then the second ring grown from the first
+    ring's non-hub entities (most connected first), and every fact among the visible nodes, so a neighbourhood shows
+    its shape rather than a star. Hubs never grow a second ring; a hub at the centre gets the first ring only."""
+    view = ego(g, node_id, budget, relations)
+    view["ring"] = {node_id: 0, **{n["id"]: 1 for n in view["nodes"][1:]}}
+    if view["center_is_hub"]:
+        return view
+    present = set(view["ring"])
+    room = view["budget"] - len(view["nodes"]) - len(view["bundles"])
+    growers = sorted(
+        (n for n in view["nodes"][1:] if n["kind"] in ("entity", "connector") and not n["hub"]),
+        key=lambda n: (-n["degree"], n["id"]),
+    )
+    added: list[str] = []
+    for n in growers:
+        if room <= 0:
+            break
+        candidates = sorted(
+            {
+                e.other
+                for e in g.adjacency.get(n["id"], [])
+                if e.other not in present
+                and not g.meta.get(e.other, {}).get("hub", False)
+                and (relations is None or e.relation in relations)
+            },
+            key=lambda m: (KIND_ORDER.get(g.nodes[m]["kind"], 9), -g.meta.get(m, {}).get("degree", 0), m),
+        )
+        for m in candidates[: min(SECOND_RING_PER_NODE, room)]:
+            present.add(m)
+            added.append(m)
+            view["ring"][m] = 2
+            room -= 1
+    view["nodes"] += [g.card(m) for m in added]
+    seen = {(x["source"], x["relation"], x["target"]) for x in view["edges"]}
+    for a in sorted(present):
+        for e in g.adjacency.get(a, []):
+            if e.direction == "out" and e.other in present and (relations is None or e.relation in relations):
+                ej = edge_json(a, e)
+                k = (ej["source"], ej["relation"], ej["target"])
+                if k not in seen:
+                    seen.add(k)
+                    view["edges"].append(ej)
+    view["second_ring"] = len(added)
+    return view
+
+
 def path(g: Graph, a: str, b: str, max_len: int = 4, k: int = 3) -> dict:
     """Up to k shortest paths from a to b (undirected), first without stepping through hubs, then allowing them."""
     for through_hubs in (False, True):
@@ -182,6 +232,18 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return 2 * 6371.0 * math.asin(math.sqrt(h))
 
 
+def centuries_of(g: Graph, n: str) -> list[int]:
+    """The centuries a node belongs to, from the graph's own "in the century" facts (BCE as negative numbers)."""
+    out = []
+    for e in g.adjacency.get(n, []):
+        if e.relation == "in_period" and e.direction == "out" and e.other.startswith("century:"):
+            try:
+                out.append(int(e.other.split(":", 1)[1]))
+            except ValueError:
+                continue
+    return sorted(set(out))
+
+
 def places(g: Graph) -> list[dict]:
     """Every placed entity and connector, for the atlas to draw all marks at once (a few thousand)."""
     return [
@@ -193,6 +255,7 @@ def places(g: Graph) -> list[dict]:
             "labels": g.label(n),
             "hub": m["hub"],
             "documents": g.documents_about.get(n, 0),
+            "centuries": centuries_of(g, n),
         }
         for n, m in sorted(g.meta.items())
         if "lat" in m
@@ -250,7 +313,25 @@ def near(g: Graph, lat: float, lon: float, k: int = NEAR_DEFAULT) -> dict:
         "periods": by_reach(periods),
         "documents_about_several": by_reach(documents)[:SHARED_MAX],
         "documents_per_place": {n: g.documents_about.get(n, 0) for n in members},
+        "photos": photos_about(g, members),
     }
+
+
+PHOTOS = 12
+
+
+def photos_about(g: Graph, members: list[str]) -> list[dict]:
+    """Museum objects with an open image that are about these places, nearest place first."""
+    out, seen = [], set()
+    for n in members:
+        for e in g.adjacency.get(n, []):
+            d = e.other
+            if e.relation == "about" and e.direction == "in" and d in g.images and d not in seen:
+                seen.add(d)
+                out.append(dict(g.card(d), about=n))
+                if len(out) >= PHOTOS:
+                    return out
+    return out
 
 
 def find(g: Graph, text: str, limit: int = 20) -> list[dict]:
@@ -271,3 +352,103 @@ def find(g: Graph, text: str, limit: int = 20) -> list[dict]:
         if best is not None:
             hits.append((best, KIND_ORDER.get(node["kind"], 9), -g.meta.get(n, {}).get("degree", 0), n))
     return [g.card(n) for *_, n in sorted(hits)[: max(1, min(limit, 100))]]
+
+
+# ---------- hexagons (decision 0030): Uber's H3 grid ----------
+
+HEX_RES = 5  # about 10 km across: the resolution the proximity layer and the rings use
+RING_MAX = 3
+RING_DOCS = 8
+
+
+def group_of(kind: str, type_: str | None) -> str:
+    """The same three colour groups as the interface (web/components/LiveGraph.tsx)."""
+    if type_ in ("site", "place"):
+        return "built"
+    if type_ in ("person", "polity"):
+        return "people"
+    if type_ in ("culture", "style"):
+        return "culture"
+    return "other"
+
+
+def _cells(g: Graph, res: int) -> dict[str, str]:
+    import h3
+
+    cache = g.hex_cells.setdefault(res, {})
+    if not cache:
+        for n, m in g.meta.items():
+            if "lat" in m and not m["hub"]:
+                cache[n] = h3.latlng_to_cell(m["lat"], m["lon"], res)
+    return cache
+
+
+def hexes(g: Graph, res: int) -> list[dict]:
+    """Every occupied hexagon at a resolution, with its place count by colour group."""
+    counts: dict[str, Counter] = defaultdict(Counter)
+    for n, c in _cells(g, res).items():
+        counts[c][group_of(g.nodes[n]["kind"], g.nodes[n].get("type"))] += 1
+    return [{"cell": c, "count": sum(v.values()), "groups": dict(v)} for c, v in sorted(counts.items())]
+
+
+def rings(g: Graph, lat: float, lon: float, k: int = 2) -> dict:
+    """The places in the point's hexagon, then one ring out, then two: nearness drawn as concentric bands."""
+    import h3
+
+    cells = _cells(g, HEX_RES)
+    by_cell: dict[str, list[str]] = defaultdict(list)
+    for n, c in cells.items():
+        by_cell[c].append(n)
+    centre = h3.latlng_to_cell(lat, lon, HEX_RES)
+    bands = []
+    for r in range(k + 1):
+        ids = sorted(
+            {n for c in h3.grid_ring(centre, r) for n in by_cell.get(c, ())},
+            key=lambda n: (-g.documents_about.get(n, 0), n),
+        )
+        bands.append(
+            {
+                "ring": r,
+                "cells": len(h3.grid_ring(centre, r)),
+                "places": [g.card(n) for n in ids[:24]],
+                "total": len(ids),
+            }
+        )
+    return {"cell": centre, "resolution": HEX_RES, "rings": bands}
+
+
+def document_rings(g: Graph, doc_id: str, k: int = 2) -> dict:
+    """Concentric recommendations: documents about places in the document's own hexagon first, then each ring out.
+
+    One signal of the recommender (decisions 0009, 0030); shown alone here, labelled as such.
+    """
+    import h3
+
+    cells = _cells(g, HEX_RES)
+    about = [e.other for e in g.adjacency.get(doc_id, []) if e.relation == "about" and e.direction == "out"]
+    origins = [n for n in about if n in cells]
+    if not origins:
+        return {"doc_id": doc_id, "places": [], "rings": []}
+    by_cell: dict[str, list[str]] = defaultdict(list)
+    for n, c in cells.items():
+        by_cell[c].append(n)
+    seen = {doc_id}
+    bands = []
+    for r in range(k + 1):
+        ring_cells = {c for o in origins for c in h3.grid_ring(cells[o], r)}
+        docs = []
+        for c in sorted(ring_cells):
+            for place in by_cell.get(c, ()):
+                for e in g.adjacency.get(place, []):
+                    if e.relation == "about" and e.direction == "in" and e.other not in seen:
+                        seen.add(e.other)
+                        docs.append((0 if e.other in g.images else 1, e.other, place))
+        docs.sort()
+        bands.append(
+            {
+                "ring": r,
+                "documents": [dict(g.card(d), place=g.card(p)) for _, d, p in docs[:RING_DOCS]],
+                "total": len(docs),
+            }
+        )
+    return {"doc_id": doc_id, "places": [g.card(o) for o in origins], "resolution": HEX_RES, "rings": bands}

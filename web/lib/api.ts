@@ -14,6 +14,18 @@ export interface NodeCard {
   documents: number;
   lat?: number;
   lon?: number;
+  image?: ImageRef;
+}
+
+export interface ImageRef {
+  thumb: string;
+  full: string;
+  width: number | null;
+  height: number | null;
+  licence: string;
+  credit: string;
+  page: string | null;
+  source: string;
 }
 
 export interface GraphEdge {
@@ -43,6 +55,8 @@ export interface EgoView {
   neighbours: number;
   shown: number;
   center_is_hub: boolean;
+  ring?: Record<string, number>;
+  second_ring?: number;
 }
 
 export interface Community {
@@ -79,6 +93,7 @@ export interface Place {
   labels: Labels;
   hub: boolean;
   documents: number;
+  centuries: number[];
 }
 
 export interface Shared {
@@ -95,6 +110,7 @@ export interface NearView {
   periods: Shared[];
   documents_about_several: Shared[];
   documents_per_place: Record<string, number>;
+  photos: (NodeCard & { about: string })[];
 }
 
 export interface Word {
@@ -112,6 +128,7 @@ export interface SearchResult {
   doc_type: string | null;
   language: string;
   snippet: Word[] | null;
+  image?: ImageRef;
 }
 
 export interface SearchView {
@@ -123,6 +140,13 @@ export interface SearchView {
   passages_retrieved: number;
   passage_depth: number;
   results: SearchResult[];
+  linked: Linked;
+  top_match: { query_words: number; in_best_passage: number; missing: string[] } | null;
+}
+
+export interface Linked {
+  mentions: { text: string; method: "exact" | "romanised" | "fuzzy"; score: number; candidates: NodeCard[] }[];
+  seeds: Record<string, number>;
 }
 
 export interface TermPart {
@@ -152,6 +176,26 @@ export interface Explanation {
   note?: string;
 }
 
+export interface GraphRank {
+  seeds: NodeCard[];
+  settings: { restart: number; hub_power: number; decision: string };
+  results: { rank: number; score: number; document: NodeCard; path: PathView | null }[];
+  walk_spends_time_at: { node: NodeCard; share: number }[];
+}
+
+export interface RingBand {
+  ring: number;
+  total: number;
+  places?: NodeCard[];
+  documents?: (NodeCard & { place: NodeCard })[];
+}
+
+export interface Rings {
+  resolution: number;
+  rings: RingBand[];
+  places?: NodeCard[];
+}
+
 export interface DocumentView {
   id: string;
   title: string;
@@ -169,6 +213,8 @@ export interface DocumentView {
   passages: number;
   entities: NodeCard[];
   in_graph: boolean;
+  image?: ImageRef;
+  get_it: { label: string; url: string }[];
 }
 
 export interface PartStatus {
@@ -265,10 +311,15 @@ export const api = {
   corpusStats: () => get<CorpusStats>("/api/corpus/stats"),
   ledger: () => get<LedgerRow[]>("/api/ledger"),
   overview: (minSize = 10) => get<Overview>("/api/graph/overview", { min_size: minSize }),
-  ego: (id: string, budget?: number, relations?: string) =>
-    get<EgoView>(`/api/graph/ego/${enc(id)}`, { budget, relations }),
+  ego: (id: string, budget?: number, relations?: string, depth?: 1 | 2) =>
+    get<EgoView>(`/api/graph/ego/${enc(id)}`, { budget, relations, depth }),
   node: (id: string) => get<NodeCard>(`/api/graph/node/${enc(id)}`),
   path: (source: string, target: string) => get<PathView>("/api/graph/path", { source, target }),
+  rank: (seeds: string, hubPower: number, restart: number, k = 10) =>
+    get<GraphRank>("/api/graph/rank", { seeds, hub_power: hubPower, restart, k }),
+  suggest: (q: string) => get<(NodeCard & { closeness: number })[]>("/api/suggest", { q }),
+  rings: (lat: number, lon: number, k = 2) => get<Rings>("/api/atlas/rings", { lat, lon, k }),
+  documentRings: (id: string, k = 2) => get<Rings>(`/api/graph/rings/${enc(id)}`, { k }),
   find: (q: string) => get<NodeCard[]>("/api/graph/find", { q }),
   places: () => get<Place[]>("/api/atlas/places"),
   near: (lat: number, lon: number, k = 25) => get<NearView>("/api/atlas/near", { lat, lon, k }),
@@ -281,4 +332,14 @@ export const api = {
 
 export function label(labels: Labels, fallback: string): string {
   return labels.en ?? labels.hi ?? labels.kn ?? fallback;
+}
+
+/** How a fact reads when walked from `from` to the next node: forward ("founded by →") or backward ("← founded by"). */
+export function stepLabel(edge: GraphEdge, from: string): string {
+  return edge.source === from ? `${edge.relation_label} →` : `← ${edge.relation_label}`;
+}
+
+/** A link that downloads a record as a file, with its attribution written in. */
+export function downloadUrl(id: string, format: "txt" | "json"): string {
+  return `${API_BASE}/api/documents/${enc(id)}/download?format=${format}`;
 }

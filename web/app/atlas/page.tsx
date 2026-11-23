@@ -1,18 +1,28 @@
 "use client";
 
 import Link from "next/link";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useMemo, useRef, useState } from "react";
 
-import { GraphCanvas, type CanvasEdge, type CanvasNode } from "@/components/GraphCanvas";
-import { Load, MarginNote, Names, Seal, fmt } from "@/components/ui";
+import { HexRings } from "@/components/HexRings";
+import { GROUP_NAMES, LiveGraph, groupOf, type Group, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
+import { Load, MarginNote, Names, fmt } from "@/components/ui";
+import { NextSteps } from "@/components/Wayfinding";
 import { api, label, type NearView, type Place } from "@/lib/api";
+import { useTrailStep } from "@/lib/trail";
 import { useResource } from "@/lib/useResource";
 
+import { AtlasMap, type Hover, type MapHandle } from "./AtlasMap";
 import s from "./atlas.module.css";
 
-// A rough box around India, used only to frame the map; places outside it still exist and are listed when near.
-const FRAME = { lat: [6, 37.5] as const, lon: [68, 97.5] as const };
+const GROUPS: ("built" | "people" | "culture" | "other")[] = ["built", "people", "culture", "other"];
+
+function century(c: number): string {
+  const n = Math.abs(c);
+  const suffix = n % 100 >= 11 && n % 100 <= 13 ? "th" : (({ 1: "st", 2: "nd", 3: "rd" }) as Record<number, string>)[n % 10] ?? "th";
+  return `${n}${suffix} c.${c < 0 ? " BCE" : ""}`;
+}
 
 export default function AtlasPage() {
   return (
@@ -27,23 +37,145 @@ function Atlas() {
   const router = useRouter();
   const lat = params.get("lat");
   const lon = params.get("lon");
-  const point = lat && lon && Number.isFinite(+lat) && Number.isFinite(+lon) ? { lat: +lat, lon: +lon } : null;
+  const point = useMemo(
+    () => (lat && lon && Number.isFinite(+lat) && Number.isFinite(+lon) ? { lat: +lat, lon: +lon } : null),
+    [lat, lon],
+  );
   const places = useResource(api.places, "places");
-  const goTo = (p: { lat: number; lon: number }) => router.push(`/atlas/?lat=${p.lat.toFixed(5)}&lon=${p.lon.toFixed(5)}`, { scroll: false });
-
+  const goTo = useCallback(
+    (p: { lat: number; lon: number } | null) =>
+      router.push(p ? `/atlas/?lat=${p.lat.toFixed(5)}&lon=${p.lon.toFixed(5)}` : "/atlas/", { scroll: false }),
+    [router],
+  );
   return (
-    <article className="page">
-      <header className={s.head}>
-        <div>
-          <p className={s.kicker}>Atlas</p>
-          <h1 className={s.title}>Where the heritage is, and what ties it</h1>
-        </div>
-        <PlaceFinder onPick={goTo} />
-      </header>
+    <article className={s.full}>
+      <h1 className="visually-hidden">Atlas</h1>
       <Load res={places} what="the places">
-        {(ps) => <AtlasBody places={ps} point={point} onPick={goTo} />}
+        {(ps) => <AtlasBody places={ps} point={point} goTo={goTo} />}
       </Load>
     </article>
+  );
+}
+
+function AtlasBody({ places, point, goTo }: { places: Place[]; point: { lat: number; lon: number } | null; goTo: (p: { lat: number; lon: number } | null) => void }) {
+  const reduce = useReducedMotion();
+  const map = useRef<MapHandle>(null);
+  const [groups, setGroups] = useState<Set<string>>(new Set(GROUPS));
+  const span = useMemo(() => {
+    const all = places.flatMap((p) => p.centuries);
+    return [Math.min(...all), Math.max(...all)] as const;
+  }, [places]);
+  const [range, setRange] = useState<[number, number]>([span[0], span[1]]);
+  const [undated, setUndated] = useState(true);
+  const [hover, setHover] = useState<Hover | null>(null);
+  const near = useResource(point ? () => api.near(point.lat, point.lon, 25) : null, point ? `near|${point.lat}|${point.lon}` : "none");
+  const lit = useMemo(() => (near.state === "ready" ? near.data.places.map((p) => p.id) : []), [near]);
+
+  const filtered = range[0] !== span[0] || range[1] !== span[1];
+  const visible = useCallback(
+    (p: Place): "on" | "faint" | "off" => {
+      if (!groups.has(groupOf("entity", p.type))) return "off";
+      if (!p.centuries.length) return undated ? (filtered ? "faint" : "on") : "off";
+      return p.centuries.some((c) => c >= range[0] && c <= range[1]) ? "on" : "faint";
+    },
+    [groups, range, undated, filtered],
+  );
+  const dated = places.filter((p) => p.centuries.length).length;
+  const inRange = places.filter((p) => p.centuries.length && visible(p) === "on").length;
+  const toggle = (g: string) => {
+    const next = new Set(groups);
+    if (next.has(g)) next.delete(g);
+    else next.add(g);
+    if (next.size) setGroups(next);
+  };
+
+  return (
+    <div className={s.stage}>
+      <AtlasMap ref={map} places={places} visible={visible} lit={lit} point={point} onPick={goTo} onHover={setHover} />
+
+      <div className={`${s.float} ${s.topLeft}`}>
+        <PlaceFinder onPick={goTo} />
+        <ul className={s.legend} aria-label="Kinds of place, click to show or hide">
+          {GROUPS.map((g) => (
+            <li key={g}>
+              <button aria-pressed={groups.has(g)} onClick={() => toggle(g)}>
+                <i className={s[`g_${g}`]} aria-hidden />
+                {GROUP_NAMES[g]}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className={`${s.float} ${s.bottomLeft}`}>
+        <div className={s.period}>
+          <span className={s.periodName}>Period</span>
+          <span className={s.periodValue}>
+            {century(range[0])} – {century(range[1])}
+          </span>
+          <div className={s.slider}>
+            <input type="range" min={span[0]} max={span[1]} value={range[0]} aria-label="Earliest century" onChange={(e) => setRange([Math.min(+e.target.value, range[1]), range[1]])} />
+            <input type="range" min={span[0]} max={span[1]} value={range[1]} aria-label="Latest century" onChange={(e) => setRange([range[0], Math.max(+e.target.value, range[0])])} />
+          </div>
+          <p className={s.periodNote}>
+            <span className="num">{fmt(dated)}</span> of <span className="num">{fmt(places.length)}</span> places have a
+            recorded century; <span className="num">{fmt(inRange)}</span> fall in this period.
+          </p>
+          <label className={s.check}>
+            <input type="checkbox" checked={undated} onChange={(e) => setUndated(e.target.checked)} /> show places with no recorded century
+            {filtered && undated ? " (faint)" : ""}
+          </label>
+        </div>
+      </div>
+
+      <div className={`${s.float} ${s.bottomRight} ${point ? s.shifted : ""}`} role="group" aria-label="Zoom">
+        <button onClick={() => map.current?.zoomBy(1.8)} aria-label="Zoom in">
+          +
+        </button>
+        <button onClick={() => map.current?.zoomBy(1 / 1.8)} aria-label="Zoom out">
+          −
+        </button>
+        <button onClick={() => (map.current?.reset(), goTo(null))} aria-label="Show all of India">
+          ⤢
+        </button>
+      </div>
+
+      {hover ? (
+        <div className={s.tip} style={{ transform: `translate(${hover.x + 14}px, ${hover.y + 14}px)` }} role="tooltip">
+          <b>{label(hover.place.labels, hover.place.id)}</b>
+          <span>
+            {hover.place.type ?? "place"}
+            {hover.place.centuries.length ? ` · ${century(hover.place.centuries[0]!)}${hover.place.centuries.length > 1 ? " …" : ""}` : ""}
+            {` · ${fmt(hover.place.documents)} ${hover.place.documents === 1 ? "document" : "documents"}`}
+          </span>
+        </div>
+      ) : null}
+
+      <AnimatePresence>
+        {point ? (
+          <motion.aside
+            key="drawer"
+            className={s.drawer}
+            initial={reduce ? false : { x: 40, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={reduce ? { opacity: 0 } : { x: 40, opacity: 0 }}
+            transition={{ duration: 0.32, ease: [0.2, 0.8, 0.2, 1] }}
+            aria-label="Places near the chosen point"
+          >
+            <button className={s.closeDrawer} onClick={() => goTo(null)} aria-label="Close">
+              ×
+            </button>
+            <Load res={near} what="the places nearby">
+              {(n) => <Nearby n={n} />}
+            </Load>
+          </motion.aside>
+        ) : (
+          <motion.p key="hint" className={s.hint} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            Click anywhere on the map, or find a place, to see what lies near it and what ties it together.
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -53,17 +185,17 @@ function PlaceFinder({ onPick }: { onPick: (p: { lat: number; lon: number }) => 
   const placed = res.state === "ready" ? res.data.filter((n) => n.lat != null) : [];
   return (
     <div className={s.finder}>
-      <label htmlFor="place" className="label">
-        go to a place
+      <label htmlFor="place" className="visually-hidden">
+        Go to a place
       </label>
-      <input id="place" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Belur, बेलूर, ಬೇಲೂರು…" autoComplete="off" />
+      <input id="place" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to a place: Belur, बेलूर, ಬೇಲೂರು" autoComplete="off" />
       {q.trim().length >= 2 && res.state === "ready" ? (
         <ul className={s.found}>
-          {placed.length === 0 ? <li className={s.muted}>no placed match</li> : null}
+          {placed.length === 0 ? <li className={s.muted}>no place by that name on the map</li> : null}
           {placed.slice(0, 8).map((n) => (
             <li key={n.id}>
               <button onClick={() => (setQ(""), onPick({ lat: n.lat!, lon: n.lon! }))}>
-                <Names labels={n.labels} fallback={n.id} />
+                <i className={s[`g_${groupOf(n.kind, n.type)}`]} aria-hidden /> <Names labels={n.labels} fallback={n.id} />
               </button>
             </li>
           ))}
@@ -73,252 +205,70 @@ function PlaceFinder({ onPick }: { onPick: (p: { lat: number; lon: number }) => 
   );
 }
 
-function AtlasBody({ places, point, onPick }: { places: Place[]; point: { lat: number; lon: number } | null; onPick: (p: { lat: number; lon: number }) => void }) {
-  const near = useResource(point ? () => api.near(point.lat, point.lon, 25) : null, point ? `near|${point.lat}|${point.lon}` : "none");
-  // Nearest first; the map labels only the closest few so the names do not collide.
-  const nearIds = useMemo(() => (near.state === "ready" ? near.data.places.map((p) => p.id) : []), [near]);
-  const outside = places.filter((p) => p.lat < FRAME.lat[0] || p.lat > FRAME.lat[1] || p.lon < FRAME.lon[0] || p.lon > FRAME.lon[1]).length;
-
-  return (
-    <div className={s.stage}>
-      <div>
-        <InkMap places={places} point={point} lit={nearIds} onPick={onPick} />
-        <p className={s.caption}>
-          <span className="num">{fmt(places.length)}</span> places with coordinates, each a dot sized by the documents
-          about it; <span className="num">{fmt(outside)}</span> lie outside this frame. Scroll or pinch to zoom; click
-          anywhere to ask what is near.
-        </p>
-      </div>
-      <aside className={s.panel}>
-        {!point ? (
-          <>
-            <p>
-              Click the map, or go to a place by name. The atlas finds the 25 nearest places that are not hubs, however
-              far that reaches, so a quiet region still answers, and shows what the graph says ties them.
-            </p>
-            <MarginNote title="Why are there no borders?">
-              <p>
-                India&apos;s boundaries must follow the Survey of India&apos;s depiction, and its boundary data needs a
-                licence. Until that is settled, nothing political is drawn: the dots themselves make the map.
-              </p>
-            </MarginNote>
-          </>
-        ) : (
-          <Load res={near} what="the places nearby">
-            {(n) => <Nearby n={n} />}
-          </Load>
-        )}
-      </aside>
-    </div>
-  );
-}
-
-function InkMap({ places, point, lit, onPick }: { places: Place[]; point: { lat: number; lon: number } | null; lit: string[]; onPick: (p: { lat: number; lon: number }) => void }) {
-  const box = useRef<HTMLDivElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const redraw = useRef<() => void>(() => {});
-  const state = useRef({ lit, point });
-
-  useEffect(() => {
-    let cleanup = () => {};
-    (async () => {
-      const [{ geoConicEqualArea, geoGraticule10, geoPath }, { zoom, zoomIdentity }, { select }] = await Promise.all([
-        import("d3-geo"),
-        import("d3-zoom"),
-        import("d3-selection"),
-      ]);
-      const el = canvas.current;
-      const holder = box.current;
-      if (!el || !holder) return;
-      const ctx = el.getContext("2d");
-      if (!ctx) return;
-      let t = zoomIdentity;
-      let w = 0;
-      let h = 0;
-      const projection = geoConicEqualArea().parallels([12, 28]).rotate([-80, 0]);
-      let xy: [number, number][] = [];
-      const graticule = geoGraticule10();
-
-      const size = () => {
-        const dpr = window.devicePixelRatio || 1;
-        w = holder.clientWidth;
-        h = holder.clientHeight;
-        el.width = w * dpr;
-        el.height = h * dpr;
-        el.style.width = `${w}px`;
-        el.style.height = `${h}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        projection.fitExtent(
-          [
-            [16, 16],
-            [w - 16, h - 16],
-          ],
-          { type: "MultiPoint", coordinates: [[FRAME.lon[0], FRAME.lat[0]], [FRAME.lon[1], FRAME.lat[1]], [FRAME.lon[0], FRAME.lat[1]], [FRAME.lon[1], FRAME.lat[0]]] },
-        );
-        xy = places.map((p) => projection([p.lon, p.lat]) ?? [-99, -99]);
-      };
-
-      const draw = () => {
-        const css = getComputedStyle(document.documentElement);
-        const ink = css.getPropertyValue("--ink").trim();
-        const rule = css.getPropertyValue("--rule").trim();
-        const lac = css.getPropertyValue("--lac").trim();
-        ctx.clearRect(0, 0, w, h);
-        ctx.save();
-        ctx.translate(t.x, t.y);
-        ctx.scale(t.k, t.k);
-        ctx.beginPath();
-        geoPath(projection, ctx)(graticule);
-        ctx.strokeStyle = rule;
-        ctx.lineWidth = 0.6 / t.k;
-        ctx.stroke();
-        ctx.restore();
-        const grow = Math.min(2.2, Math.sqrt(t.k));
-        const { lit: order, point: pt } = state.current;
-        const on = new Set(order);
-        const labelled = new Set(order.slice(0, 8));
-        ctx.globalAlpha = on.size ? 0.35 : 0.72;
-        ctx.fillStyle = ink;
-        places.forEach((p, i) => {
-          const [x0, y0] = xy[i]!;
-          const x = t.applyX(x0);
-          const y = t.applyY(y0);
-          if (x < -10 || y < -10 || x > w + 10 || y > h + 10 || on.has(p.id)) return;
-          const r = (0.9 + Math.min(4, Math.sqrt(p.documents) * 0.55)) * grow;
-          ctx.beginPath();
-          ctx.arc(x, y, r, 0, 2 * Math.PI);
-          ctx.fill();
-        });
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = lac;
-        ctx.font = '12px "Source Serif 4", serif';
-        places.forEach((p, i) => {
-          if (!on.has(p.id)) return;
-          const [x0, y0] = xy[i]!;
-          const x = t.applyX(x0);
-          const y = t.applyY(y0);
-          ctx.beginPath();
-          ctx.arc(x, y, 3.2 * grow, 0, 2 * Math.PI);
-          ctx.fill();
-          if (t.k >= 6 && labelled.has(p.id)) ctx.fillText(label(p.labels, p.id), x + 6, y - 5);
-        });
-        if (pt) {
-          const c = projection([pt.lon, pt.lat]);
-          if (c) {
-            const x = t.applyX(c[0]);
-            const y = t.applyY(c[1]);
-            ctx.strokeStyle = lac;
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(x - 9, y);
-            ctx.lineTo(x + 9, y);
-            ctx.moveTo(x, y - 9);
-            ctx.lineTo(x, y + 9);
-            ctx.stroke();
-          }
-        }
-      };
-
-      size();
-      const z = zoom<HTMLCanvasElement, unknown>()
-        .scaleExtent([1, 60])
-        .on("zoom", (e) => {
-          t = e.transform;
-          draw();
-        });
-      const sel = select(el);
-      sel.call(z);
-      if (state.current.point) {
-        const c = projection([state.current.point.lon, state.current.point.lat]);
-        if (c) sel.call(z.transform, zoomIdentity.translate(w / 2, h / 2).scale(8).translate(-c[0], -c[1]));
-      }
-      el.addEventListener("click", (ev) => {
-        const rect = el.getBoundingClientRect();
-        const mx = ev.clientX - rect.left;
-        const my = ev.clientY - rect.top;
-        // Snap to a dot under the pointer; otherwise ask about the spot itself.
-        let best = -1;
-        let bestD = 12 * 12;
-        xy.forEach(([x0, y0], i) => {
-          const d = (t.applyX(x0) - mx) ** 2 + (t.applyY(y0) - my) ** 2;
-          if (d < bestD) {
-            bestD = d;
-            best = i;
-          }
-        });
-        if (best >= 0) onPick({ lat: places[best]!.lat, lon: places[best]!.lon });
-        else {
-          const ll = projection.invert?.([t.invertX(mx), t.invertY(my)]);
-          if (ll) onPick({ lat: Math.max(-90, Math.min(90, ll[1])), lon: ((ll[0] + 540) % 360) - 180 });
-        }
-      });
-      const ro = new ResizeObserver(() => {
-        size();
-        draw();
-      });
-      ro.observe(holder);
-      const mo = new MutationObserver(draw);
-      mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-      redraw.current = draw;
-      draw();
-      cleanup = () => {
-        ro.disconnect();
-        mo.disconnect();
-        sel.on(".zoom", null);
-      };
-    })();
-    return () => cleanup();
-    // The map is built once per set of places; selection changes only redraw it.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [places]);
-
-  useEffect(() => {
-    state.current = { lit, point };
-    redraw.current();
-  }, [lit, point]);
-
-  return (
-    <div ref={box} className={s.map}>
-      <canvas ref={canvas} role="img" aria-label={`Map of ${places.length} heritage places in and around India, drawn as dots`} />
-    </div>
-  );
-}
-
 function Nearby({ n }: { n: NearView }) {
+  const here = n.places[0];
+  useTrailStep(here ? { kind: "place", label: label(here.labels, here.id), href: `/atlas/?lat=${n.point.lat}&lon=${n.point.lon}` } : null);
   const far = n.places.length ? n.places[n.places.length - 1]!.distance_km : 0;
   const { nodes, edges } = useMemo(() => {
     const tied = new Set([...n.shared.flatMap((x) => x.members), ...n.links.flatMap((e) => [e.source, e.target])]);
-    const nodes: CanvasNode[] = n.places.map((p) => ({ id: p.id, label: label(p.labels, p.id), size: 5 + Math.min(6, Math.sqrt(p.documents)), tone: "entity", important: tied.has(p.id) }));
-    n.shared.forEach((x) => nodes.push({ id: x.node.id, label: label(x.node.labels, x.node.id), size: 4 + x.members.length, tone: "focus", important: true }));
-    const seen = new Set(nodes.map((x) => x.id));
-    const edges: CanvasEdge[] = [...n.links, ...n.shared_edges]
-      .filter((e) => seen.has(e.source) && seen.has(e.target))
-      .map((e) => ({ id: `${e.source}|${e.relation}|${e.target}`, source: e.source, target: e.target, label: e.relation_label }));
+    const nodes: LiveNode[] = n.places
+      .filter((p) => tied.has(p.id))
+      .map((p) => ({ id: p.id, label: label(p.labels, p.id), group: groupOf(p.kind, p.type) as Group, size: 5 + Math.min(5, Math.sqrt(p.documents)) }));
+    n.shared.forEach((x) =>
+      nodes.push({ id: x.node.id, label: label(x.node.labels, x.node.id), group: groupOf(x.node.kind, x.node.type), size: 6 + x.members.length, hub: true }),
+    );
+    const ids = new Set(nodes.map((x) => x.id));
+    const edges: LiveEdge[] = [...n.links, ...n.shared_edges]
+      .filter((e) => ids.has(e.source) && ids.has(e.target))
+      .map((e) => ({ id: `${e.source < e.target ? e.source : e.target}|${e.source < e.target ? e.target : e.source}`, source: e.source, target: e.target, label: e.relation_label }));
     return { nodes, edges };
   }, [n]);
 
   return (
-    <div>
+    <div className={s.nearby}>
+      <p className={s.eyebrow}>near {here ? <Names labels={here.labels} fallback={here.id} /> : "this point"}</p>
       <h2 className={s.nearTitle}>
-        The <span className="num">{n.places.length}</span> nearest places, within <span className="num">{fmt(far, 1)}</span> km
+        <span className="num">{n.places.length}</span> places within <span className="num">{fmt(far, 1)}</span> km
       </h2>
-      <div className={s.mini}>
-        <GraphCanvas nodes={nodes} edges={edges} onSelect={() => {}} ariaLabel="How the nearby places are tied in the graph" />
-      </div>
-      <p className={s.legend}>
-        <Seal kind="graph">ties</Seal> places and what joins two or more of them; direct links between places are drawn too.
-      </p>
+
+      {n.photos.length ? (
+        <ul className={s.photos} aria-label="Objects linked to these places">
+          {n.photos.map((d) => (
+            <li key={d.id}>
+              <Link href={`/document/?id=${encodeURIComponent(d.id)}`} title={label(d.labels, d.id)}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={d.image!.thumb}
+                  alt={label(d.labels, d.id)}
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => ((e.currentTarget.closest("li") as HTMLElement).style.display = "none")}
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className={s.muted}>No museum object in the archive is linked to these places.</p>
+      )}
 
       <h3 className={s.h3}>What ties them</h3>
-      {n.shared.length === 0 && n.links.length === 0 ? <p className={s.muted}>The graph has no link among these places.</p> : null}
+      {nodes.length > 1 ? (
+        <div className={s.mini}>
+          <LiveGraph nodes={nodes} edges={edges} onSelect={() => {}} focusOnSelect={false} ariaLabel="How the nearby places are tied in the graph" />
+        </div>
+      ) : null}
+      {n.shared.length === 0 && n.links.length === 0 ? <p className={s.muted}>The graph records no fact joining these places.</p> : null}
       <ul className={s.ties}>
         {n.shared.map((x) => (
           <li key={x.node.id}>
             <Link href={`/graph/?node=${encodeURIComponent(x.node.id)}`}>
               <Names labels={x.node.labels} fallback={x.node.id} />
             </Link>{" "}
-            joins <span className="num">{x.members.length}</span>
-            {x.node.hub ? <span className={s.muted}> (a hub)</span> : null}
+            <span className={s.muted}>
+              joins {x.members.length}
+              {x.node.hub ? ", a hub" : ""}
+            </span>
           </li>
         ))}
       </ul>
@@ -334,41 +284,63 @@ function Nearby({ n }: { n: NearView }) {
           </p>
         </>
       ) : null}
+      <AtlasRings lat={n.point.lat} lon={n.point.lon} />
       <h3 className={s.h3}>The places</h3>
       <ol className={s.places}>
         {n.places.map((p) => (
           <li key={p.id}>
+            <i className={s[`g_${groupOf(p.kind, p.type)}`]} aria-hidden />
             <Link href={`/graph/?node=${encodeURIComponent(p.id)}`}>
               <Names labels={p.labels} fallback={p.id} />
             </Link>
-            <span className={s.muted}>
-              {" "}
-              <span className="num">{fmt(p.distance_km, 1)}</span> km · <span className="num">{fmt(n.documents_per_place[p.id] ?? 0)}</span>{" "}
-              {(n.documents_per_place[p.id] ?? 0) === 1 ? "document" : "documents"}
-            </span>
+            <span className={`${s.km} num`}>{fmt(p.distance_km, 1)} km</span>
           </li>
         ))}
       </ol>
-      {n.documents_about_several.length ? (
-        <>
-          <h3 className={s.h3}>Documents about several of them</h3>
-          <ul className={s.ties}>
-            {n.documents_about_several.slice(0, 8).map((x) => (
-              <li key={x.node.id}>
-                <Link href={`/document/?id=${encodeURIComponent(x.node.id)}`}>{label(x.node.labels, x.node.id)}</Link>{" "}
-                <span className={s.muted}>about {x.members.length}</span>
-              </li>
-            ))}
-          </ul>
-        </>
+      {here ? (
+        <NextSteps
+          steps={[
+            {
+              label: `Documents about ${label(here.labels, here.id)}`,
+              href: `/cases/?q=${encodeURIComponent(label(here.labels, here.id))}&seeds=${encodeURIComponent(here.id)}`,
+              hint: "both lenses, starting here",
+            },
+            { label: "Open it in the graph", href: `/graph/?node=${encodeURIComponent(here.id)}`, hint: "its facts and neighbours" },
+          ]}
+        />
       ) : null}
       <MarginNote>
         <p>
-          Nearness is distance on the globe from where you clicked. Ties come from the graph: a node counts as a tie when
-          two or more of these places link to it. Centuries are listed apart, because one century can join almost
-          everything nearby.
+          Nearness is distance on the globe from the chosen point: the 25 nearest places that are not hubs, however far
+          that reaches. A fact ties two places when both link to the same entity; centuries are listed apart, since one
+          century can join almost everything.
+        </p>
+        <p>
+          No borders are drawn: India&apos;s boundaries must follow the Survey of India, whose boundary data needs a
+          licence. The places themselves make the map.
         </p>
       </MarginNote>
     </div>
+  );
+}
+
+/** The same neighbourhood counted in hexagons: the point's own cell, then each ring around it. */
+function AtlasRings({ lat, lon }: { lat: number; lon: number }) {
+  const r = useResource(() => api.rings(lat, lon, 2), `rings|${lat}|${lon}`);
+  if (r.state !== "ready") return null;
+  return (
+    <HexRings
+      title="Ring by ring"
+      unit="places"
+      bands={r.data.rings.map((b) => ({
+        ring: b.ring,
+        total: b.total,
+        items: (b.places ?? []).slice(0, 6).map((p) => (
+          <Link key={p.id} className={s.ringChip} href={`/graph/?node=${encodeURIComponent(p.id)}`}>
+            {label(p.labels, p.id)}
+          </Link>
+        )),
+      }))}
+    />
   );
 }

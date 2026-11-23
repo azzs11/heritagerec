@@ -134,6 +134,21 @@ Link precision per layer is measured on the author's check of
 | One coordinate is on another globe | A value with globe Q405 (the Moon) | Not placed | same files (`not_earth`) | Rule, during the build, pending author review |
 | Two corpus sites carry coordinates that look wrong on Wikidata | Kali Masjid (Q121843253) at longitude -77.5, likely a sign error; Jama Masjid, Kanchipuram (Q6127159) placed in Iran | Not changed: the map draws India only, so they do not show; to be corrected on Wikidata or by hand later | `results/explorer/explorer_v1.json` (outside the India box) | Pending author review |
 | A corpus site is placed in Liverpool | Sri Muthumariyamman Temple (Q19605756) | Not changed; possibly a different temple that passed the scope check, to be checked by hand | same file | Pending author review |
+| Wrong Kannada label on Wikidata | Konark Sun Temple (Q752091) has the Kannada label of the Kalka–Shimla Railway | None yet: pending author review (fix on Wikidata, or override the label in the gazetteer) | found while writing `src/graph/neo4j_export.py` examples, 2026-11-22 | pending author review |
+
+## 10b. Linking queries to entities
+
+| Found | Example | Change | Recorded in | Decided by |
+| --- | --- | --- | --- | --- |
+| The object linker's word pattern splits Hindi and Kannada words at their vowel signs | "जामा मस्जिद" became "ज म मस ज द" | The query linker uses its own normalisation that keeps letters and combining marks of every script; the object linker is left as is (it reads English museum fields) | `src/graph_retrieval/linker.py` | Rule, during the build (22 Nov 2026) |
+| Very short aliases are ordinary words or abbreviations | "up" (Uttar Pradesh), "boy", "sen", "una" | Latin-script names under four letters are matched only when they are a place's main label (Goa, Leh, Diu) | same file | Rule, during the build, pending author review |
+| One generic word is the whole name of four entities | "fort" | Never matched on its own ("Agra Fort" still matches) | same file | Rule, during the build, pending author review |
+
+## 10c. Text seen while building search
+
+| Found | Example | Change | Recorded in | Decided by |
+| --- | --- | --- | --- | --- |
+| Some Wikipedia extracts keep section-heading markup | "== Location ==" inside the Chennakeshava Temple article | Hidden in search snippets only; the records are unchanged until the week-5 cleaning, where the markup is to be removed from the text | `server/keyword.py` | Rule, during the build (22 Nov 2026), pending author review |
 
 ## 11. Checks waiting for the author
 

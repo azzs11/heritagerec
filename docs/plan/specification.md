@@ -41,7 +41,7 @@ Target: about 10,000 documents, Republic of India only (decision 0001), from the
 | World Heritage sites in India | Heritage designation | All |
 | Tentative List sites | Heritage designation | All |
 | Dynasties and historical states | Type dynasty with country India, plus any dynasty or state whose capital is in India (decision 0002) | All, listed for a hand scan |
-| ASI monuments | ASI Monument ID, English article exists | About 500, stratified by state, minimum 5 per state |
+| ASI monuments | ASI Monument ID, article in English, Hindi or Kannada (English only in corpus v1; decision 0031) | About 500, stratified by state, minimum 5 per state |
 | Cultural heritage | UNESCO Intangible Cultural Heritage elements of India, classical and folk performing arts, painting schools, crafts with geographical indication | Quotas in decision 0002 |
 | Styles | Architectural styles and art schools used by the seeded sites and objects | All reached in one hop |
 | People | Rule set at checkpoint 1 (decision 0002) | All that pass the rule |
@@ -51,6 +51,27 @@ Target: about 10,000 documents, Republic of India only (decision 0001), from the
 **Sources and caps (decisions 0013, 0015, 0017).** Wikipedia (en, hi, kn) for every entity in the four lists; Met, Cleveland, Wellcome and Internet Archive per seed by name, under per-source caps; and every public-domain or CC0 object from India at the Met, Cleveland and the Art Institute of Chicago, collected by place. Wikisource and SIDDHAM, with per-record licence checks, are proposed: they are collected only if the corpus gates leave time.
 
 All IDs are verified on Wikidata before use; counts come from probes, never estimates. Wikipedia text comes through the TextExtracts API (decision 0003). Each record follows one schema (decision 0004): id, title, text, language, doc\_type, source, url, licence URI, entity IDs, coordinates, period start and end, fetch date, SHA-256, raw-response pointer.
+
+### Coverage and selection bias (decision 0031)
+
+**The problem.** Every document enters through a Wikidata entity, so the corpus can only hold heritage that Wikidata already describes. That coverage is uneven, and three biases follow:
+
+- **Coverage bias.** Famous sites with English documentation have items, articles and many links. Village temples, local inscriptions and folk traditions in Karnataka and the Hindi belt have less coverage or none. Studies of Wikidata report gaps in Hindi labels and descriptions.
+- **Filter bias, added by our own rules.** The ASI strata required an English article, so an entity with only a Kannada or Hindi article never became a seed.
+- **A confound with RQ1.** Entities with rich coverage also have the densest graph neighbourhoods. If the test set leans towards them, "graph beats text" may only mean "graph beats text where Wikidata is rich".
+
+**The decision.** Keep Wikidata as the gateway for the headline results: its language-independent IDs are what make RQ3 possible, and it is CC0. Then measure the bias, cut the part these rules add, test whether the results hold where coverage is thin, and state the scope plainly.
+
+| Step | What is done | Why |
+| --- | --- | --- |
+| 1. Coverage audit | A seeded, stratified random sample of about 300 entries from official lists not built from Wikidata or Wikipedia: about 150 from Karnataka (ASI circles and the Karnataka state-protected list), about 100 from Hindi-belt states (ASI circles and one state's protected list), about 50 from the rest of India (ASI), plus the UNESCO intangible heritage list for India in full. For each entry, record: Wikidata item, ASI ID, en/hi/kn articles, article length, statement count, sitelink count and graph degree. A script proposes matches and the author confirms them. A "no item" result needs a recorded search trail, and 10% of matches are checked twice. The full ASI list is also compared with the corpus, state by state. | Turns "coverage is thinner" into measured rates (with Wilson 95% intervals) by state, language and type, for both RQ3 languages. Each list's source, version, date and licence are recorded, because the published counts differ. |
+| 2. Drop the English-only filter | A seed or ASI entity qualifies with an article in English, Hindi or Kannada, the rule the class-based list (decision 0018) already uses. The new ASI entities go into a new list version. The report gives how many entities enter only through hi or kn. | Removes the part of the bias that these rules added. |
+| 3. Coverage tiers | Each document entity gets a coverage score: the ranks of its total sitelinks and its statement count, averaged and fixed at the frozen snapshot. Tertiles of that score give rich, middle and sparse. Each query takes the tier of the target entity the author marks during curation, blind to systems; queries with no target entity form a "no entity" group. At least 30 of the 160 test queries, 8 of the 40 dev queries and 4 of the 15 validation queries are in the sparse tier. The query grid leans towards regions and types the audit shows as thin. If the quota is still short, backstories are written from audit entries that are in the corpus; this happens before any test run, and those queries are flagged. | Gives enough sparse-tier queries to report on. The tiers do not move when the graph build changes, and tuning is not done on rich entities only. |
+| 4. Results by tier | Written into the frozen analysis plan before any test run, as secondary hypotheses kept outside the primary Holm family. RQ1 and RQ3 are reported per tier with intervals. An interaction test asks whether the graph-minus-text NDCG@10 gap is smaller for sparse than for rich queries, and a regression of that gap on the continuous coverage score backs it up. LLM–author agreement is reported per tier. | Tests directly whether the graph advantage survives where Wikidata is thin, and whether the judge is less reliable there. If the advantage does not survive, that is a finding. |
+| 5. Off-Wikidata probe (stretch) | About 100–150 documents that enter without a Wikidata item: audit-sample monuments with no item, plus public-domain gazetteers, ASI reports and Kannada Wikisource (if accepted). They are marked unlinked and kept out of the headline, with about 10 queries aimed at them. | Shows how each system degrades when the graph has no node: graph-only retrieval should fail, and hybrid should fall back to text. |
+| 6. Freeze, do not edit | The Wikidata state is the set of per-entity revisions saved with the frozen snapshot (decision 0020). No items are added or edited on Wikidata during the study. The audit's list of missing monuments is published with the benchmark once each list's licence is checked. | Editing Wikidata to fill our own gaps would tilt the test towards the graph. The gap list becomes a contribution. |
+
+**What the paper says.** The data card and a Limitations paragraph report the audit rates. Claims are scoped to heritage that Wikidata describes as of the snapshot, and the per-tier results show how far they stretch beyond it. The one-line answer to a reader who raises selection bias: "We measured Wikidata's coverage against the ASI and state lists, report results separately for sparsely covered entities, and release the gap list."
 
 ## 4. Knowledge graph
 
@@ -142,7 +163,7 @@ Benchmark: 200 queries (40 in Hindi or Kannada), LLM-generated and author-curate
 
 - **Queries from information needs, not from the entity list.** The LLM is given short descriptions of who is searching and why ("a student comparing Hoysala and Chalukya temple styles"), not the seed entities, so queries are not tilted toward the graph. About 40 queries are written in real question styles (exam, tourist, researcher). The share of queries containing a linkable entity is reported.
 - **LLM judge:** one open-weight model chosen by an options comparison, not used inside any compared system, with every judgement saved with its rationale.
-- **Validation set:** 15 test queries, including 3–4 in Hindi or Kannada, judged by the author blind to labels and systems. Agreement is reported overall and per language.
+- **Validation set:** 15 test queries, including 3–4 in Hindi or Kannada and at least 4 in the sparse coverage tier, judged by the author blind to labels and systems. Agreement is reported overall, per language and per coverage tier.
 - **Judge bias check:** agreement between the LLM and the author is reported per system, to show the judge does not favour one kind of system (for example dense retrieval).
 - **Second human (strongly recommended):** one more person judges the same 15 queries; human–human agreement is the ceiling the LLM is compared against.
 - **Proposed, not accepted (decision 0010):** a second LLM judge, and about 50 validation queries judged by two people.
@@ -153,7 +174,9 @@ Benchmark: 200 queries (40 in Hindi or Kannada), LLM-generated and author-curate
 | --- | --- |
 | Table: corpus | Documents by type, source, language, licence, state, period |
 | Table: knowledge graph | Nodes and edges by type and layer, degree, components |
+| Table: coverage audit | Share of ASI, state-list and UNESCO entries with a Wikidata item and en/hi/kn articles, by state, language and type |
 | Table: main results | Every system on the 160 test queries, with intervals and significance |
+| Table: results by coverage tier | RQ1 and RQ3 for rich, middle and sparse entities, with the interaction test: whether the graph advantage holds where Wikidata is thin |
 | Table: by query type and language | Where graph helps and where it does not (RQ1, RQ3) |
 | Table: edge layers | Core graph versus each added layer (RQ1) |
 | Table: ablation and features | Drop in NDCG@10 per removed signal; SHAP importance (RQ2) |
@@ -178,13 +201,13 @@ Two phases. The corpus and graph are built first, in weekly gates until mid-Janu
 | --- | --- | --- | --- |
 | 1 | 19–22 Nov | Per-source caps and borderline people settled (decision 0013); one-hop neighbour probe (0005); Wikipedia collector tried on a small sample | Caps accepted; neighbour counts on file |
 | 2 | 23–30 Nov | Wikipedia en/hi/kn for the seeds; Met, Cleveland, Wellcome, Internet Archive first pass with caps; snapshot and data card; core Wikidata graph; all 200 queries generated, curated and split (test sealed); LLM judge chosen; BM25, BM25+RM3, MiniLM, BGE-M3, multilingual-e5 on dev; dev pools judged | **Interim checkpoint (30 Nov):** snapshot with checksum, data card, graph statistics, baseline numbers on the 40 dev queries, all labelled interim |
-| 3 | 1–6 Dec | Wikipedia for the one-hop neighbours; hand check of a random sample for scope drift | Corpus near the ~10K target; drift rate on file |
+| 3 | 1–6 Dec | Wikipedia for the one-hop neighbours and for ASI monuments with only a Hindi or Kannada article (decision 0031); hand check of a random sample for scope drift; coverage-audit sample drawn and matched | Corpus near the ~10K target; drift rate on file; hi/kn-only entry counts on file |
 | 4 | 7–13 Dec | Full museum and library runs (Met, Cleveland, Wellcome, Internet Archive) with licence filtering | Per-source fetched, kept, dropped and capped counts on file |
 | 5 | 14–20 Dec | Cleaning: near-duplicates (MinHash), document types, periods, coordinates; schema validation | Cleaning report; every record passes validation |
 | 6 | 21–27 Dec | Edge layers: core Wikidata, hyperlinks, Getty AAT, geography; hub down-weighting (decisions 0006, 0007) | Edge list with a layer column; statistics per layer |
 | 7 | 28 Dec–3 Jan | Gazetteer and entity linking (mentions layer), measured on 50 hand-labelled documents and 200 checked links; two-hop probe; LLM-triples ablation layer | Entity-linking precision, recall and F1; two-hop counts on file |
-| 8 | 4–10 Jan | Quality pass: full data card (document-type mix, licences, states, periods, unfilled places), entity and edge tables, spot checks by the author | Data card complete; author's spot checks recorded |
-| 9 | 11–15 Jan | Freeze: snapshot v1 with manifest and checksums; graph v1; corpus tag | Corpus and graph frozen and tagged; one command rebuilds them from the raw responses |
+| 8 | 4–10 Jan | Quality pass: full data card (document-type mix, licences, states, periods, unfilled places, coverage-audit rates), entity and edge tables, spot checks by the author | Data card complete; author's spot checks and audit matches recorded |
+| 9 | 11–15 Jan | Freeze: snapshot v1 with manifest and checksums; graph v1; corpus tag; sitelink counts fetched and coverage tiers fixed | Corpus, graph and tiers frozen and tagged; one command rebuilds them from the raw responses |
 
 **Phase 2: evaluation and release (after the corpus freeze, lighter scope)**
 
@@ -204,7 +227,7 @@ Phase 2 dates are set at the corpus freeze. The interim dev pools are judged aga
 | Corpus of about 10K documents, data card, knowledge graph with separate edge layers | SIDDHAM and Wikisource collectors |
 | BM25, BM25+RM3, dense, graph retrieval, both controls, fusion, reranker, LambdaMART | RotatE; the 4B reranker |
 | Benchmark: LLM-generated, author-curated queries; LLM judge; the author's 15-query validation; judge-bias check; frozen analysis plan | A second LLM judge; about 50 validation queries judged by two people |
-| RQ1–RQ3 results with statistics and ablation; release with DOI and loader | Recommendation evaluation on 40 seed documents, explanation fidelity (RQ4), diversity step; explanation user study |
+| RQ1–RQ3 results with statistics and ablation; coverage audit and results by coverage tier (decision 0031); release with DOI, loader and gap list | Off-Wikidata probe (decision 0031); recommendation evaluation on 40 seed documents, explanation fidelity (RQ4), diversity step; explanation user study |
 | Interface: story, atlas, cases with stage-by-stage explanations, graph explorer, ledger and Lab (decisions 0012, 0025); built alongside phase 1 without moving its gates | |
 
 After the release: arXiv preprint once the co-authors agree, then the paper submissions. Never drop the human validation set, and never invent or estimate a number.
