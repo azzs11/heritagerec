@@ -64,3 +64,17 @@ export function parseSeeds(text: string): Record<string, number> {
   }
   return out;
 }
+
+/** Both rankings of a case as CSV, every row the lenses returned (not only those shown), for a reader's own analysis. */
+export function rankingCsv(q: string, textSystem: string, graphSystem: string, text: Reading[], graph: Reading[]): string {
+  const cell = (v: string | number | null | undefined) => {
+    const t = v == null ? "" : String(v);
+    return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  const head = ["query", "lens", "system", "rank", "doc_id", "title", "language", "source", "kind", "score"];
+  const rows = [
+    ...text.map((r) => ["text", textSystem, r] as const),
+    ...graph.map((r) => ["graph", graphSystem, r] as const),
+  ].map(([lens, system, r]) => [q, lens, system, r.rank, r.id, r.title, r.language, r.source, r.kind, r.score].map(cell).join(","));
+  return [head.join(","), ...rows].join("\n") + "\n";
+}
