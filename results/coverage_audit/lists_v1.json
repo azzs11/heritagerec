@@ -1,0 +1,583 @@
+{
+  "generated": "2026-11-23T15:42:38Z",
+  "commit": "ae8e640dff6a5d3edac4f305c163d93c71c03175",
+  "sources": {
+    "asi_cpm": {
+      "url": "https://asi.nic.in/pdf/CPM_List.pdf",
+      "fetched": "2026-11-23T14:13:08Z",
+      "sha256": "47f3253a65f2e3a9f1b07837cf3423787f0fe66b1ef0b17dd0c0f64978c5dd95",
+      "last_modified": "Wed, 19 Aug 2026 09:20:01 GMT"
+    },
+    "karnataka_state": {
+      "url": "https://archaeology.karnataka.gov.in/storage/pdf-files/monument%20list%20final%20english.pdf",
+      "fetched": "2026-11-23T14:13:10Z",
+      "sha256": "dfcf123afcc188547a37751ab973eed54238b9336203d52a7400bb21f2784c13",
+      "last_modified": "Sat, 17 Oct 2020 07:15:25 GMT"
+    },
+    "mp_state": {
+      "url": "http://web.archive.org/web/20211020112952id_/http://archaeology.mp.gov.in/en-us/Monuments/Protected-Monuments",
+      "fetched": "2026-11-23T14:13:12Z",
+      "sha256": "a8b7ace14e3c5889da7a1ce8f030b04e9acd991309e7fc2a0c1746ce8fd0a966",
+      "last_modified": null
+    },
+    "unesco_ich_india": {
+      "url": "https://ich.unesco.org/en/state/india-IN",
+      "fetched": "2026-11-23T14:32:43Z",
+      "sha256": "cc513a68c5955a7c18df07b455c44c778ac11c83ccb5b8a4785b56810a8dc7c3",
+      "last_modified": null
+    }
+  },
+  "lists": {
+    "asi_cpm": {
+      "rows": 3698,
+      "checks": [
+        {
+          "what": "state Andhra Pradesh",
+          "stated": 135,
+          "parsed": 135
+        },
+        {
+          "what": "state Arunachal Pradesh",
+          "stated": 3,
+          "parsed": 3
+        },
+        {
+          "what": "state Assam",
+          "stated": 55,
+          "parsed": 55
+        },
+        {
+          "what": "state Bihar",
+          "stated": 70,
+          "parsed": 70
+        },
+        {
+          "what": "state Chhattisgarh",
+          "stated": 46,
+          "parsed": 46
+        },
+        {
+          "what": "state Daman & Diu (U.T.)",
+          "stated": 11,
+          "parsed": 11
+        },
+        {
+          "what": "state Goa",
+          "stated": 21,
+          "parsed": 21
+        },
+        {
+          "what": "state Gujarat",
+          "stated": 205,
+          "parsed": 205
+        },
+        {
+          "what": "circle Gujarat / Vadodara Circle",
+          "stated": 159,
+          "parsed": 159
+        },
+        {
+          "what": "circle Gujarat / Rajkot Circle",
+          "stated": 46,
+          "parsed": 46
+        },
+        {
+          "what": "state Haryana",
+          "stated": 93,
+          "parsed": 93
+        },
+        {
+          "what": "state Himachal Pradesh",
+          "stated": 40,
+          "parsed": 40
+        },
+        {
+          "what": "state Jammu & Kashmir (U.T.)",
+          "stated": 56,
+          "parsed": 56
+        },
+        {
+          "what": "state Jharkhand",
+          "stated": 13,
+          "parsed": 13
+        },
+        {
+          "what": "state Karnataka",
+          "stated": 506,
+          "parsed": 506
+        },
+        {
+          "what": "circle Karnataka / Bangalore Circle",
+          "stated": 133,
+          "parsed": 133
+        },
+        {
+          "what": "circle Karnataka / Dharwad Circle",
+          "stated": 282,
+          "parsed": 282
+        },
+        {
+          "what": "circle Karnataka / Hampi Circle",
+          "stated": 91,
+          "parsed": 91
+        },
+        {
+          "what": "state Kerala",
+          "stated": 29,
+          "parsed": 29
+        },
+        {
+          "what": "state Ladakh (U.T.)",
+          "stated": 15,
+          "parsed": 15
+        },
+        {
+          "what": "state Madhya Pradesh",
+          "stated": 291,
+          "parsed": 291
+        },
+        {
+          "what": "circle Madhya Pradesh / Bhopal Circle",
+          "stated": 183,
+          "parsed": 183
+        },
+        {
+          "what": "circle Madhya Pradesh / Jabalpur Circle",
+          "stated": 108,
+          "parsed": 108
+        },
+        {
+          "what": "state Maharashtra",
+          "stated": 286,
+          "parsed": 286
+        },
+        {
+          "what": "circle Maharashtra / Aurangabad Circle",
+          "stated": 75,
+          "parsed": 75
+        },
+        {
+          "what": "circle Maharashtra / Mumbai Circle",
+          "stated": 117,
+          "parsed": 117
+        },
+        {
+          "what": "circle Maharashtra / Nagpur Circle",
+          "stated": 94,
+          "parsed": 94
+        },
+        {
+          "what": "state Manipur",
+          "stated": 1,
+          "parsed": 1
+        },
+        {
+          "what": "state Meghalaya",
+          "stated": 8,
+          "parsed": 8
+        },
+        {
+          "what": "state Mizoram",
+          "stated": 1,
+          "parsed": 1
+        },
+        {
+          "what": "state Nagaland",
+          "stated": 4,
+          "parsed": 4
+        },
+        {
+          "what": "state N.C.T. Delhi",
+          "stated": 172,
+          "parsed": 172
+        },
+        {
+          "what": "state Odisha",
+          "stated": 81,
+          "parsed": 81
+        },
+        {
+          "what": "circle Odisha / Bhubaneswar Circle",
+          "stated": 41,
+          "parsed": 41
+        },
+        {
+          "what": "circle Odisha / Puri Circle",
+          "stated": 40,
+          "parsed": 40
+        },
+        {
+          "what": "state Puducherry (U.T.)",
+          "stated": 7,
+          "parsed": 7
+        },
+        {
+          "what": "state Punjab",
+          "stated": 33,
+          "parsed": 33
+        },
+        {
+          "what": "state Rajasthan",
+          "stated": 163,
+          "parsed": 163
+        },
+        {
+          "what": "circle Rajasthan / Jaipur Circle",
+          "stated": 90,
+          "parsed": 90
+        },
+        {
+          "what": "circle Rajasthan / Jodhpur Circle",
+          "stated": 73,
+          "parsed": 73
+        },
+        {
+          "what": "state Sikkim",
+          "stated": 3,
+          "parsed": 3
+        },
+        {
+          "what": "state Telangana",
+          "stated": 8,
+          "parsed": 8
+        },
+        {
+          "what": "state Tamilnadu",
+          "stated": 412,
+          "parsed": 412
+        },
+        {
+          "what": "circle Tamilnadu / Chennai Circle",
+          "stated": 250,
+          "parsed": 250
+        },
+        {
+          "what": "circle Tamilnadu / Tiruchirapalli Circle",
+          "stated": 162,
+          "parsed": 162
+        },
+        {
+          "what": "state Tripura",
+          "stated": 8,
+          "parsed": 8
+        },
+        {
+          "what": "state Uttar Pradesh",
+          "stated": 743,
+          "parsed": 743
+        },
+        {
+          "what": "circle Uttar Pradesh / Agra Circle",
+          "stated": 154,
+          "parsed": 154
+        },
+        {
+          "what": "circle Uttar Pradesh / Jhansi Circle",
+          "stated": 173,
+          "parsed": 173
+        },
+        {
+          "what": "circle Uttar Pradesh / Lucknow Circle",
+          "stated": 191,
+          "parsed": 191
+        },
+        {
+          "what": "circle Uttar Pradesh / Meerut Circle",
+          "stated": 82,
+          "parsed": 82
+        },
+        {
+          "what": "circle Uttar Pradesh / Sarnath Circle",
+          "stated": 143,
+          "parsed": 143
+        },
+        {
+          "what": "state Uttarakhand",
+          "stated": 44,
+          "parsed": 44
+        },
+        {
+          "what": "state West Bengal",
+          "stated": 135,
+          "parsed": 135
+        },
+        {
+          "what": "circle West Bengal / Kolkata Circle",
+          "stated": 86,
+          "parsed": 86
+        },
+        {
+          "what": "circle West Bengal / Raiganj Circle",
+          "stated": 49,
+          "parsed": 49
+        },
+        {
+          "what": "total",
+          "stated": 3698,
+          "parsed": 3698
+        },
+        {
+          "what": "repeated serial numbers within a circle",
+          "stated": 0,
+          "parsed": 0,
+          "ids": []
+        }
+      ],
+      "mismatches": 0
+    },
+    "karnataka_state": {
+      "rows": 797,
+      "checks": [
+        {
+          "what": "district Bagalkot",
+          "stated": 22,
+          "stated_subtotal": "22",
+          "parsed": 22
+        },
+        {
+          "what": "district Bangalore Rural",
+          "stated": 9,
+          "stated_subtotal": "8",
+          "parsed": 8
+        },
+        {
+          "what": "district Bangalore Urban",
+          "stated": 7,
+          "stated_subtotal": "7",
+          "parsed": 7
+        },
+        {
+          "what": "district Belagam",
+          "stated": 58,
+          "stated_subtotal": "58",
+          "parsed": 58
+        },
+        {
+          "what": "district Bellary",
+          "stated": 6,
+          "stated_subtotal": "7",
+          "parsed": 7
+        },
+        {
+          "what": "district Bidar",
+          "stated": 11,
+          "stated_subtotal": "11",
+          "parsed": 11
+        },
+        {
+          "what": "district Bijapur",
+          "stated": 45,
+          "stated_subtotal": "46",
+          "parsed": 46
+        },
+        {
+          "what": "district Chamarajanagar",
+          "stated": 7,
+          "stated_subtotal": "7",
+          "parsed": 7
+        },
+        {
+          "what": "district Chikkaballapura",
+          "stated": 4,
+          "stated_subtotal": "5",
+          "parsed": 5
+        },
+        {
+          "what": "district Chikkamagalur",
+          "stated": 12,
+          "stated_subtotal": "12",
+          "parsed": 12
+        },
+        {
+          "what": "district Chitradurga",
+          "stated": 8,
+          "stated_subtotal": "8",
+          "parsed": 8
+        },
+        {
+          "what": "district Dakshina Kannada",
+          "stated": 1,
+          "stated_subtotal": "1",
+          "parsed": 1
+        },
+        {
+          "what": "district Davanagere",
+          "stated": 8,
+          "stated_subtotal": "8",
+          "parsed": 8
+        },
+        {
+          "what": "district Dharwad",
+          "stated": 27,
+          "stated_subtotal": "28",
+          "parsed": 28
+        },
+        {
+          "what": "district Gadag",
+          "stated": 44,
+          "stated_subtotal": "44",
+          "parsed": 44
+        },
+        {
+          "what": "district Gulbarga",
+          "stated": 38,
+          "stated_subtotal": "38",
+          "parsed": 38
+        },
+        {
+          "what": "district Hassan",
+          "stated": 30,
+          "stated_subtotal": "30",
+          "parsed": 30
+        },
+        {
+          "what": "district Haveri",
+          "stated": 118,
+          "stated_subtotal": "118",
+          "parsed": 118
+        },
+        {
+          "what": "district Kodagu",
+          "stated": 3,
+          "stated_subtotal": "3",
+          "parsed": 3
+        },
+        {
+          "what": "district Kolar",
+          "stated": 15,
+          "stated_subtotal": "15",
+          "parsed": 11
+        },
+        {
+          "what": "district Koppal",
+          "stated": 31,
+          "stated_subtotal": "31",
+          "parsed": 31
+        },
+        {
+          "what": "district Mandya",
+          "stated": 30,
+          "stated_subtotal": "30, 30",
+          "parsed": 31
+        },
+        {
+          "what": "district Mysore",
+          "stated": 32,
+          "stated_subtotal": "32",
+          "parsed": 32
+        },
+        {
+          "what": "district Raichur",
+          "stated": 62,
+          "stated_subtotal": "62",
+          "parsed": 62
+        },
+        {
+          "what": "district Ramanagara",
+          "stated": 13,
+          "stated_subtotal": "12",
+          "parsed": 12
+        },
+        {
+          "what": "district Shimoga",
+          "stated": 12,
+          "stated_subtotal": "12",
+          "parsed": 12
+        },
+        {
+          "what": "district Tumkur",
+          "stated": 29,
+          "stated_subtotal": "29",
+          "parsed": 29
+        },
+        {
+          "what": "district Udupi",
+          "stated": 10,
+          "stated_subtotal": "10",
+          "parsed": 10
+        },
+        {
+          "what": "district Uttara Kannada",
+          "stated": 51,
+          "stated_subtotal": "51",
+          "parsed": 51
+        },
+        {
+          "what": "district Yadgiri",
+          "stated": 101,
+          "stated_subtotal": "55",
+          "parsed": 55
+        },
+        {
+          "what": "total",
+          "stated": 844,
+          "parsed": 797
+        },
+        {
+          "what": "repeated entries dropped (Mandya printed twice)",
+          "stated": 0,
+          "parsed": 31
+        },
+        {
+          "what": "entries with a serial but no name",
+          "stated": 0,
+          "parsed": 1,
+          "ids": [
+            "ka:Bagalkot:18"
+          ]
+        },
+        {
+          "what": "serial numbers missing from the listing, Kolar",
+          "stated": 0,
+          "parsed": 4,
+          "ids": [
+            2,
+            3,
+            4,
+            14
+          ]
+        }
+      ],
+      "mismatches": 13
+    },
+    "mp_state": {
+      "rows": 497,
+      "checks": [
+        {
+          "what": "rows against the last serial number",
+          "stated": 497,
+          "parsed": 497
+        },
+        {
+          "what": "serial numbers missing",
+          "stated": 0,
+          "parsed": 0,
+          "ids": []
+        },
+        {
+          "what": "repeated serial numbers",
+          "stated": 0,
+          "parsed": 0
+        },
+        {
+          "what": "rows with no name",
+          "stated": 0,
+          "parsed": 0
+        }
+      ],
+      "mismatches": 0
+    },
+    "unesco_ich_india": {
+      "rows": 16,
+      "checks": [
+        {
+          "what": "elements inscribed",
+          "stated": 16,
+          "parsed": 16
+        }
+      ],
+      "mismatches": 0
+    }
+  },
+  "karnataka_notes": []
+}

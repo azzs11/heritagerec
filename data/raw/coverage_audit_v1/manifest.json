@@ -1,0 +1,48 @@
+{
+  "asi_cpm": {
+    "url": "https://asi.nic.in/pdf/CPM_List.pdf",
+    "file": "asi_cpm_list.pdf",
+    "publisher": "Archaeological Survey of India",
+    "title": "List of Centrally Protected Monuments/Sites, state-wise and circle-wise",
+    "fetched": "2026-11-23T14:13:08Z",
+    "bytes": 3283232,
+    "sha256": "47f3253a65f2e3a9f1b07837cf3423787f0fe66b1ef0b17dd0c0f64978c5dd95",
+    "last_modified": "Wed, 19 Aug 2026 09:20:01 GMT",
+    "content_type": "application/pdf"
+  },
+  "karnataka_state": {
+    "url": "https://archaeology.karnataka.gov.in/storage/pdf-files/monument%20list%20final%20english.pdf",
+    "file": "karnataka_monument_list_final_english.pdf",
+    "publisher": "Department of Archaeology, Museums and Heritage, Government of Karnataka",
+    "title": "Monument list (final, English)",
+    "fetched": "2026-11-23T14:13:10Z",
+    "bytes": 5691020,
+    "sha256": "dfcf123afcc188547a37751ab973eed54238b9336203d52a7400bb21f2784c13",
+    "last_modified": "Sat, 17 Oct 2020 07:15:25 GMT",
+    "content_type": "application/pdf"
+  },
+  "mp_state": {
+    "url": "http://web.archive.org/web/20211020112952id_/http://archaeology.mp.gov.in/en-us/Monuments/Protected-Monuments",
+    "original_url": "http://archaeology.mp.gov.in/en-us/Monuments/Protected-Monuments",
+    "archived": "2021-10-20T11:29:52Z",
+    "file": "mp_protected_monuments_20211020.html",
+    "publisher": "Directorate of Archaeology, Archives and Museums, Government of Madhya Pradesh",
+    "title": "Protected Monuments",
+    "fetched": "2026-11-23T14:13:12Z",
+    "bytes": 156755,
+    "sha256": "a8b7ace14e3c5889da7a1ce8f030b04e9acd991309e7fc2a0c1746ce8fd0a966",
+    "last_modified": null,
+    "content_type": "text/html; charset=utf-8"
+  },
+  "unesco_ich_india": {
+    "url": "https://ich.unesco.org/en/state/india-IN",
+    "file": "unesco_ich_india.html",
+    "publisher": "UNESCO Intangible Cultural Heritage",
+    "title": "India: elements inscribed on the Lists",
+    "fetched": "2026-11-23T14:32:43Z",
+    "bytes": 147217,
+    "sha256": "cc513a68c5955a7c18df07b455c44c778ac11c83ccb5b8a4785b56810a8dc7c3",
+    "last_modified": null,
+    "content_type": "text/html; charset=UTF-8"
+  }
+}

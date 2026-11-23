@@ -101,3 +101,19 @@ As recommended, with these additions from the author's review:
 - Licence. Government lists of names and places are facts. Republishing the gap list (entry, list ID, source URL,
   search trail) is planned, but not the PDFs themselves. The raw PDFs stay on Zenodo only if their terms allow;
   otherwise only their URLs and hashes are published.
+
+## Addendum, 23 Nov 2026: what "covered" means
+
+- Status: accepted (author, 2026-11-23: "yep").
+
+Found while building the fill step (`src/coverage_audit/fill.py`): Wikidata holds monument codes (P1371) for 7,745
+items, and per state the ASI codes match the ASI list almost one for one. The items seem to have been bulk-created
+from the Wiki Loves Monuments lists, and many carry little more than the code. The per-state comparison is
+generated into `results/coverage_audit/coverage_v1.md`.
+
+So "has a Wikidata item" is close to 100% for listed monuments and says little about coverage. The audit reports
+existence and also how rich each matched item is: an English description; labels in Hindi, Kannada and the local
+language; coordinates; an image; statement and sitelink counts; Wikipedia articles (en, hi, kn, local) and their
+lengths; whether the item is in corpus v1, and its degree in the core graph. The coverage tiers of 0031 (sitelinks
+and statements) already rest on richness and are unchanged. The author's matching is the same.
+

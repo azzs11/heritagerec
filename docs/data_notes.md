@@ -9,7 +9,7 @@ and who decided it. Counts come from the files named; nothing here replaces them
 author review" means the change was made while building the corpus and is marked
 in its file for the author to confirm or reverse.
 
-Last updated: 22 November 2026.
+Last updated: 23 November 2026.
 
 ## 1. Audit of the old corpus
 
@@ -157,3 +157,23 @@ Link precision per layer is measured on the author's check of
 - Link check: `results/linking/link_check_sample_v1.csv` (200 links, `correct` column).
 - Hand-scan rows marked "pending author review" in `data/seeds/curated/people_scan.csv` and `style_scan.csv`.
 - Explorer coordinates: the three sites listed in section 10 (two likely wrong coordinates, one possibly out of scope).
+- Coverage-audit lists: the rules in section 12, and a spot check of parsed rows against the PDFs.
+
+## 12. Coverage-audit lists (decision 0032)
+
+Found while parsing the official lists into rows (`src/coverage_audit/lists.py`); every difference from a list's
+own figures is in `results/coverage_audit/lists_v1.md`.
+
+| Found | Example | Change | Recorded in | Decided by |
+| --- | --- | --- | --- | --- |
+| Madhya Pradesh's live list page returns 404 | `archaeology.mp.gov.in/en-us/Monuments/Protected-Monuments`, 23 Nov 2026 | The Internet Archive copy of 20 Oct 2021 is the version used (497 rows) | `data/raw/coverage_audit_v1/manifest.json` | Author (0032) |
+| The ASI list spells a state and two circles differently on different pages | "N.C.T. of Delhi" against "N.C.T. Delhi"; "Jabalpur", "Raiganj" without "Circle" | The page-1 summary's spelling is used throughout | `ASI_STATE_SPELLING`, `ASI_CIRCLE_SPELLING` in the parser | Rule, during parsing, pending author review |
+| One ASI entry runs over three pages | Fatehpur Sikri (Agra Circle 33), pages 110-112 | Text without a serial number joins the entry above it | parser | Rule, during parsing, pending author review |
+| The Karnataka PDF prints Mandya's section twice | Pages 14-18 and 32-36, same 31 entries | The second copy is dropped (31 entries) | `lists_v1.md`, "repeated entries dropped" | Rule, during parsing, pending author review |
+| One Karnataka district heading has no "DISTRICT" | "CHIKKABALLAPURA", page 52 | An all-capitals line opening a table counts as a heading | parser | Rule, during parsing, pending author review |
+| Karnataka district names are spelled differently in the itemised pages and the summary | Belagam / Belgaum, Bijapur / Vijayapura, Gulbarga / Kalaburgi, Yadgiri / Yadagiri | A spelling map, used only to compare counts | `KA_SUMMARY_NAME` in the parser | Rule, during parsing, pending author review |
+| Karnataka's itemised list has 47 fewer entries than its own summary (797 against 844) | Yadgiri: 55 listed, 101 in the summary; Kolar: serials 2, 3, 4 and 14 not printed | Not changed: the listed entries are the sampling frame, and the shortfall is reported | `lists_v1.md` | Pending author review |
+| UNESCO's India page lists an ongoing nomination beside the inscribed elements | Henna (2026, ongoing) | Only the 16 inscribed elements are taken, as the page states | `lists_v1.md`, "elements inscribed" | Rule, during parsing, pending author review |
+| One inscribed element is shared by several countries | Nawrouz (2024, with India among the submitting states) | Kept: it is on India's list | `unesco_ich_india.csv` | Rule, during parsing, pending author review |
+| A Karnataka entry has a serial number but no name | Bagalkot 18 (Nagar, page 71) | Kept with an empty name; left out of the sample unless the author names it | `lists_v1.md`, "entries with a serial but no name" | Pending author review |
+

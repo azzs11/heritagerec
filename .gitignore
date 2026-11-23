@@ -208,6 +208,10 @@ data/raw/**/*.json
 data/raw/**/*.csv
 data/raw/**/*.txt
 data/raw/**/*.xml
+data/raw/**/*.pdf
+data/raw/**/*.html
+# The official lists' URLs, dates and checksums, so anyone can fetch the same files.
+!data/raw/coverage_audit_v1/manifest.json
 !data/raw/README.md
 !data/raw/.gitkeep
 
@@ -481,5 +485,7 @@ web/tsconfig.tsbuildinfo
 web/test-results/
 web/playwright-report/
 
+# Coverage-audit sample and matching sheet
+!results/coverage_audit/*.csv
 # Neo4j export: rebuilt on demand by src/graph/neo4j_export.py, published with the snapshots
 data/graph/neo4j_v1/
