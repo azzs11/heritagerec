@@ -158,5 +158,7 @@ own figures is in `results/coverage_audit/lists_v1.md`.
 | One Karnataka district heading has no "DISTRICT" | "CHIKKABALLAPURA", page 52 | An all-capitals line opening a table counts as a heading | parser | Rule, during parsing, pending author review |
 | Karnataka district names are spelled differently in the itemised pages and the summary | Belagam / Belgaum, Bijapur / Vijayapura, Gulbarga / Kalaburgi, Yadgiri / Yadagiri | A spelling map, used only to compare counts | `KA_SUMMARY_NAME` in the parser | Rule, during parsing, pending author review |
 | Karnataka's itemised list has 47 fewer entries than its own summary (797 against 844) | Yadgiri: 55 listed, 101 in the summary; Kolar: serials 2, 3, 4 and 14 not printed | Not changed: the listed entries are the sampling frame, and the shortfall is reported | `lists_v1.md` | Pending author review |
+| UNESCO's India page lists an ongoing nomination beside the inscribed elements | Henna (2026, ongoing) | Only the 16 inscribed elements are taken, as the page states | `lists_v1.md`, "elements inscribed" | Rule, during parsing, pending author review |
+| One inscribed element is shared by several countries | Nawrouz (2024, with India among the submitting states) | Kept: it is on India's list | `unesco_ich_india.csv` | Rule, during parsing, pending author review |
 | A Karnataka entry has a serial number but no name | Bagalkot 18 (Nagar, page 71) | Kept with an empty name; left out of the sample unless the author names it | `lists_v1.md`, "entries with a serial but no name" | Pending author review |
 
