@@ -157,3 +157,19 @@ transitions and visual appeal across pages. What the screens show:
 
 The plan as written, in the order given. Every design choice should be original and specific to this project: it
 shows heritage, languages, the graph and the two lenses, not a generic product.
+
+## Home doors, as built (23 Nov 2026)
+
+The four doors became one question seen four ways (author: "go ahead with 2"; design delegated). A first visitor
+needs to learn that the site looks at one question from several sides, so the four doors share one example
+question, and "Another question" moves all four (English, Hindi and Kannada examples):
+
+- Search: the text lens's and the graph lens's top 3, with a thread between any document both found.
+- Atlas: every placed entity as a speck, the places the question names lit.
+- Graph: the first named entity and its neighbours on a fixed circle, coloured by kind; a hub's bundled neighbours
+  drawn hollow and counted.
+- Lab: the question as the text lens's analyser leaves it, stemmed words marked (the Hindi example shows आगरा, Agra,
+  cut to अगर, "if").
+
+Each picture is stated in words beside it, and each door opens on exactly what it shows (the case, the map at the
+lit place, the graph at the named entity). The first question is fixed, so the static page and the browser agree.
