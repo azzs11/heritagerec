@@ -504,6 +504,43 @@ def check_mp(rows) -> list[dict]:
     ]
 
 
+# ---------------------------------------------------------------- UNESCO intangible heritage (India)
+
+
+def parse_unesco(path) -> tuple[list[dict], dict]:
+    """The "Listing of ICH" box of UNESCO's India page: every inscribed element, with its year and list.
+
+    Ongoing nominations are shown in the same box but are not inscribed, so they are left out.
+    """
+    soup = BeautifulSoup(path.read_text(encoding="utf-8", errors="replace"), "html.parser")
+    heading = next(h for h in soup.find_all("h2") if "Listing of ICH" in h.get_text())
+    box = heading.find_parent(["section", "div"])
+    text = box.get_text(" | ", strip=True)
+    stated = re.search(r"(\d+) elements? inscribed", text)
+    ongoing = text.split("On-going nomination", 1)[1] if "On-going nomination" in text else ""
+    rows, seen = [], set()
+    for a in box.find_all("a", href=True):
+        m = re.search(r"/en/(RL|USL|BSP)/.*-(\d{5})$", a["href"])
+        name = clean(a.get_text(" "))
+        if not m or a["href"] in seen or (ongoing and name in ongoing and name not in text.split("On-going")[0]):
+            continue
+        seen.add(a["href"])
+        rows.append(
+            {
+                "list": "unesco_ich_india",
+                "list_id": f"ich:{m.group(2)}",
+                "name": name,
+                "locality": "",
+                "district": "",
+                "state": "",
+                "circle": "",
+                "page": "",
+                "extra": json.dumps({"list": m.group(1), "url": a["href"]}, ensure_ascii=False),
+            }
+        )
+    return rows, {"stated": int(stated.group(1)) if stated else None}
+
+
 # ---------------------------------------------------------------- run
 
 
@@ -531,10 +568,15 @@ def main() -> None:
         r["extra"] = json.dumps({"serial": r.pop("serial")})
     ka_rows, ka_info = parse_karnataka(RAW_DIR / SOURCES["karnataka_state"]["file"])
     mp_rows, _ = parse_mp(RAW_DIR / SOURCES["mp_state"]["file"])
+    ich_rows, ich_info = parse_unesco(RAW_DIR / SOURCES["unesco_ich_india"]["file"])
     lists = {
         "asi_cpm": (asi_rows, check_asi(asi_rows, asi_summary_info)),
         "karnataka_state": (ka_rows, check_karnataka(ka_rows, ka_info)),
         "mp_state": (mp_rows, check_mp(mp_rows)),
+        "unesco_ich_india": (
+            ich_rows,
+            [{"what": "elements inscribed", "stated": ich_info["stated"], "parsed": len(ich_rows)}],
+        ),
     }
     for name, (rows, _) in lists.items():
         write_csv(name, rows)
