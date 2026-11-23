@@ -36,6 +36,11 @@ SHEET = ROOT / "data/queries/curation_v1.csv"
 REQUESTS = ROOT / "data/queries/reserve_requests_v1.json"
 QUERIES = ROOT / "data/queries/queries_v1.jsonl"
 DEV = ROOT / "data/queries/dev_v1.jsonl"
+# The runners (src/retrieval/bm25.py, dense.py) read a TSV: query id, language, text. Only dev gets one now; the test
+# queries are written as JSONL and get their TSV in phase 2, after the analysis plan is committed.
+DEV_TSV = ROOT / "data/queries/dev_v1.tsv"
+# Groups for results by type, language and tier (src.benchmark.evaluate --groups).
+DEV_GROUPS = ROOT / "data/queries/dev_v1_groups.tsv"
 TEST = ROOT / "data/queries/test_v1.jsonl"
 REPORT = ROOT / "results/queries/split_v1"
 SPLIT_SEED = 20261123
@@ -192,6 +197,13 @@ def finalize() -> None:
             for q in queries:
                 if part is None or q["split"] == part:
                     f.write(json.dumps(q, ensure_ascii=False) + "\n")
+    write_tsv(DEV_TSV, [q for q in queries if q["split"] == "dev"])
+    with open(DEV_GROUPS, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f, delimiter="\t", lineterminator="\n")
+        writer.writerow(["qid", "query_type", "language", "coverage_tier"])
+        for q in queries:
+            if q["split"] == "dev":
+                writer.writerow([q["qid"], q["query_type"], q["language"], q["coverage_tier"] or "no entity"])
 
     actions = Counter(r["action"].strip().lower() for r in rows)
     sparse = Counter(q["split"] for q in queries if q["coverage_tier"] == "sparse")
@@ -230,6 +242,14 @@ def finalize() -> None:
         if not q["met"]:
             print(f"sparse-tier quota not met in {s}: {q['have']} of {q['needed']}; top up from audit entries (0031)")
     print(f"{len(queries)} queries; split {report['by_split']}; test SHA-256 {report['test_sha256'][:16]}")
+
+
+def write_tsv(path, queries: list[dict]) -> None:
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f, delimiter="\t", lineterminator="\n")
+        for q in queries:
+            # A tab or line break inside a query would break the runners' TSV reading.
+            writer.writerow([q["qid"], q["language"], " ".join(q["text"].split())])
 
 
 def _group(items: list[dict], keys: tuple[str, ...]) -> dict:
