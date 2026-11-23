@@ -319,6 +319,8 @@ outputs/
 results/**/*.csv
 # Audit sheets are small and record the hand-checked labels, so keep them.
 !results/audit/*.csv
+# The author's blind rating sheets are hand-entered evidence too.
+!results/queries/**/*.csv
 results/**/*.pkl
 results/experiments/
 results/runs/
