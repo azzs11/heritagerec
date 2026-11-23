@@ -9,6 +9,8 @@
 | `graph/core_v1/` | Core Wikidata graph (decision 0020): `nodes.jsonl.gz` and `edges.tsv.gz` (source, relation, target, layer, origin, revision); later edge layers add rows with their own layer | Yes |
 | `explorer/v1/` | What the interface draws (decision 0025): `nodes.jsonl.gz` (degree, display hub, community, coordinates per graph node), `communities.json.gz`, and `images.jsonl.gz` (open-licence image links and credit lines of Met and Cleveland objects, never the images themselves); rebuilt from the graph and the raw responses | Yes |
 | `queries/` | Grid cells (`generator_trial_cells_v1.jsonl`, `benchmark_cells_v1.jsonl`); the author's curation sheet (`curation_v1.csv`), reserve requests, and the final queries with their dev and test files | Yes |
+| `judging/` | Judge input pools (`dev_pool_v1.jsonl`: query, title, cut text, runs and ranks per pair) and the author's blind pilot sheet | Yes |
+| `qrels/` | TREC qrels from the LLM judge (`dev_v1.qrels`) | Yes |
 | `passages/` | `manifest_v1.json`: passage settings, counts and the SHA-256 of `passages_v1.jsonl.gz` (150-word passages shared by every retrieval system, rebuilt from the snapshot) | Manifest only |
 | `indexes/` | Lucene indexes for BM25, one per language, rebuilt from the passages | No |
 | `coverage_audit/lists_v1/` | The official monument lists of the coverage audit (decision 0032), one row per entry: `asi_cpm.csv` (ASI centrally protected), `karnataka_state.csv`, `mp_state.csv`, `unesco_ich_india.csv`; rebuilt from the raw lists by `src.coverage_audit.lists` | Yes |
