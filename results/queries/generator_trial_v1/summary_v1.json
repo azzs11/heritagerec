@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-23",
+  "commit": "6c8bb21759971c3d982afc309c033fea0f2a23d7",
+  "revisions": {
+    "Qwen/Qwen3-14B": "40c069824f4251a91eefaf281ebe4c544efd3e18",
+    "sarvamai/sarvam-m": "01534a53c46f2788e392dbb3d994e0fa8f04d3fd"
+  },
+  "ratings": {
+    "Qwen/Qwen3-14B": {
+      "en": {
+        "items": 10,
+        "mean_fluency": 2.7,
+        "fits_backstory": 0.9,
+        "right_type": 0.8
+      },
+      "hi": {
+        "items": 10,
+        "mean_fluency": 1.4,
+        "fits_backstory": 0.5,
+        "right_type": 0.7
+      },
+      "kn": {
+        "items": 10,
+        "mean_fluency": 1.3,
+        "fits_backstory": 0.6,
+        "right_type": 0.3
+      },
+      "hi+kn": {
+        "items": 20,
+        "mean_fluency": 1.35,
+        "fits_backstory": 0.55,
+        "right_type": 0.5
+      },
+      "all": {
+        "items": 30,
+        "mean_fluency": 1.8,
+        "fits_backstory": 0.67,
+        "right_type": 0.6
+      }
+    },
+    "sarvamai/sarvam-m": {
+      "en": {
+        "items": 10,
+        "mean_fluency": 2.7,
+        "fits_backstory": 1.0,
+        "right_type": 0.9
+      },
+      "hi": {
+        "items": 10,
+        "mean_fluency": 2.4,
+        "fits_backstory": 0.8,
+        "right_type": 0.8
+      },
+      "kn": {
+        "items": 10,
+        "mean_fluency": 2.7,
+        "fits_backstory": 0.9,
+        "right_type": 0.8
+      },
+      "hi+kn": {
+        "items": 20,
+        "mean_fluency": 2.55,
+        "fits_backstory": 0.85,
+        "right_type": 0.8
+      },
+      "all": {
+        "items": 30,
+        "mean_fluency": 2.6,
+        "fits_backstory": 0.9,
+        "right_type": 0.83
+      }
+    }
+  }
+}
