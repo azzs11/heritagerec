@@ -11,6 +11,7 @@
 | `queries/` | Query generator trial (outputs, blind ratings, summary); benchmark generation outputs (`generation_v1/`); provisional coverage tiers; the curation and split report (`split_v1`) | `notebooks/`, `src/queries/` |
 | `coverage_audit/` | Coverage audit (decisions 0031, 0032): the official lists checked against their own totals (`lists_v1`), the seeded sample (`sample_v1`), the author's matching sheet with Wikidata candidates, the coverage rates from the matches (`coverage_v1`), and the blind second pass on 10% of them (`recheck_v1`) | `src/coverage_audit/` |
 | `judging/` | Pool reports (runs, depth, checksums), the judge's labels with rationales, and the pilot agreement with the author | `src/benchmark/judging.py`, `notebooks/relevance_judge.ipynb` |
+| `interim/` | The 30 Nov interim checkpoint report, labelled interim, assembled from the files above | `src/benchmark/interim.py` |
 | `benchmark/` | One folder per evaluation: `summary.json` and `.md` (means, intervals, tests, unjudged counts, inputs with checksums) and `per_query.tsv` | `src/benchmark/evaluate.py` |
 | `retrieval/` | Index statistics, dense encoding reports (`dense_<model>_v1.json`: model revision, truncation counts, chunk checksums), and TREC run files of each retrieval system on the dev queries | `src/retrieval/` |
 | `evaluation_report.json` | Conference-version evaluation, superseded (see `legacy/`) | — |
