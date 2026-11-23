@@ -482,3 +482,6 @@ web/next-env.d.ts
 web/tsconfig.tsbuildinfo
 web/test-results/
 web/playwright-report/
+
+# Coverage-audit sample and matching sheet
+!results/coverage_audit/*.csv
