@@ -8,7 +8,7 @@
 | `linking/` | Gazetteer counts, object-linking counts by layer, and the 200-link sample for the hand check | `src/corpus/gazetteer.py`, `src/corpus/link_objects.py` |
 | `graph/` | Core graph statistics: nodes and edges by kind, type and relation, degrees, components, hubs, build counts | `src/graph/core_graph.py` |
 | `explorer/` | `images_v1.json`: objects with an open image per museum, and why the others have none. Explorer data counts: coordinates placed and why not, display hubs and their threshold, communities, input and output checksums | `src/explorer/build.py` |
-| `queries/` | Query generator trial: model outputs, the author's blind ratings and the summary per model and language | `notebooks/query_generator_trial.ipynb`, `src/queries/generator_trial.py` |
+| `queries/` | Query generator trial (outputs, blind ratings, summary); benchmark generation outputs (`generation_v1/`); provisional coverage tiers; the curation and split report (`split_v1`) | `notebooks/`, `src/queries/` |
 | `coverage_audit/` | Coverage audit (decisions 0031, 0032): the official lists checked against their own totals (`lists_v1`), the seeded sample (`sample_v1`), the author's matching sheet with Wikidata candidates, and the coverage rates from the matches (`coverage_v1`) | `src/coverage_audit/` |
 | `benchmark/` | One folder per evaluation: `summary.json` and `.md` (means, intervals, tests, unjudged counts, inputs with checksums) and `per_query.tsv` | `src/benchmark/evaluate.py` |
 | `retrieval/` | Index statistics, dense encoding reports (`dense_<model>_v1.json`: model revision, truncation counts, chunk checksums), and TREC run files of each retrieval system on the dev queries | `src/retrieval/` |

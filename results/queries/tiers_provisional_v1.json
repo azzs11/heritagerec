@@ -1,0 +1,11 @@
+{
+  "provisional": true,
+  "note": "Fixed on the frozen snapshot at week 9 (decision 0031); these cut points are for the query split only.",
+  "document_entities": 8853,
+  "score_cuts": [
+    0.3957,
+    0.5132
+  ],
+  "statements_median": 9,
+  "sitelinks_median": 3
+}

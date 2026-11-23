@@ -1,7 +1,6 @@
 # 0021: How the 200 benchmark queries are generated, curated and split
 
-- Status: accepted for the method (author, 2026-11-21); the grid in this record is proposed and waits for the
-  author's approval before anything is generated
+- Status: accepted for the method (author, 2026-11-21); grid accepted as proposed (author, 2026-11-23)
 - Date: 2026-11-21
 
 ## Context
@@ -58,7 +57,7 @@ Queries with no relevant document after judging:
 Backstories A; generator A; Hindi and Kannada A, the author curating both languages; no-relevant rule A,
 written into `docs/plan/analysis_plan.md` before any test-set run.
 
-## Proposed grid (waiting for the author's approval)
+## Grid (accepted 23 Nov 2026)
 
 The generator sees only one grid cell and the target query type, language and style. It never sees the
 entity lists, the corpus, the gazetteer or any system output. Regions and periods are given as zones and date
@@ -142,3 +141,20 @@ copied here.
   author-curated, with the curation counts.
 - The author's knowledge of the corpus still enters through curation; edits are logged so it can be
   measured.
+
+## Implementation (23 Nov 2026)
+
+- Cells: `uv run python -m src.queries.grid benchmark` writes `data/queries/benchmark_cells_v1.jsonl`, 200 slots
+  each with its cell (rank 0) and two reserves (ranks 1, 2). The 40 real-style slots are 32 English, 4 Hindi and
+  4 Kannada, 10 per type, styles dealt in shuffled passes (13 exam, 13 tourist, 14 researcher).
+- Generation: `notebooks/query_generation.ipynb`, Sarvam-M at the revision the author rated in the trial, same
+  prompts, 4-bit loading and greedy decoding. Reserves are generated only for rejected slots, listed by
+  `src.queries.curation reserves` in `data/queries/reserve_requests_v1.json`.
+- Curation: `src.queries.curation sheet` writes `data/queries/curation_v1.csv`. Per row the author sets the action,
+  the edited text and reason where needed, and the target entity (a QID or none), marked from the query and
+  backstory alone (decision 0031).
+- Split: `src.queries.curation finalize` stratifies by language and type and, inside each, orders by coverage tier
+  so dev mirrors the tiers. It reports the sparse-tier quotas of 0031 (at least 30 test, 8 dev) and the
+  linkable-entity share (query linker, decision 0026). Tiers are provisional until the corpus freeze
+  (`src/queries/tiers.py`). If a quota is short, 0031's top-up from audit entries applies before any test run.
+
