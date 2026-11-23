@@ -217,6 +217,26 @@ function PlaceFinder({ onPick }: { onPick: (p: { lat: number; lon: number }) => 
   );
 }
 
+/**
+ * From the map to the place itself, for a reader planning a visit: OpenStreetMap (open data, no account) at the place
+ * and a route to it. The coordinates are Wikidata's, as everywhere on the atlas.
+ */
+function GoThere({ name, lat, lon }: { name: string; lat: number; lon: number }) {
+  const at = `${lat.toFixed(5)}/${lon.toFixed(5)}`;
+  return (
+    <p className={s.goThere}>
+      Go to {name}:{" "}
+      <a href={`https://www.openstreetmap.org/?mlat=${lat.toFixed(5)}&mlon=${lon.toFixed(5)}#map=16/${at}`} target="_blank" rel="noreferrer">
+        on OpenStreetMap ↗
+      </a>{" "}
+      ·{" "}
+      <a href={`https://www.openstreetmap.org/directions?route=%3B${lat.toFixed(5)}%2C${lon.toFixed(5)}`} target="_blank" rel="noreferrer">
+        directions ↗
+      </a>
+    </p>
+  );
+}
+
 function Nearby({ n }: { n: NearView }) {
   const here = n.places[0];
   useTrailStep(here ? { kind: "place", label: label(here.labels, here.id), href: `/atlas/?lat=${n.point.lat}&lon=${n.point.lon}` } : null);
@@ -242,6 +262,7 @@ function Nearby({ n }: { n: NearView }) {
       <h2 className={s.nearTitle}>
         <span className="num">{n.places.length}</span> places within <span className="num">{fmt(far, 1)}</span> km
       </h2>
+      {here?.lat != null && here.lon != null ? <GoThere name={label(here.labels, here.id)} lat={here.lat} lon={here.lon} /> : null}
 
       {n.photos.length ? (
         <ul className={s.photos} aria-label="Objects linked to these places">

@@ -565,3 +565,9 @@
   background: var(--ink);
   clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
 }
+
+.goThere {
+  margin: -0.2rem 0 0.7rem;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
