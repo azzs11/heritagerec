@@ -1,6 +1,6 @@
 {
-  "generated": "2026-11-23T14:30:51Z",
-  "commit": "d4c13a23ae4e7f7d09ac9fe0d6d501b710ed74f1",
+  "generated": "2026-11-23T15:42:38Z",
+  "commit": "ae8e640dff6a5d3edac4f305c163d93c71c03175",
   "sources": {
     "asi_cpm": {
       "url": "https://asi.nic.in/pdf/CPM_List.pdf",
@@ -18,6 +18,12 @@
       "url": "http://web.archive.org/web/20211020112952id_/http://archaeology.mp.gov.in/en-us/Monuments/Protected-Monuments",
       "fetched": "2026-11-23T14:13:12Z",
       "sha256": "a8b7ace14e3c5889da7a1ce8f030b04e9acd991309e7fc2a0c1746ce8fd0a966",
+      "last_modified": null
+    },
+    "unesco_ich_india": {
+      "url": "https://ich.unesco.org/en/state/india-IN",
+      "fetched": "2026-11-23T14:32:43Z",
+      "sha256": "cc513a68c5955a7c18df07b455c44c778ac11c83ccb5b8a4785b56810a8dc7c3",
       "last_modified": null
     }
   },
@@ -557,6 +563,17 @@
           "what": "rows with no name",
           "stated": 0,
           "parsed": 0
+        }
+      ],
+      "mismatches": 0
+    },
+    "unesco_ich_india": {
+      "rows": 16,
+      "checks": [
+        {
+          "what": "elements inscribed",
+          "stated": 16,
+          "parsed": 16
         }
       ],
       "mismatches": 0
