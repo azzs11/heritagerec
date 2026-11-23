@@ -103,11 +103,11 @@ def tier_of(qids: list[str]) -> dict[str, dict]:
     for q in qids:
         e = ents.get(q, {})
         if not e or "missing" in e:
-            out[q] = {"tier": "", "statements": None, "sitelinks": None}
+            out[q] = {"tier": "", "score": None, "statements": None, "sitelinks": None}
             continue
         st = sum(len(v) for v in e.get("claims", {}).values())
         sl = len(e.get("sitelinks", {}))
-        out[q] = {"tier": tiers.tier(st, sl), "statements": st, "sitelinks": sl}
+        out[q] = {"tier": tiers.tier(st, sl), "score": round(tiers.score(st, sl), 6), "statements": st, "sitelinks": sl}
     return out
 
 
