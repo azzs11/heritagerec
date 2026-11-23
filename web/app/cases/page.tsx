@@ -13,7 +13,7 @@ import { useTrailStep } from "@/lib/trail";
 import { useResource } from "@/lib/useResource";
 
 import { Collation } from "./Collation";
-import { fromGraph, fromText, parseSeeds, seedString, type Lens, type Reading } from "./model";
+import { fromGraph, fromText, parseSeeds, rankingCsv, seedString, type Lens, type Reading } from "./model";
 import { Pipeline, type Step } from "./Pipeline";
 import s from "./search.module.css";
 import { WorkingDrawer } from "./WorkingDrawer";
@@ -241,6 +241,17 @@ function Case({
           of the top {Math.max(textShown.length, graphShown.length)} found by both lenses
           {graph.state !== "ready" ? " (graph lens still reading)" : ""}
         </span>
+        {textAll.length ? (
+          <a
+            className={s.takeRanking}
+            download={`heritagerec_${q.replace(/[^\p{L}\p{N}]+/gu, "_").slice(0, 40)}.csv`}
+            href={`data:text/csv;charset=utf-8,${encodeURIComponent(
+              rankingCsv(q, system, `pagerank(hub=${hub}, restart=${restart})`, textAll, graphAll),
+            )}`}
+          >
+            Both rankings as CSV
+          </a>
+        ) : null}
       </p>
       <Collation
         text={textShown}
