@@ -11,7 +11,7 @@
 | `queries/` | Grid cells for query generation (`generator_trial_cells_v1.jsonl`); later the generated, curated and split benchmark queries | Yes |
 | `passages/` | `manifest_v1.json`: passage settings, counts and the SHA-256 of `passages_v1.jsonl.gz` (150-word passages shared by every retrieval system, rebuilt from the snapshot) | Manifest only |
 | `indexes/` | Lucene indexes for BM25, one per language, rebuilt from the passages | No |
-| `coverage_audit/lists_v1/` | The official monument lists of the coverage audit (decision 0032), one row per entry: `asi_cpm.csv` (ASI centrally protected), `karnataka_state.csv`, `mp_state.csv`; rebuilt from the raw lists by `src.coverage_audit.lists` | Yes |
+| `coverage_audit/lists_v1/` | The official monument lists of the coverage audit (decision 0032), one row per entry: `asi_cpm.csv` (ASI centrally protected), `karnataka_state.csv`, `mp_state.csv`, `unesco_ich_india.csv`; rebuilt from the raw lists by `src.coverage_audit.lists` | Yes |
 | `raw/` | Every API response, saved untouched and gzipped, named by a hash of the request | No (archived on Zenodo at release) |
 | `balanced/`, `classified/`, `metadata/`, `ontology/`, `processed/`, `embeddings/`, `evaluation/`, `entity_importance/` | Files of the conference version, superseded by corpus v1 | Some |
 
