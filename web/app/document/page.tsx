@@ -10,6 +10,7 @@ import { HexRings } from "@/components/HexRings";
 import { LiveGraph, groupOf, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
 import { NextSteps } from "@/components/Wayfinding";
 import { api, downloadUrl, get, label, type DocumentView as Doc, type ImageRef } from "@/lib/api";
+import { bibtex, plainCitation } from "@/lib/cite";
 import { DOC_TYPES, LANGUAGES, LICENCES, SOURCES, plural } from "@/lib/names";
 import { useTrailStep } from "@/lib/trail";
 import { useResource } from "@/lib/useResource";
@@ -254,11 +255,45 @@ function TakeIt({ d }: { d: Doc }) {
           </li>
         ))}
       </ul>
+      <Cite d={d} />
       <p className={s.licenceNote}>
         {LICENCES[d.licence] ?? "Open licence"}
         {d.licence.includes("/by") ? ": keep the source and licence with any copy." : ": free to use."}
       </p>
     </section>
+  );
+}
+
+/** A citation to copy, plain or BibTeX: built from the record, with the snapshot record id (lib/cite.ts). */
+function Cite({ d }: { d: Doc }) {
+  const [copied, setCopied] = useState<string | null>(null);
+  const forms = [
+    { name: "Plain", text: plainCitation(d) },
+    { name: "BibTeX", text: bibtex(d) },
+  ];
+  const copy = async (name: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(name);
+    } catch {
+      setCopied(null); // no clipboard (an insecure page): the text stays selectable in the box
+    }
+  };
+  return (
+    <details className={s.cite}>
+      <summary>Cite it</summary>
+      {forms.map((f) => (
+        <div key={f.name} className={s.citeForm}>
+          <div className={s.citeHead}>
+            <span>{f.name}</span>
+            <button type="button" onClick={() => copy(f.name, f.text)}>
+              {copied === f.name ? "Copied" : "Copy"}
+            </button>
+          </div>
+          <textarea readOnly value={f.text} rows={f.name === "BibTeX" ? 7 : 4} aria-label={`${f.name} citation`} onFocus={(e) => e.currentTarget.select()} />
+        </div>
+      ))}
+    </details>
   );
 }
 
