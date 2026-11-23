@@ -1,5 +1,6 @@
 """Tests for the coverage-audit list parsers (src/coverage_audit/lists.py, decision 0032)."""
 
+import csv
 import json
 
 import pytest
@@ -175,3 +176,44 @@ def test_facts_reads_labels_articles_and_counts():
     assert row["label_local"] is True  # Karnataka's local language is Kannada
     # A state with no local-language edition gets empty local columns, not False.
     assert facts(entity, "", {})["article_local"] == ""
+
+
+# ---------------------------------------------------------------- second check (src/coverage_audit/recheck.py)
+
+from src.coverage_audit import recheck  # noqa: E402
+
+
+def test_recheck_sheet_is_blind_and_agreement_counts_none_as_an_answer(tmp_path, monkeypatch):
+    for name, file in (("SHEET", "sheet.csv"), ("SAMPLE", "sample.csv"), ("RECHECK", "recheck.csv"), ("OUT", "out")):
+        monkeypatch.setattr(recheck, name, tmp_path / file)
+
+    def write(path, columns, rows):
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=columns)
+            w.writeheader()
+            w.writerows(rows)
+
+    write(tmp_path / "sample.csv", ["sample_id", "recheck"], [
+        {"sample_id": "cov001", "recheck": "yes"}, {"sample_id": "cov002", "recheck": ""},
+        {"sample_id": "cov003", "recheck": "yes"}, {"sample_id": "cov004", "recheck": "yes"},
+    ])  # fmt: skip
+    first = {"cov001": "Q1", "cov002": "Q2", "cov003": "none", "cov004": "Q4"}
+    from src.coverage_audit.sample import SHEET_COLUMNS
+
+    write(tmp_path / "sheet.csv", SHEET_COLUMNS, [
+        {**{c: "" for c in SHEET_COLUMNS}, "sample_id": s, "match": m, "searched": "auto: x; mine", "candidates": "1) Q1"}
+        for s, m in first.items()
+    ])  # fmt: skip
+    recheck.sheet()
+    rows = list(csv.DictReader(open(tmp_path / "recheck.csv", encoding="utf-8")))
+    assert [r["sample_id"] for r in rows] == ["cov001", "cov003", "cov004"]
+    assert all(r["match"] == "" and r["searched"] == "" and r["candidates"] == "1) Q1" for r in rows)
+    for r, m in zip(rows, ["Q1", "None", "Q9"], strict=True):
+        r["match"] = m
+    write(tmp_path / "recheck.csv", SHEET_COLUMNS, rows)
+    with pytest.raises(SystemExit):
+        recheck.sheet()  # answers present: never rewritten
+    recheck.agreement()
+    report = json.loads((tmp_path / "out.json").read_text())
+    assert report["compared"] == 3 and report["agree"] == 2  # "None" and "none" agree
+    assert report["disagreements"] == [{"sample_id": "cov004", "first": "Q4", "second": "Q9"}]

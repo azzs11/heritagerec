@@ -68,3 +68,18 @@ is the strongest candidate that does.
 - With one candidate, the pilot is a check, not a choice: about 100 dev pairs labelled blind by the author, weighted
   kappa (linear) overall and per language. Below about 0.4, the paid-API fallback runs as the rules say and both
   runs are reported.
+
+## Implementation (23 Nov 2026)
+
+- Prompt: `src/benchmark/judge_prompt.py`, adapted from UMBRELA's zero-shot prompt (castorini/umbrela,
+  `qrel_zeroshot_bing.yaml`, commit `01cc3ab`, Apache-2.0). Two changes the benchmark rules require: the
+  specification's 0-3 wording (3 directly about, 2 clearly related, 1 loosely related, 0 not relevant), and a
+  one-sentence rationale before the `##final score:` line. The judge reads the query, the title and the first 800
+  words of the text (`TEXT_WORDS`, waiting for the author's confirmation).
+- Notebook: `notebooks/relevance_judge.ipynb` (Kaggle 2 x T4), the model loaded as its card shows
+  (`AutoProcessor`, `AutoModelForMultimodalLM`), 4-bit, greedy decoding for temperature 0, thinking off. Pilot pairs
+  are judged first. A T4 has no bfloat16, so the model computes in float16; the first outputs are checked before the
+  full run.
+- Steps: `src.benchmark.judging pool` (union of each run's top 10), `pilot` (100 pairs: 50 English, 25 Hindi,
+  25 Kannada, half from ranks 1-3), `agreement` (weighted kappa, linear, overall and per language), `qrels`.
+

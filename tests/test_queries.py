@@ -167,3 +167,9 @@ def test_tiers_rank_by_statements_and_sitelinks():
     assert tiers.tier(0, 0) == "sparse"
     assert tiers.tier(15, 15) == "middle"
     assert tiers.tier(29, 29) == "rich"
+
+
+def test_dev_tsv_has_no_header_and_no_stray_tabs(tmp_path):
+    path = tmp_path / "dev.tsv"
+    curation.write_tsv(path, [{"qid": "q001", "language": "kn", "text": "ಬೇಲೂರು\tದೇವಾಲಯ\nಶಿಲ್ಪ"}])
+    assert path.read_text(encoding="utf-8") == "q001\tkn\tಬೇಲೂರು ದೇವಾಲಯ ಶಿಲ್ಪ\n"
