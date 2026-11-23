@@ -540,3 +540,28 @@
     opacity: 0;
   }
 }
+
+/* The key for the density hexagons; the swatches use the same ink and opacities the map draws with (AtlasMap.tsx). */
+.densityKey {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: var(--step--2);
+  color: var(--ink-soft);
+}
+
+.ramp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--ink-faint);
+}
+
+.ramp i {
+  width: 0.9rem;
+  height: 0.8rem;
+  background: var(--ink);
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}

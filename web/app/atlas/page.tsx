@@ -105,6 +105,18 @@ function AtlasBody({ places, point, goTo }: { places: Place[]; point: { lat: num
             </li>
           ))}
         </ul>
+        {/* Far out the map shows counts, not kinds; without this key the coloured chips above read as the hexagons' colours. */}
+        <div className={s.densityKey}>
+          <span>Far out, shade counts places per hexagon:</span>
+          <span className={s.ramp} aria-hidden>
+            fewer
+            {[0.1, 0.33, 0.57, 0.8].map((a) => (
+              <i key={a} style={{ opacity: a }} />
+            ))}
+            more
+          </span>
+          <span>Zoom in to see each place, coloured by kind.</span>
+        </div>
       </div>
 
       <div className={`${s.float} ${s.bottomLeft}`}>
