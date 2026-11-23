@@ -208,6 +208,10 @@ data/raw/**/*.json
 data/raw/**/*.csv
 data/raw/**/*.txt
 data/raw/**/*.xml
+data/raw/**/*.pdf
+data/raw/**/*.html
+# The official lists' URLs, dates and checksums, so anyone can fetch the same files.
+!data/raw/coverage_audit_v1/manifest.json
 !data/raw/README.md
 !data/raw/.gitkeep
 
