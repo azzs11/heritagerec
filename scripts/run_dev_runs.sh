@@ -19,6 +19,10 @@ run src.graph_retrieval.query_seeds --queries "$QUERIES"
 run src.graph_retrieval.ppr --queries data/queries/dev_v1_seeds.tsv --name ppr_dev_v1 --hub-power 1
 run src.graph_retrieval.ppr --queries data/queries/dev_v1_seeds.tsv --name ppr_hub05_dev_v1 --hub-power 0.5
 run src.graph_retrieval.ppr --queries data/queries/dev_v1_seeds.tsv --name ppr_hub0_dev_v1 --hub-power 0
+# The entity-expanded BM25 control (decision 0033), at the three weights chosen among on dev.
+for alpha in 0.25 0.5 1.0; do
+  run src.retrieval.entity_bm25 --queries "$QUERIES" --alpha "$alpha"
+done
 
 # The translate-then-search control (decision 0019): once the Hindi and Kannada dev queries are translated
 # (`src.queries.translate runs`), BM25 and BM25+RM3 search the English index with them.
