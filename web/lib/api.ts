@@ -15,6 +15,7 @@ export interface NodeCard {
   lat?: number;
   lon?: number;
   image?: ImageRef;
+  portrait?: Portrait;
 }
 
 export interface ImageRef {
@@ -26,6 +27,20 @@ export interface ImageRef {
   credit: string;
   page: string | null;
   source: string;
+  // A Commons photograph of an entity (decision 0034): what it shows, and its own author and licence.
+  of?: string;
+  of_labels?: Labels;
+  artist?: string;
+  licence_name?: string;
+  restrictions?: string;
+}
+
+/** What a document's data portrait draws: its place (from the entity it is about) and its centuries, when recorded. */
+export interface Portrait {
+  centuries: number[];
+  lat?: number;
+  lon?: number;
+  place?: string;
 }
 
 export interface GraphEdge {
@@ -67,6 +82,11 @@ export interface Community {
   placed: number;
   label: string | null;
   top: string[];
+  // Decision 0035: its three most connected members' names, what it holds, and where it lies.
+  top_labels?: string[];
+  composition?: Partial<Record<"built" | "people" | "culture" | "other" | "documents", number>>;
+  centre?: [number, number] | null;
+  spread?: "regional" | "across India" | "too few placed";
 }
 
 export interface Overview {
@@ -129,6 +149,7 @@ export interface SearchResult {
   language: string;
   snippet: Word[] | null;
   image?: ImageRef;
+  portrait?: Portrait;
 }
 
 export interface SearchView {
@@ -214,6 +235,7 @@ export interface DocumentView {
   entities: NodeCard[];
   in_graph: boolean;
   image?: ImageRef;
+  portrait?: Portrait;
   get_it: { label: string; url: string }[];
 }
 
