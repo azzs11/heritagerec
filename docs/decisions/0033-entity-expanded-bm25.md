@@ -1,6 +1,6 @@
 # 0033: The entity-expanded BM25 control: how the entities' names are added
 
-- Status: proposed (waiting for the author)
+- Status: accepted (author, 2026-11-23: "0033 & 0034, let's do that")
 - Date: 2026-11-23
 
 ## Context
@@ -53,4 +53,19 @@ having no structure, which is what RQ1 and RQ3 need it to isolate.
 
 ## Decision
 
-Waiting for the author.
+As recommended: weighting B, indexes B, aliases B.
+
+## Implementation (23 Nov 2026)
+
+`src/retrieval/entity_bm25.py`, tests in `tests/test_entity_bm25.py`. Details the record left open, settled so the
+control stays fair:
+
+- Weights: query terms at 1; each name term at alpha x (query terms / name terms), so the names together weigh
+  alpha times the query whatever the number of aliases. In an index of another language, the names alone.
+- Names: exactly the linker's trusted names (the linker now keeps them per entity and language, `Gazetteer.names`).
+- Merge: min-max per index gives each index's top document 1.0, so ties are broken by rank within the index, then
+  the query's own language first, then a fixed order, then id. A tie-break by id alone put English first every
+  time, a language bias found in the first trial and fixed before any run.
+- A query that links to no entity is plain BM25 in its own language.
+- Runs: `bm25_ent_a025`, `a050`, `a100` on dev (`scripts/run_dev_runs.sh`); every query's entities and names are
+  written beside the run.
