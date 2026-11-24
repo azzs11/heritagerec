@@ -120,6 +120,49 @@ def communities(node_ids: list[str], edges: list[tuple[str, str]]) -> list[list[
     return sorted((sorted(c) for c in found), key=lambda c: (-len(c), c[0]))
 
 
+# Decision 0035: what a community holds, in the interface's colour groups (web/components/LiveGraph.tsx, groupOf).
+GROUPS = {
+    "site": "built",
+    "place": "built",
+    "person": "people",
+    "polity": "people",
+    "culture": "culture",
+    "style": "culture",
+}
+# A community has a centre on the map only if its placed members cluster: at least this many placed, and the middle
+# half of their latitudes and of their longitudes each within this many degrees (about 330 km). Otherwise it lies
+# "across India", and is shown apart rather than at a misleading middle point.
+CENTRE_MIN_PLACED = 3
+REGIONAL_IQR_DEGREES = 3.0
+
+
+def group_of(node: dict) -> str:
+    if node["kind"] == "document":
+        return "documents"
+    return GROUPS.get(node.get("type") or "", "other")
+
+
+def quartiles(values: list[float]) -> tuple[float, float, float]:
+    v = sorted(values)
+
+    def at(q: float) -> float:
+        i = q * (len(v) - 1)
+        lo = int(i)
+        return v[lo] + (v[min(lo + 1, len(v) - 1)] - v[lo]) * (i - lo)
+
+    return at(0.25), at(0.5), at(0.75)
+
+
+def centre(points: list[tuple[float, float]]) -> dict:
+    """The median point of a community's placed members when they cluster; else why it has none."""
+    if len(points) < CENTRE_MIN_PLACED:
+        return {"centre": None, "spread": "too few placed"}
+    (la1, la, la3), (lo1, lo, lo3) = quartiles([p[0] for p in points]), quartiles([p[1] for p in points])
+    if la3 - la1 > REGIONAL_IQR_DEGREES or lo3 - lo1 > REGIONAL_IQR_DEGREES:
+        return {"centre": None, "spread": "across India"}
+    return {"centre": [round(la, 4), round(lo, 4)], "spread": "regional"}
+
+
 def label(node: dict) -> str:
     labels = node.get("labels") or {}
     return labels.get("en") or labels.get("hi") or labels.get("kn") or node["id"]
@@ -185,6 +228,9 @@ def main() -> None:
                 "placed": sum(1 for m in named if m in points),
                 "label": label(nodes[top[0]]) if top else None,
                 "top": top,
+                "top_labels": [label(nodes[m]) for m in top[:3]],
+                "composition": dict(Counter(group_of(nodes[m]) for m in members)),
+                **centre([points[m] for m in named if m in points]),
             }
         )
     community_file = {
@@ -235,6 +281,9 @@ def main() -> None:
             "with_10_or_more_nodes": sum(1 for s in sizes if s >= 10),
             "single_nodes": sum(1 for s in sizes if s == 1),
             "links_between": len(links),
+            # Decision 0035: of the communities of 10 or more nodes, how many have a centre on the map.
+            "spread_of_10_or_more": dict(Counter(c["spread"] for c in summary if c["size"] >= 10)),
+            "centre_rule": {"min_placed": CENTRE_MIN_PLACED, "max_iqr_degrees": REGIONAL_IQR_DEGREES},
         },
         "documents_about_an_entity": sum(1 for _, r, _ in edges if r == "about"),
         "entities_with_documents": len(documents_about),
