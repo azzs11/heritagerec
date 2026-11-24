@@ -8,6 +8,7 @@ import { Suspense, useMemo, useState } from "react";
 import { Load, MarginNote, Names, Stamp, fmt } from "@/components/ui";
 import { HexRings } from "@/components/HexRings";
 import { LiveGraph, groupOf, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
+import { Portrait, centuryText } from "@/components/Portrait";
 import { NextSteps } from "@/components/Wayfinding";
 import { api, downloadUrl, get, label, type DocumentView as Doc, type ImageRef } from "@/lib/api";
 import { bibtex, plainCitation } from "@/lib/cite";
@@ -53,7 +54,11 @@ function DocumentView() {
               <h1 className={s.title} lang={d.language}>
                 {d.title}
               </h1>
-              {d.image ? <ObjectImage image={d.image} title={d.title} fallback={d.url} /> : null}
+              {d.image ? (
+                <ObjectImage image={d.image} title={d.title} fallback={d.url} />
+              ) : (
+                <DataPortrait d={d} />
+              )}
               <Stamp
                 rows={[
                   ["language", LANGUAGES[d.language] ?? d.language],
@@ -175,6 +180,22 @@ function Passages({ id, lang, asked }: { id: string; lang: string; asked: string
   );
 }
 
+/** No photograph: where and when, from the record, drawn and written out (decision 0034). */
+function DataPortrait({ d }: { d: Doc }) {
+  const place = d.portrait?.place ? d.entities.find((e) => e.id === d.portrait!.place) : undefined;
+  return (
+    <figure className={s.portraitFigure}>
+      <div className={s.portraitBox}>
+        <Portrait data={d.portrait} language={d.language} label={`Where and when: ${place ? label(place.labels, place.id) : "no recorded place"}; ${centuryText(d.portrait?.centuries ?? [])}`} />
+      </div>
+      <figcaption>
+        No photograph. From the record: {place ? <Names labels={place.labels} fallback={place.id} /> : "no recorded place"},{" "}
+        {centuryText(d.portrait?.centuries ?? [])}.
+      </figcaption>
+    </figure>
+  );
+}
+
 function ObjectImage({ image, title, fallback }: { image: ImageRef; title: string; fallback: string }) {
   const [failed, setFailed] = useState(false);
   const page = image.page ?? fallback;
@@ -182,7 +203,8 @@ function ObjectImage({ image, title, fallback }: { image: ImageRef; title: strin
     <figure className={s.figure}>
       {failed ? (
         <p className={s.noImage}>
-          The museum&apos;s server did not send the image. <a href={page}>See the object on the museum&apos;s site</a>.
+          {image.source === "commons" ? "Wikimedia Commons" : "The museum's server"} did not send the image.{" "}
+          <a href={page}>See it at its source</a>.
         </p>
       ) : (
         <Dialog.Root>
@@ -212,7 +234,7 @@ function ObjectImage({ image, title, fallback }: { image: ImageRef; title: strin
               <p>
                 {image.credit} ·{" "}
                 <a href={page} target="_blank" rel="noreferrer">
-                  at the museum ↗
+                  {image.source === "commons" ? "on Wikimedia Commons ↗" : "at the museum ↗"}
                 </a>
               </p>
               <Dialog.Close className={s.lightboxClose} aria-label="Close">
@@ -222,13 +244,30 @@ function ObjectImage({ image, title, fallback }: { image: ImageRef; title: strin
           </Dialog.Portal>
         </Dialog.Root>
       )}
-      <figcaption>
-        {image.credit}. Open licence:{" "}
-        <a href={image.licence} rel="noreferrer">
-          CC0
-        </a>
-        .
-      </figcaption>
+      {image.source === "commons" ? (
+        // A photograph of the entity the document is about, not part of the record: say what it shows and credit it.
+        <figcaption>
+          Photo of <Names labels={image.of_labels ?? {}} fallback={image.of ?? ""} />, from Wikimedia Commons.{" "}
+          {image.artist ? <>By {image.artist}. </> : null}
+          Licence:{" "}
+          {image.licence ? (
+            <a href={image.licence} rel="noreferrer">
+              {image.licence_name}
+            </a>
+          ) : (
+            image.licence_name
+          )}
+          .{image.restrictions ? ` Restrictions: ${image.restrictions}.` : ""}
+        </figcaption>
+      ) : (
+        <figcaption>
+          {image.credit}. Open licence:{" "}
+          <a href={image.licence} rel="noreferrer">
+            CC0
+          </a>
+          .
+        </figcaption>
+      )}
     </figure>
   );
 }
@@ -293,6 +332,16 @@ function Cite({ d }: { d: Doc }) {
           <textarea readOnly value={f.text} rows={f.name === "BibTeX" ? 7 : 4} aria-label={`${f.name} citation`} onFocus={(e) => e.currentTarget.select()} />
         </div>
       ))}
+      {d.image?.source === "commons" ? (
+        // The photograph shows the entity and is not part of the record: it has its own author and licence (0034).
+        <p className={s.citePhoto}>
+          The photograph is not part of this document. Credit it on its own: {d.image.credit},{" "}
+          <a href={d.image.page ?? d.image.full} rel="noreferrer">
+            Wikimedia Commons
+          </a>
+          .
+        </p>
+      ) : null}
     </details>
   );
 }

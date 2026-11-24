@@ -60,3 +60,19 @@ def test_written_files_cover_every_graph_node_once():
     groups = json.loads(gzip.open(OUT_DIR / "communities.json.gz", "rt", encoding="utf-8").read())
     sizes = Counter(r["community"] for r in rows if r["community"] is not None)
     assert [c["size"] for c in groups["communities"]] == [sizes[c["id"]] for c in groups["communities"]]
+
+
+def test_a_community_has_a_centre_only_when_its_places_cluster():
+    from src.explorer.build import CENTRE_MIN_PLACED, centre, group_of
+
+    belur = [(13.16 + i * 0.01, 75.86 + i * 0.01) for i in range(5)]
+    c = centre(belur)
+    assert c["spread"] == "regional" and abs(c["centre"][0] - 13.18) < 0.01
+    assert centre(belur[: CENTRE_MIN_PLACED - 1]) == {"centre": None, "spread": "too few placed"}
+    india = [(8.5, 77.0), (13.0, 80.2), (19.0, 72.8), (28.6, 77.2), (26.9, 75.8), (22.5, 88.3)]
+    assert centre(india) == {"centre": None, "spread": "across India"}
+    # The interface's colour groups (LiveGraph.groupOf), with documents counted on their own.
+    assert group_of({"kind": "entity", "type": "polity"}) == "people"
+    assert group_of({"kind": "connector", "type": "place"}) == "built"
+    assert group_of({"kind": "document", "type": "site"}) == "documents"
+    assert group_of({"kind": "entity", "type": "other"}) == "other"

@@ -84,6 +84,9 @@ class Gazetteer:
     romanised: dict[str, set[str]] = field(default_factory=lambda: defaultdict(set))
     by_shape: dict[tuple[str, int], list[str]] = field(default_factory=lambda: defaultdict(list))
     labels: dict[str, dict] = field(default_factory=dict)
+    # The names the linker trusts, per entity and language: the entity-expanded BM25 control (decision 0033) adds
+    # exactly these, so it knows the same entities, by the same names, as the graph lens.
+    names: dict[str, dict[str, list[str]]] = field(default_factory=lambda: defaultdict(lambda: defaultdict(list)))
 
     def add(self, key: str, qid: str, table: dict) -> None:
         if not key or key in GENERIC:
@@ -110,6 +113,8 @@ def load(path=GAZETTEER) -> Gazetteer:
                 if script(key) == "latn" and not allowed_latin(key, key == main, etype):
                     continue
                 g.add(key, qid, g.exact)
+                if key and key not in GENERIC and base not in g.names[qid][lang]:
+                    g.names[qid][lang].append(base)
                 for r in romanisations(base):
                     if allowed_latin(r, False, etype):
                         g.add(r, qid, g.romanised)

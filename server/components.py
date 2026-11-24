@@ -32,6 +32,7 @@ class Paths:
     explorer_nodes: Path = ROOT / "data/explorer/v1/nodes.jsonl.gz"
     communities: Path = ROOT / "data/explorer/v1/communities.json.gz"
     images: Path = ROOT / "data/explorer/v1/images.jsonl.gz"
+    entity_images: Path = ROOT / "data/explorer/v1/entity_images.jsonl.gz"
     indexes: Path = ROOT / "data/indexes/bm25_v1"
     results: Path = ROOT / "results"
 
@@ -80,6 +81,7 @@ class Graph:
     communities: dict = field(default_factory=dict)
     documents_about: Counter = field(default_factory=Counter)
     images: dict = field(default_factory=dict)
+    photos: dict = field(default_factory=dict)  # entity -> its Commons photograph, with credit (decision 0034)
     hex_cells: dict = field(default_factory=dict)  # resolution -> {node: H3 cell}, filled on first use
     walks: dict = field(default_factory=dict)
     walk_input: tuple | None = None
@@ -110,6 +112,11 @@ class Graph:
             for line in gzip.open(paths.images, "rt", encoding="utf-8"):
                 im = json.loads(line)
                 g.images[im.pop("doc_id")] = im
+        # Photographs of entities from Wikimedia Commons (src/explorer/commons_images.py); optional like the above.
+        if paths.entity_images.exists():
+            for line in gzip.open(paths.entity_images, "rt", encoding="utf-8"):
+                ph = json.loads(line)
+                g.photos[ph.pop("entity")] = ph
         # Neighbour lists in a fixed order, so every view of the same node is the same.
         for edges in g.adjacency.values():
             edges.sort(key=lambda e: (e.relation, e.direction, e.other))
@@ -143,9 +150,51 @@ class Graph:
         }
         if "lat" in m:
             out["lat"], out["lon"] = m["lat"], m["lon"]
-        if node_id in self.images:
-            out["image"] = self.images[node_id]
+        picture = self.picture(node_id)
+        if picture:
+            out["image"] = picture
+        if n["kind"] == "document":
+            out["portrait"] = self.portrait(node_id)
         return out
+
+    def portrait(self, doc_id: str) -> dict:
+        """What a document's data portrait draws (decision 0034): where it is (the first entity it is about that has
+        coordinates) and when (its centuries, or else those of the entities it is about). Only recorded facts; an
+        empty part is drawn as unknown, never guessed."""
+        about = [e.other for e in self.adjacency.get(doc_id, []) if e.relation == "about" and e.direction == "out"]
+        # The same rule as for pictures: a hub's centre point (India's) is not where a document is.
+        place = next((q for q in about if "lat" in self.meta.get(q, {}) and not self.is_hub(q)), None)
+
+        def centuries(node: str) -> list[int]:
+            return [
+                int(e.other.split(":", 1)[1])
+                for e in self.adjacency.get(node, [])
+                if e.relation == "in_period" and e.direction == "out" and e.other.startswith("century:")
+            ]
+
+        when = sorted(set(centuries(doc_id) or [c for q in about for c in centuries(q)]))
+        out: dict = {"centuries": when}
+        if place:
+            out.update(lat=self.meta[place]["lat"], lon=self.meta[place]["lon"], place=place)
+        return out
+
+    def picture(self, node_id: str) -> dict | None:
+        """The picture to show for a node (decision 0034): a museum object's own open image; else an entity's Commons
+        photograph; else, for a document, the photograph of the first entity it is about. A photograph always says
+        which entity it shows (`of`), since the photograph of Belur is not the article about Belur."""
+        if node_id in self.images:
+            return self.images[node_id]
+        if node_id in self.photos:
+            return {**self.photos[node_id], "of": node_id, "of_labels": self.label(node_id)}
+        for e in self.adjacency.get(node_id, []):
+            # A hub (India, a whole century) is too general to stand for a document: the Imperial Gazetteer is
+            # "about" India, and a picture of India says nothing true about the book.
+            if e.relation == "about" and e.direction == "out" and e.other in self.photos and not self.is_hub(e.other):
+                return {**self.photos[e.other], "of": e.other, "of_labels": self.label(e.other)}
+        return None
+
+    def is_hub(self, node_id: str) -> bool:
+        return bool(self.meta.get(node_id, {}).get("hub"))
 
     def status(self) -> dict:
         return {
@@ -154,6 +203,7 @@ class Graph:
             "edges": sum(len(e) for e in self.adjacency.values()) // 2,
             "placed": sum(1 for m in self.meta.values() if "lat" in m),
             "images": len(self.images),
+            "photos": len(self.photos),
         }
 
 

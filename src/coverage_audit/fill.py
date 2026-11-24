@@ -248,12 +248,15 @@ def main() -> None:
         matched_rows = [r for r in done if r["status"] == "matched"]
         result = {"entries": len(group), "done": len(done), "measures": {}}
         for name, test in measures:
-            k = sum(1 for r in done if test(r))
-            lo, hi = wilson(k, len(done))
+            # A local-language measure only counts entries that have a local language (UNESCO elements have no
+            # state, so none); every other measure counts every entry done.
+            base = [r for r in done if r["local_lang"]] if name.startswith("local-language") else done
+            k = sum(1 for r in base if test(r))
+            lo, hi = wilson(k, len(base))
             result["measures"][name] = {
                 "k": k,
-                "n": len(done),
-                "share": round(k / len(done), 3) if done else None,
+                "n": len(base),
+                "share": round(k / len(base), 3) if base else None,
                 "ci95": [lo, hi],
             }
         stmts = sorted(r["statements"] for r in matched_rows)
@@ -294,7 +297,7 @@ def markdown(report: dict, measures: list[str]) -> str:
         cells = []
         for s in names:
             v = report["strata"][s]["measures"][m]
-            cells.append("" if v["share"] is None else f"{v['share']:.0%} [{v['ci95'][0]:.0%}, {v['ci95'][1]:.0%}]")
+            cells.append("n/a" if v["share"] is None else f"{v['share']:.0%} [{v['ci95'][0]:.0%}, {v['ci95'][1]:.0%}]")
         out.append(f"| {m} | " + " | ".join(cells) + " |")
     out.append(
         "| Median statements, matched items | "

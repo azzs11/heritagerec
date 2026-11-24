@@ -50,6 +50,7 @@ run src.graph.core_graph
 # 7b. What the interface's atlas and graph views read (decision 0025)
 run src.explorer.build
 run src.explorer.images
+run src.explorer.commons_images   # photographs of entities, with credit (decision 0034)
 
 # 8. Passages shared by every retrieval system, and the BM25 indexes (decision 0023); needs JAVA_HOME in .env
 run src.retrieval.passages

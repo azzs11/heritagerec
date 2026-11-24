@@ -1,6 +1,6 @@
 # 0034: A picture for every document: Commons photographs where they exist, a data portrait everywhere
 
-- Status: proposed (waiting for the author)
+- Status: accepted (author, 2026-11-23: "0033 & 0034, let's do that")
 - Date: 2026-11-23
 
 ## Context
@@ -56,4 +56,23 @@ D. Steps, each with its tests and report:
 
 ## Decision
 
-Waiting for the author.
+As recommended.
+
+## Implementation (23-24 Nov 2026)
+
+- `src/explorer/commons_images.py` (tests in `tests/test_commons_images.py`) reads each entity's P18 from the saved
+  graph responses and asks Commons for the file's thumbnail, size, artist and licence; responses saved under
+  `data/raw/commons_v1/`. Kept, left out and why, and the licence mix: `results/explorer/entity_images_v1.json`.
+  Requests are batched by URL length as well as count (long file names made one request too long for Commons).
+- Credits: Commons artist fields are HTML, some with talk-page links and some long personal notes; the credit
+  shows the name ("taken by X", else the first sentence, initials kept), the full field is kept as `artist_note`.
+- Server (`server/components.py`): `picture()` gives a museum object's own image, else an entity's photograph,
+  else for a document its first entity's photograph, always with `of` (what it shows). `portrait()` gives the
+  document's place (first entity it is about with coordinates) and centuries (its own, else its entities').
+  A hub (India, a century) never lends a document its photograph or its place: the Imperial Gazetteer is "about"
+  India, and a picture or a dot at India's centre would say nothing true about the book.
+- Interface: results show the photograph (its title names what it shows and credits it) or the data portrait; the
+  document page captions a photograph with its subject, author and licence, links its Commons page, and the
+  citation box says the photograph is credited on its own; a document with no photograph shows its portrait with
+  the place and centuries written out. Tests: `tests/test_server.py`, `web/tests/unit/cite.test.ts`, end-to-end.
+

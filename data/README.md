@@ -7,7 +7,7 @@
 | `corpus_v1/staging/` | One file of validated records per collector, before the snapshot | No (rebuilt) |
 | `gazetteer/` | `gazetteer_v1.jsonl.gz`: Wikidata labels and aliases (en, hi, kn) by entity type, used for linking | Yes |
 | `graph/core_v1/` | Core Wikidata graph (decision 0020): `nodes.jsonl.gz` and `edges.tsv.gz` (source, relation, target, layer, origin, revision); later edge layers add rows with their own layer | Yes |
-| `explorer/v1/` | What the interface draws (decision 0025): `nodes.jsonl.gz` (degree, display hub, community, coordinates per graph node), `communities.json.gz`, and `images.jsonl.gz` (open-licence image links and credit lines of Met and Cleveland objects, never the images themselves); rebuilt from the graph and the raw responses | Yes |
+| `explorer/v1/` | What the interface draws (decision 0025): `nodes.jsonl.gz` (degree, display hub, community, coordinates per graph node), `communities.json.gz`, and `images.jsonl.gz` (open-licence image links and credit lines of Met and Cleveland objects, never the images themselves); rebuilt from the graph and the raw responses; `entity_images.jsonl.gz`: Commons photographs of entities, with credit and licence (decision 0034) | Yes |
 | `queries/` | Grid cells (`generator_trial_cells_v1.jsonl`, `benchmark_cells_v1.jsonl`); the author's curation sheet (`curation_v1.csv`), reserve requests, and the final queries with their dev and test files | Yes |
 | `judging/` | Judge input pools (`dev_pool_v1.jsonl`: query, title, cut text, runs and ranks per pair) and the author's blind pilot sheet | Yes |
 | `qrels/` | TREC qrels from the LLM judge (`dev_v1.qrels`) | Yes |

@@ -1,6 +1,6 @@
 # 0035: Showing what a graph community holds, and where and when it lies
 
-- Status: proposed (waiting for the author)
+- Status: accepted (author, 2026-11-23: "0035 okay")
 - Date: 2026-11-23
 
 ## Context
@@ -43,4 +43,22 @@ communities have no centre. Tests cover the counts and the median.
 
 ## Decision
 
-Waiting for the author.
+As recommended.
+
+## Implementation (24 Nov 2026)
+
+- Data (`src/explorer/build.py`, tests in `tests/test_explorer.py`): each community gains `composition` (counts by
+  the interface's colour groups, documents apart), `top_labels` (its three most connected members) and a `centre`:
+  the median of its placed members, only when at least 3 are placed and the middle half of their latitudes and of
+  their longitudes each spans 3 degrees or less (about 330 km); otherwise `spread` says "across India" or "too few
+  placed". How many fall in each is in `results/explorer/explorer_v1.json` (`spread_of_10_or_more`). The nodes file
+  is unchanged byte for byte.
+- Interface (`web/app/graph/CommunityMap.tsx`): rings drawn in SVG, each a focusable button whose label states the
+  three names, what it holds and where it lies; "As a network" (ForceAtlas2 from a fixed circle) and "On the map"
+  (centres projected on India's graticule, no borders; communities with no centre stand in a side column). Rings
+  glide between the two (320 ms, still under reduced motion). On the map, overlapping rings are pushed apart
+  deterministically, and a ring moved further than its radius shows a hairline to its true point; only the chosen
+  community's links are drawn. Every community is also listed as a text table.
+- Found in testing and fixed: drawing the hovered ring on top moved it in the DOM between mouse-down and mouse-up,
+  so the first click on a ring did nothing; only the chosen ring is now raised.
+

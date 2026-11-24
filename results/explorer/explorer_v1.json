@@ -1,6 +1,6 @@
 {
-  "built": "2026-11-22",
-  "commit": "6eed76d710465694f87a03aa04bec1f7a88e1364",
+  "built": "2026-11-24",
+  "commit": "2208c1bf035176dd3339d853348c07a62de956cf",
   "inputs_sha256": {
     "nodes": "e3d0fa1cda00bdb6410736343690694dc51cea824c07801c8ab3c38ad1d25af3",
     "edges": "8880566d7d96124fa0e49bc3338dffb74c386437fa81138594b033aef5fb5382"
@@ -161,12 +161,21 @@
     ],
     "with_10_or_more_nodes": 168,
     "single_nodes": 2687,
-    "links_between": 86
+    "links_between": 86,
+    "spread_of_10_or_more": {
+      "across India": 15,
+      "regional": 129,
+      "too few placed": 24
+    },
+    "centre_rule": {
+      "min_placed": 3,
+      "max_iqr_degrees": 3.0
+    }
   },
   "documents_about_an_entity": 21063,
   "entities_with_documents": 8858,
   "outputs_sha256": {
     "nodes": "396997427b138805c47919a7771d7f4123e1cb045e90b6eb18f254acd6a7b1c8",
-    "communities": "25cc2d60e3f3d7d978f63d06882937c98a6976cbe1faa19b72a0a3baaf2a29d9"
+    "communities": "c1a17d78edc88a82eaaf9e125467532095e367b9d892fe6515bf92d10e95ab62"
   }
 }
