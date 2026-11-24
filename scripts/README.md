@@ -2,6 +2,7 @@
 
 | Script | What it does |
 | --- | --- |
+| `reproduce.sh` | One command for every result: the corpus build, the coverage audit, the dev runs, judging, evaluation and the interim report; a step whose inputs are missing is skipped with the reason |
 | `build_corpus.sh` | Builds corpus v1 end to end, or rebuilds it from the saved raw responses |
 | `run_dev_runs.sh` | The dev-split runs that run on the laptop: BM25, BM25+RM3, PageRank at hub powers 1, 0.5 and 0, and entity-expanded BM25 at three weights |
 | `audit_corpus.py` | Audits the conference-version corpus (scope, sources, duplicates) |
