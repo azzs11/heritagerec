@@ -81,3 +81,12 @@ def test_groups_and_files_are_written(files):
 def test_the_test_split_is_refused_without_a_committed_analysis_plan(files):
     with pytest.raises(SystemExit, match="analysis_plan"):
         run(files, split="test")
+
+
+def test_type_coverage_counts_distinct_known_types_in_the_top_ten():
+    from src.benchmark.type_coverage import coverage
+
+    types = {"a": "site", "b": "site", "c": "object", "d": "culture", "e": "unknown-kind"}
+    assert coverage(["a", "b"], types) == 1 / 6
+    assert coverage(["a", "c", "d", "e"], types) == 3 / 6  # an unknown type does not count
+    assert coverage(["x"] * 3 + ["a"], types, k=3) == 0.0  # only the first k

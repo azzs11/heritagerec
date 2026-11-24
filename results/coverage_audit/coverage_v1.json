@@ -1,0 +1,987 @@
+{
+  "generated": "2026-11-24T03:21:24Z",
+  "commit": "dfe8c6113067469fcdc013e80d48856537442bb3",
+  "progress": {
+    "matched": 294,
+    "none": 22
+  },
+  "strata": {
+    "karnataka_state": {
+      "entries": 75,
+      "done": 75,
+      "measures": {
+        "item on Wikidata": {
+          "k": 68,
+          "n": 75,
+          "share": 0.907,
+          "ci95": [
+            0.82,
+            0.954
+          ]
+        },
+        "monument code (P1371)": {
+          "k": 67,
+          "n": 75,
+          "share": 0.893,
+          "ci95": [
+            0.803,
+            0.945
+          ]
+        },
+        "English description": {
+          "k": 5,
+          "n": 75,
+          "share": 0.067,
+          "ci95": [
+            0.029,
+            0.147
+          ]
+        },
+        "Hindi label": {
+          "k": 0,
+          "n": 75,
+          "share": 0.0,
+          "ci95": [
+            0.0,
+            0.049
+          ]
+        },
+        "Kannada label": {
+          "k": 2,
+          "n": 75,
+          "share": 0.027,
+          "ci95": [
+            0.007,
+            0.092
+          ]
+        },
+        "local-language label": {
+          "k": 2,
+          "n": 75,
+          "share": 0.027,
+          "ci95": [
+            0.007,
+            0.092
+          ]
+        },
+        "coordinates": {
+          "k": 3,
+          "n": 75,
+          "share": 0.04,
+          "ci95": [
+            0.014,
+            0.111
+          ]
+        },
+        "image": {
+          "k": 2,
+          "n": 75,
+          "share": 0.027,
+          "ci95": [
+            0.007,
+            0.092
+          ]
+        },
+        "English Wikipedia article": {
+          "k": 2,
+          "n": 75,
+          "share": 0.027,
+          "ci95": [
+            0.007,
+            0.092
+          ]
+        },
+        "Hindi Wikipedia article": {
+          "k": 0,
+          "n": 75,
+          "share": 0.0,
+          "ci95": [
+            0.0,
+            0.049
+          ]
+        },
+        "Kannada Wikipedia article": {
+          "k": 2,
+          "n": 75,
+          "share": 0.027,
+          "ci95": [
+            0.007,
+            0.092
+          ]
+        },
+        "local-language Wikipedia article": {
+          "k": 2,
+          "n": 75,
+          "share": 0.027,
+          "ci95": [
+            0.007,
+            0.092
+          ]
+        },
+        "in corpus v1": {
+          "k": 2,
+          "n": 75,
+          "share": 0.027,
+          "ci95": [
+            0.007,
+            0.092
+          ]
+        }
+      },
+      "median_statements_of_matched": 6
+    },
+    "karnataka_asi": {
+      "entries": 75,
+      "done": 75,
+      "measures": {
+        "item on Wikidata": {
+          "k": 73,
+          "n": 75,
+          "share": 0.973,
+          "ci95": [
+            0.908,
+            0.993
+          ]
+        },
+        "monument code (P1371)": {
+          "k": 73,
+          "n": 75,
+          "share": 0.973,
+          "ci95": [
+            0.908,
+            0.993
+          ]
+        },
+        "English description": {
+          "k": 17,
+          "n": 75,
+          "share": 0.227,
+          "ci95": [
+            0.147,
+            0.333
+          ]
+        },
+        "Hindi label": {
+          "k": 5,
+          "n": 75,
+          "share": 0.067,
+          "ci95": [
+            0.029,
+            0.147
+          ]
+        },
+        "Kannada label": {
+          "k": 8,
+          "n": 75,
+          "share": 0.107,
+          "ci95": [
+            0.055,
+            0.197
+          ]
+        },
+        "local-language label": {
+          "k": 8,
+          "n": 75,
+          "share": 0.107,
+          "ci95": [
+            0.055,
+            0.197
+          ]
+        },
+        "coordinates": {
+          "k": 35,
+          "n": 75,
+          "share": 0.467,
+          "ci95": [
+            0.358,
+            0.578
+          ]
+        },
+        "image": {
+          "k": 30,
+          "n": 75,
+          "share": 0.4,
+          "ci95": [
+            0.297,
+            0.513
+          ]
+        },
+        "English Wikipedia article": {
+          "k": 11,
+          "n": 75,
+          "share": 0.147,
+          "ci95": [
+            0.084,
+            0.244
+          ]
+        },
+        "Hindi Wikipedia article": {
+          "k": 4,
+          "n": 75,
+          "share": 0.053,
+          "ci95": [
+            0.021,
+            0.129
+          ]
+        },
+        "Kannada Wikipedia article": {
+          "k": 8,
+          "n": 75,
+          "share": 0.107,
+          "ci95": [
+            0.055,
+            0.197
+          ]
+        },
+        "local-language Wikipedia article": {
+          "k": 8,
+          "n": 75,
+          "share": 0.107,
+          "ci95": [
+            0.055,
+            0.197
+          ]
+        },
+        "in corpus v1": {
+          "k": 11,
+          "n": 75,
+          "share": 0.147,
+          "ci95": [
+            0.084,
+            0.244
+          ]
+        }
+      },
+      "median_statements_of_matched": 7
+    },
+    "hindi_belt_state": {
+      "entries": 50,
+      "done": 50,
+      "measures": {
+        "item on Wikidata": {
+          "k": 45,
+          "n": 50,
+          "share": 0.9,
+          "ci95": [
+            0.786,
+            0.957
+          ]
+        },
+        "monument code (P1371)": {
+          "k": 45,
+          "n": 50,
+          "share": 0.9,
+          "ci95": [
+            0.786,
+            0.957
+          ]
+        },
+        "English description": {
+          "k": 5,
+          "n": 50,
+          "share": 0.1,
+          "ci95": [
+            0.043,
+            0.214
+          ]
+        },
+        "Hindi label": {
+          "k": 2,
+          "n": 50,
+          "share": 0.04,
+          "ci95": [
+            0.011,
+            0.135
+          ]
+        },
+        "Kannada label": {
+          "k": 0,
+          "n": 50,
+          "share": 0.0,
+          "ci95": [
+            0.0,
+            0.071
+          ]
+        },
+        "local-language label": {
+          "k": 2,
+          "n": 50,
+          "share": 0.04,
+          "ci95": [
+            0.011,
+            0.135
+          ]
+        },
+        "coordinates": {
+          "k": 41,
+          "n": 50,
+          "share": 0.82,
+          "ci95": [
+            0.692,
+            0.902
+          ]
+        },
+        "image": {
+          "k": 14,
+          "n": 50,
+          "share": 0.28,
+          "ci95": [
+            0.175,
+            0.417
+          ]
+        },
+        "English Wikipedia article": {
+          "k": 1,
+          "n": 50,
+          "share": 0.02,
+          "ci95": [
+            0.004,
+            0.105
+          ]
+        },
+        "Hindi Wikipedia article": {
+          "k": 1,
+          "n": 50,
+          "share": 0.02,
+          "ci95": [
+            0.004,
+            0.105
+          ]
+        },
+        "Kannada Wikipedia article": {
+          "k": 0,
+          "n": 50,
+          "share": 0.0,
+          "ci95": [
+            0.0,
+            0.071
+          ]
+        },
+        "local-language Wikipedia article": {
+          "k": 1,
+          "n": 50,
+          "share": 0.02,
+          "ci95": [
+            0.004,
+            0.105
+          ]
+        },
+        "in corpus v1": {
+          "k": 1,
+          "n": 50,
+          "share": 0.02,
+          "ci95": [
+            0.004,
+            0.105
+          ]
+        }
+      },
+      "median_statements_of_matched": 7
+    },
+    "hindi_belt_asi": {
+      "entries": 50,
+      "done": 50,
+      "measures": {
+        "item on Wikidata": {
+          "k": 47,
+          "n": 50,
+          "share": 0.94,
+          "ci95": [
+            0.838,
+            0.979
+          ]
+        },
+        "monument code (P1371)": {
+          "k": 47,
+          "n": 50,
+          "share": 0.94,
+          "ci95": [
+            0.838,
+            0.979
+          ]
+        },
+        "English description": {
+          "k": 10,
+          "n": 50,
+          "share": 0.2,
+          "ci95": [
+            0.112,
+            0.33
+          ]
+        },
+        "Hindi label": {
+          "k": 3,
+          "n": 50,
+          "share": 0.06,
+          "ci95": [
+            0.021,
+            0.162
+          ]
+        },
+        "Kannada label": {
+          "k": 1,
+          "n": 50,
+          "share": 0.02,
+          "ci95": [
+            0.004,
+            0.105
+          ]
+        },
+        "local-language label": {
+          "k": 3,
+          "n": 50,
+          "share": 0.06,
+          "ci95": [
+            0.021,
+            0.162
+          ]
+        },
+        "coordinates": {
+          "k": 28,
+          "n": 50,
+          "share": 0.56,
+          "ci95": [
+            0.423,
+            0.688
+          ]
+        },
+        "image": {
+          "k": 15,
+          "n": 50,
+          "share": 0.3,
+          "ci95": [
+            0.191,
+            0.438
+          ]
+        },
+        "English Wikipedia article": {
+          "k": 5,
+          "n": 50,
+          "share": 0.1,
+          "ci95": [
+            0.043,
+            0.214
+          ]
+        },
+        "Hindi Wikipedia article": {
+          "k": 3,
+          "n": 50,
+          "share": 0.06,
+          "ci95": [
+            0.021,
+            0.162
+          ]
+        },
+        "Kannada Wikipedia article": {
+          "k": 1,
+          "n": 50,
+          "share": 0.02,
+          "ci95": [
+            0.004,
+            0.105
+          ]
+        },
+        "local-language Wikipedia article": {
+          "k": 3,
+          "n": 50,
+          "share": 0.06,
+          "ci95": [
+            0.021,
+            0.162
+          ]
+        },
+        "in corpus v1": {
+          "k": 5,
+          "n": 50,
+          "share": 0.1,
+          "ci95": [
+            0.043,
+            0.214
+          ]
+        }
+      },
+      "median_statements_of_matched": 7
+    },
+    "rest_asi": {
+      "entries": 50,
+      "done": 50,
+      "measures": {
+        "item on Wikidata": {
+          "k": 45,
+          "n": 50,
+          "share": 0.9,
+          "ci95": [
+            0.786,
+            0.957
+          ]
+        },
+        "monument code (P1371)": {
+          "k": 45,
+          "n": 50,
+          "share": 0.9,
+          "ci95": [
+            0.786,
+            0.957
+          ]
+        },
+        "English description": {
+          "k": 33,
+          "n": 50,
+          "share": 0.66,
+          "ci95": [
+            0.522,
+            0.776
+          ]
+        },
+        "Hindi label": {
+          "k": 4,
+          "n": 50,
+          "share": 0.08,
+          "ci95": [
+            0.032,
+            0.188
+          ]
+        },
+        "Kannada label": {
+          "k": 2,
+          "n": 50,
+          "share": 0.04,
+          "ci95": [
+            0.011,
+            0.135
+          ]
+        },
+        "local-language label": {
+          "k": 16,
+          "n": 48,
+          "share": 0.333,
+          "ci95": [
+            0.217,
+            0.475
+          ]
+        },
+        "coordinates": {
+          "k": 41,
+          "n": 50,
+          "share": 0.82,
+          "ci95": [
+            0.692,
+            0.902
+          ]
+        },
+        "image": {
+          "k": 28,
+          "n": 50,
+          "share": 0.56,
+          "ci95": [
+            0.423,
+            0.688
+          ]
+        },
+        "English Wikipedia article": {
+          "k": 10,
+          "n": 50,
+          "share": 0.2,
+          "ci95": [
+            0.112,
+            0.33
+          ]
+        },
+        "Hindi Wikipedia article": {
+          "k": 3,
+          "n": 50,
+          "share": 0.06,
+          "ci95": [
+            0.021,
+            0.162
+          ]
+        },
+        "Kannada Wikipedia article": {
+          "k": 1,
+          "n": 50,
+          "share": 0.02,
+          "ci95": [
+            0.004,
+            0.105
+          ]
+        },
+        "local-language Wikipedia article": {
+          "k": 9,
+          "n": 48,
+          "share": 0.188,
+          "ci95": [
+            0.102,
+            0.319
+          ]
+        },
+        "in corpus v1": {
+          "k": 10,
+          "n": 50,
+          "share": 0.2,
+          "ci95": [
+            0.112,
+            0.33
+          ]
+        }
+      },
+      "median_statements_of_matched": 10
+    },
+    "unesco_ich": {
+      "entries": 16,
+      "done": 16,
+      "measures": {
+        "item on Wikidata": {
+          "k": 16,
+          "n": 16,
+          "share": 1.0,
+          "ci95": [
+            0.806,
+            1.0
+          ]
+        },
+        "monument code (P1371)": {
+          "k": 0,
+          "n": 16,
+          "share": 0.0,
+          "ci95": [
+            0.0,
+            0.194
+          ]
+        },
+        "English description": {
+          "k": 15,
+          "n": 16,
+          "share": 0.938,
+          "ci95": [
+            0.717,
+            0.989
+          ]
+        },
+        "Hindi label": {
+          "k": 14,
+          "n": 16,
+          "share": 0.875,
+          "ci95": [
+            0.64,
+            0.965
+          ]
+        },
+        "Kannada label": {
+          "k": 9,
+          "n": 16,
+          "share": 0.562,
+          "ci95": [
+            0.332,
+            0.769
+          ]
+        },
+        "local-language label": {
+          "k": 0,
+          "n": 0,
+          "share": null,
+          "ci95": [
+            null,
+            null
+          ]
+        },
+        "coordinates": {
+          "k": 1,
+          "n": 16,
+          "share": 0.062,
+          "ci95": [
+            0.011,
+            0.283
+          ]
+        },
+        "image": {
+          "k": 15,
+          "n": 16,
+          "share": 0.938,
+          "ci95": [
+            0.717,
+            0.989
+          ]
+        },
+        "English Wikipedia article": {
+          "k": 14,
+          "n": 16,
+          "share": 0.875,
+          "ci95": [
+            0.64,
+            0.965
+          ]
+        },
+        "Hindi Wikipedia article": {
+          "k": 14,
+          "n": 16,
+          "share": 0.875,
+          "ci95": [
+            0.64,
+            0.965
+          ]
+        },
+        "Kannada Wikipedia article": {
+          "k": 8,
+          "n": 16,
+          "share": 0.5,
+          "ci95": [
+            0.28,
+            0.72
+          ]
+        },
+        "local-language Wikipedia article": {
+          "k": 0,
+          "n": 0,
+          "share": null,
+          "ci95": [
+            null,
+            null
+          ]
+        },
+        "in corpus v1": {
+          "k": 14,
+          "n": 16,
+          "share": 0.875,
+          "ci95": [
+            0.64,
+            0.965
+          ]
+        }
+      },
+      "median_statements_of_matched": 20
+    }
+  },
+  "full_asi_list": [
+    {
+      "state": "Andhra Pradesh",
+      "asi_listed": 135,
+      "asi_codes_on_wikidata": 135,
+      "asi_items_on_wikidata": 142,
+      "state_codes_on_wikidata": 476
+    },
+    {
+      "state": "Arunachal Pradesh",
+      "asi_listed": 3,
+      "asi_codes_on_wikidata": 3,
+      "asi_items_on_wikidata": 3,
+      "state_codes_on_wikidata": 7
+    },
+    {
+      "state": "Assam",
+      "asi_listed": 55,
+      "asi_codes_on_wikidata": 55,
+      "asi_items_on_wikidata": 55,
+      "state_codes_on_wikidata": 96
+    },
+    {
+      "state": "Bihar",
+      "asi_listed": 70,
+      "asi_codes_on_wikidata": 70,
+      "asi_items_on_wikidata": 70,
+      "state_codes_on_wikidata": 30
+    },
+    {
+      "state": "Chhattisgarh",
+      "asi_listed": 46,
+      "asi_codes_on_wikidata": 46,
+      "asi_items_on_wikidata": 47,
+      "state_codes_on_wikidata": 58
+    },
+    {
+      "state": "Daman & Diu (U.T.)",
+      "asi_listed": 11,
+      "asi_codes_on_wikidata": 11,
+      "asi_items_on_wikidata": 11,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Goa",
+      "asi_listed": 21,
+      "asi_codes_on_wikidata": 21,
+      "asi_items_on_wikidata": 21,
+      "state_codes_on_wikidata": 51
+    },
+    {
+      "state": "Gujarat",
+      "asi_listed": 205,
+      "asi_codes_on_wikidata": 203,
+      "asi_items_on_wikidata": 204,
+      "state_codes_on_wikidata": 361
+    },
+    {
+      "state": "Haryana",
+      "asi_listed": 93,
+      "asi_codes_on_wikidata": 91,
+      "asi_items_on_wikidata": 91,
+      "state_codes_on_wikidata": 23
+    },
+    {
+      "state": "Himachal Pradesh",
+      "asi_listed": 40,
+      "asi_codes_on_wikidata": 40,
+      "asi_items_on_wikidata": 40,
+      "state_codes_on_wikidata": 5
+    },
+    {
+      "state": "Jammu & Kashmir (U.T.)",
+      "asi_listed": 56,
+      "asi_codes_on_wikidata": 56,
+      "asi_items_on_wikidata": 58,
+      "state_codes_on_wikidata": 17
+    },
+    {
+      "state": "Jharkhand",
+      "asi_listed": 13,
+      "asi_codes_on_wikidata": 13,
+      "asi_items_on_wikidata": 13,
+      "state_codes_on_wikidata": 3
+    },
+    {
+      "state": "Karnataka",
+      "asi_listed": 506,
+      "asi_codes_on_wikidata": 507,
+      "asi_items_on_wikidata": 516,
+      "state_codes_on_wikidata": 747
+    },
+    {
+      "state": "Kerala",
+      "asi_listed": 29,
+      "asi_codes_on_wikidata": 29,
+      "asi_items_on_wikidata": 29,
+      "state_codes_on_wikidata": 102
+    },
+    {
+      "state": "Ladakh (U.T.)",
+      "asi_listed": 15,
+      "asi_codes_on_wikidata": 15,
+      "asi_items_on_wikidata": 15,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Madhya Pradesh",
+      "asi_listed": 291,
+      "asi_codes_on_wikidata": 292,
+      "asi_items_on_wikidata": 316,
+      "state_codes_on_wikidata": 438
+    },
+    {
+      "state": "Maharashtra",
+      "asi_listed": 286,
+      "asi_codes_on_wikidata": 286,
+      "asi_items_on_wikidata": 337,
+      "state_codes_on_wikidata": 244
+    },
+    {
+      "state": "Manipur",
+      "asi_listed": 1,
+      "asi_codes_on_wikidata": 1,
+      "asi_items_on_wikidata": 1,
+      "state_codes_on_wikidata": 46
+    },
+    {
+      "state": "Meghalaya",
+      "asi_listed": 8,
+      "asi_codes_on_wikidata": 8,
+      "asi_items_on_wikidata": 8,
+      "state_codes_on_wikidata": 4
+    },
+    {
+      "state": "Mizoram",
+      "asi_listed": 1,
+      "asi_codes_on_wikidata": 1,
+      "asi_items_on_wikidata": 1,
+      "state_codes_on_wikidata": 53
+    },
+    {
+      "state": "N.C.T. Delhi",
+      "asi_listed": 172,
+      "asi_codes_on_wikidata": 160,
+      "asi_items_on_wikidata": 163,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Nagaland",
+      "asi_listed": 4,
+      "asi_codes_on_wikidata": 4,
+      "asi_items_on_wikidata": 4,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Odisha",
+      "asi_listed": 81,
+      "asi_codes_on_wikidata": 80,
+      "asi_items_on_wikidata": 80,
+      "state_codes_on_wikidata": 217
+    },
+    {
+      "state": "Puducherry (U.T.)",
+      "asi_listed": 7,
+      "asi_codes_on_wikidata": 7,
+      "asi_items_on_wikidata": 7,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Punjab",
+      "asi_listed": 33,
+      "asi_codes_on_wikidata": 33,
+      "asi_items_on_wikidata": 33,
+      "state_codes_on_wikidata": 62
+    },
+    {
+      "state": "Rajasthan",
+      "asi_listed": 163,
+      "asi_codes_on_wikidata": 163,
+      "asi_items_on_wikidata": 164,
+      "state_codes_on_wikidata": 327
+    },
+    {
+      "state": "Sikkim",
+      "asi_listed": 3,
+      "asi_codes_on_wikidata": 3,
+      "asi_items_on_wikidata": 3,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Tamilnadu",
+      "asi_listed": 412,
+      "asi_codes_on_wikidata": 402,
+      "asi_items_on_wikidata": 426,
+      "state_codes_on_wikidata": 80
+    },
+    {
+      "state": "Telangana",
+      "asi_listed": 8,
+      "asi_codes_on_wikidata": 8,
+      "asi_items_on_wikidata": 8,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Tripura",
+      "asi_listed": 8,
+      "asi_codes_on_wikidata": 8,
+      "asi_items_on_wikidata": 8,
+      "state_codes_on_wikidata": 0
+    },
+    {
+      "state": "Uttar Pradesh",
+      "asi_listed": 743,
+      "asi_codes_on_wikidata": 749,
+      "asi_items_on_wikidata": 895,
+      "state_codes_on_wikidata": 141
+    },
+    {
+      "state": "Uttarakhand",
+      "asi_listed": 44,
+      "asi_codes_on_wikidata": 40,
+      "asi_items_on_wikidata": 42,
+      "state_codes_on_wikidata": 21
+    },
+    {
+      "state": "West Bengal",
+      "asi_listed": 135,
+      "asi_codes_on_wikidata": 134,
+      "asi_items_on_wikidata": 146,
+      "state_codes_on_wikidata": 104
+    }
+  ]
+}

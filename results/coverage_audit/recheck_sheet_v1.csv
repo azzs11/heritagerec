@@ -1,0 +1,90 @@
+sample_id,stratum,list_id,name,locality,district,state,place_item,candidates,match,searched,notes
+cov004,karnataka_state,ka:Belagam:24,Ruined Fort.,Yellurgad,Belagam,Karnataka,,"1) Q6873592 | Mirjan Fort | fort built by Rani Chennabhairadevi | ASI N-KA-D286 | https://www.wikidata.org/wiki/Q6873592
+2) Q97096091 | Ruined Fort, Belgaum | ASI S-KA-96 | https://www.wikidata.org/wiki/Q97096091
+3) Q97096057 | Ruined Fort, Belgaum | ASI S-KA-64 | https://www.wikidata.org/wiki/Q97096057
+4) Q110010153 | Ruined Fort on a River | watercolor by Samuel Davis | https://www.wikidata.org/wiki/Q110010153
+5) Q106787723 | Ruined Fort on a Hill | drawing by Samuel Davis | https://www.wikidata.org/wiki/Q106787723",,,
+cov018,karnataka_state,ka:Dharwad:24,Naryanadev Temple with 5 Inscriptions.,Kalas,Dharwad,Karnataka,https://www.wikidata.org/wiki/Q5030239,"1) Q59657938 | Ancient Temples Kala Dera I  and II, Thalora | Ruins of 10th to 11th century Hindu temples | ASI N-JK-65, N-JK-50 | https://www.wikidata.org/wiki/Q59657938
+2) Q7338999 | Riwa Fort | fort in Mumbai, India | ASI S-MH-76 | https://www.wikidata.org/wiki/Q7338999
+3) Q41515902 | Kala Gumbad | ASI N-DL-103, N-DL-93 | https://www.wikidata.org/wiki/Q41515902
+4) Q56380470 | Motijheel Jama Mosque | mosque in Murshidabad | ASI N-WB-129 | https://www.wikidata.org/wiki/Q56380470
+5) Q97459577 | Kala Pahar Temple | ASI N-RJ-114 | https://www.wikidata.org/wiki/Q97459577",,,
+cov024,karnataka_state,ka:Gadag:4,Temple of Virabhadra with Inscription.,Belaganur,Gadag,Karnataka,,"1) Q97440395 | No name close to Virabhadra temple | ASI N-KA-D78 | https://www.wikidata.org/wiki/Q97440395
+2) Q97440644 | Virabhadra temple | ASI N-KA-D290 | https://www.wikidata.org/wiki/Q97440644
+3) Q97440636 | Virabhadra temple, inscriptions and ancient site | ASI N-KA-D281 | https://www.wikidata.org/wiki/Q97440636
+4) Q107546783 | Veerabhadra temple | 9th century Surytemple in AndhrPradesh | ASI N-AP-40 | https://www.wikidata.org/wiki/Q107546783
+5) Q7918143 | Veerabhadra Temple | Hindu temple in Lepakshi in Andhra Pradesh | ASI N-AP-8 | https://www.wikidata.org/wiki/Q7918143",,,
+cov026,karnataka_state,ka:Gulbarga:29,Pre-historic stone circles.,Helbahavi,Gulbarga,Karnataka,,"1) Q97096452 | Pre-historic stone circles (Helbahavi) | ASI S-KA-330 | https://www.wikidata.org/wiki/Q97096452
+2) Q97096464 | Pre-historic stone circles | ASI S-KA-342 | https://www.wikidata.org/wiki/Q97096464
+3) Q97096422 | Pre-historic stone circles | ASI S-KA-304 | https://www.wikidata.org/wiki/Q97096422
+4) Q97096445 | Pre-historic stone circles | ASI S-KA-324 | https://www.wikidata.org/wiki/Q97096445
+5) Q97096417 | Pre-historic stone circles (Buchaimatti) | ASI S-KA-300 | https://www.wikidata.org/wiki/Q97096417",,,
+cov044,karnataka_state,ka:Haveri:76,Visvanath Temple.,Masur,Haveri,Karnataka,https://www.wikidata.org/wiki/Q3851675,,,,
+cov055,karnataka_state,ka:Raichur:27,Fort.,Mudugal,Raichur,Karnataka,,"1) Q6873592 | Mirjan Fort | fort built by Rani Chennabhairadevi | ASI N-KA-D286 | https://www.wikidata.org/wiki/Q6873592
+2) Q16869997 | Fort | family name | https://www.wikidata.org/wiki/Q16869997
+3) Q1785071 | fort | military construction designed for defensive warfare | https://www.wikidata.org/wiki/Q1785071
+4) Q57821 | fortification | military constructions and buildings designed for defense in warfare and military bases | https://www.wikidata.org/wiki/Q57821
+5) Q171857 | Agra Fort | UNESCO World Heritage Site | ASI N-UP-A1 | https://www.wikidata.org/wiki/Q171857",,,
+cov059,karnataka_state,ka:Raichur:60,Pre-historic site.,Homballi,Raichur,Karnataka,,"1) Q5769587 | Hirebenkal | archaeological site in Karnataka, India | ASI N-KA-D294 | https://www.wikidata.org/wiki/Q5769587
+2) Q97440609 | Pre-historic site | ASI N-KA-D259 | https://www.wikidata.org/wiki/Q97440609
+3) Q97441060 | Pre-Historic Site | ASI N-KA-B157 | https://www.wikidata.org/wiki/Q97441060
+4) Q97096127 | Pre-historic site, Bidar | ASI S-KA-112 | https://www.wikidata.org/wiki/Q97096127
+5) Q97440659 | Pre-Historic Site | ASI N-KA-B8 | https://www.wikidata.org/wiki/Q97440659",,,
+cov060,karnataka_state,ka:Raichur:9,Vishweshwara Temple.,Gabbur,Raichur,Karnataka,https://www.wikidata.org/wiki/Q5515309,"1) Q97096161 | Temples of Hanuman, Ramalings, Mukteshwara, Lakshmi, Narasimha, Lakshminarayana, Kashi Vishweshwara | ASI S-KA-145 | https://www.wikidata.org/wiki/Q97096161",,,
+cov069,karnataka_state,ka:Uttara Kannada:50,"Venkataramana Temple, Hundehom for Kings of Sedhar.",Sonda,Uttara Kannada,Karnataka,https://www.wikidata.org/wiki/Q60817281,"1) Q97096959 | Mahanti math, Gaddige math, Venkataramana Devasthana Hundehom for kings of Sedhar | ASI S-KA-737 | https://www.wikidata.org/wiki/Q97096959",,,
+cov076,karnataka_asi,asi:Karnataka:Bangalore Circle:110,Jaina Basti with Brahmadeva Pillar,Melagi,Shivamogga,Karnataka,https://www.wikidata.org/wiki/Q25901993,1) Q97441089 | Jaina Basti with Brahmadeva Pillar | ASI N-KA-B182 | https://www.wikidata.org/wiki/Q97441089,,,
+cov079,karnataka_asi,asi:Karnataka:Bangalore Circle:118,Mangaladevi Temple,Mangaluru,South Kanara,Karnataka,https://www.wikidata.org/wiki/Q123257429,"1) Q97441099 | Mangaladevi Temple | ASI N-KA-B191 | https://www.wikidata.org/wiki/Q97441099
+2) Q131962047 | Indian Oil Fuel Filling Station Mangaladevi Temple Road (Mahalasa Fuels) | fuel station of IndianOil in Mangaluru District, Karnataka, India | https://www.wikidata.org/wiki/Q131962047
+3) Q96398859 | Permude | gram panchayat in Karnataka, India | https://www.wikidata.org/wiki/Q96398859
+4) Q132123404 | Jio-bp pulse Fuel Filling Station Mangaluru | Jio-bp pulse Fuel Filling Station in Mangaladevi Temple Road, Pandeshwar, Mangaluru, India | https://www.wikidata.org/wiki/Q132123404
+5) Q6748666 | Mangaladevi Temple | temple in India | https://www.wikidata.org/wiki/Q6748666",,,
+cov100,karnataka_asi,asi:Karnataka:Dharwad Circle:116,Inscriptions on two pillars in the above temple,Huli,Belagavi,Karnataka,https://www.wikidata.org/wiki/Q541071,,,,
+cov108,karnataka_asi,asi:Karnataka:Dharwad Circle:158,Nagareshwra temple or Aravattukambhad Gudi,Bankapur,Haveri,Karnataka,https://www.wikidata.org/wiki/Q93566767,"1) Q16259469 | Nagareshvara Temple, Bankapur | Hindu temple in Karnataka, India | ASI N-KA-D228 | https://www.wikidata.org/wiki/Q16259469",,,
+cov144,karnataka_asi,asi:Karnataka:Hampi Circle:56,Soolai Well,Malapannanagudi,Bellary,Karnataka,,1) Q97440889 | Soolai Well | ASI N-KA-B61 | https://www.wikidata.org/wiki/Q97440889,,,
+cov146,karnataka_asi,asi:Karnataka:Hampi Circle:61,Gopala Krishnaswami Temple,Thimmalapur,Bellary,Karnataka,https://www.wikidata.org/wiki/Q91752697,1) Q97440893 | Gopala Krishnaswami Temple | ASI N-KA-B65 | https://www.wikidata.org/wiki/Q97440893,,,
+cov170,hindi_belt_state,mp:265,Mudiya Shiv Mandir,"Garha, Jabalpur",Jabalpur,Madhya Pradesh,https://www.wikidata.org/wiki/Q31782821,"1) Q97705285 | The area of the waste land divided by a ravine into two large mounds called ""Garha and Garhi"" | ASI N-UP-L6 | https://www.wikidata.org/wiki/Q97705285",,,
+cov187,hindi_belt_state,mp:368,Rock Cut Caves and Temple Group,"Poladongar, Garoth",Mandsaur,Madhya Pradesh,,"1) Q97481237 | Rock Cut Caves | Narasamangalam Rock-cut caves | ASI N-TN-C204 | https://www.wikidata.org/wiki/Q97481237
+2) Q97481235 | Rock Cut Caves, Sculptures And Inscriptions. | ASI N-TN-C202 | https://www.wikidata.org/wiki/Q97481235
+3) Q3520683 | Undavalli Caves | rock-cut caves in Undavalli village, Guntur district | ASI N-AP-65, N-AP-60 | https://www.wikidata.org/wiki/Q3520683
+4) Q56458765 | Arvelam Caves | rock-cut caves in Goa | ASI N-GA-13, N-GA-1 | https://www.wikidata.org/wiki/Q56458765
+5) Q7938011 | Vizhinjam rock caves | building in India | ASI N-KL-11 | https://www.wikidata.org/wiki/Q7938011",,,
+cov190,hindi_belt_state,mp:388,"Sefti Wall, Orchha","Orchha, Niwari",Tikamgarh,Madhya Pradesh,https://www.wikidata.org/wiki/Q201631,"1) Q97101452 | Lakshmi Temple | Hindu temple in Orchha, Madhya Pradesh, India | ASI S-MP-256 | https://www.wikidata.org/wiki/Q97101452
+2) Q63391541 | Raja Mahal | old palace in Orchha, Madhya Pradesh, India | ASI S-MP-255 | https://www.wikidata.org/wiki/Q63391541
+3) Q6123161 | Jahangir Mahal, Orchha | 17th century palace in Bundelkhand | ASI S-MP-254 | https://www.wikidata.org/wiki/Q6123161
+4) Q97101453 | Orchha Chhatris, Bundelkhand | Hindu funerary monuments site near Betwa river | ASI S-MP-258 | https://www.wikidata.org/wiki/Q97101453
+5) Q5087989 | Chaturbhuj Temple, Orchha | 16th century temple for Rama avatar of Vishnu | ASI S-MP-277 | https://www.wikidata.org/wiki/Q5087989",,,
+cov194,hindi_belt_state,mp:465,Tilkeshwar Mahadeo Mandir,Ujjain,Ujjain,Madhya Pradesh,https://www.wikidata.org/wiki/Q892641,"1) Q97101560 | Chamunda Temple | temple in Ujjain district, Madhya Pradesh, India | ASI S-MP-307 | https://www.wikidata.org/wiki/Q97101560
+2) Q97101561 | Kalka Mata Temple | ASI S-MP-308 | https://www.wikidata.org/wiki/Q97101561
+3) Q97101562 | Tilakeshwar Mahadeva Temple | ASI S-MP-309 | https://www.wikidata.org/wiki/Q97101562
+4) Q97101563 | Ramjanardan Temple | ASI S-MP-310 | https://www.wikidata.org/wiki/Q97101563
+5) Q73753281 | Axis Bank, Ujjain, Madhya Pradesh Branch | branch of Axis Bank in Madhya Pradesh, India | https://www.wikidata.org/wiki/Q73753281",,,
+cov198,hindi_belt_state,mp:496,"Yogni Mandir, Vyas Badora","Vyas Badora, Londi",Chhatarpur,Madhya Pradesh,,,,,
+cov199,hindi_belt_state,mp:98,Devi Mandir (Shiv Mandir),"Sita Ram Ki Lavan, Mehgaon",Bhind,Madhya Pradesh,,"1) Q56948999 | Shakti Devi Temple, Chatrari | 7th century goddess temple in north Himachal Pradesh, India | ASI N-HP-12, N-HP-13 | https://www.wikidata.org/wiki/Q56948999",,,
+cov201,hindi_belt_asi,asi:Bihar:Patna Circle:4,Patalpuri cave and land adjoining Bateshwar cave on the Patharghata hill,Madhorampur,Bhagalpur,Bihar,https://www.wikidata.org/wiki/Q19289986,,,,
+cov212,hindi_belt_asi,asi:Madhya Pradesh:Jabalpur Circle:45,Nohta Temple,Nohta,Damoh,Madhya Pradesh,,"1) Q97945603 | Nohta ( Mahadeva ) Temple | ASI N-MP-38 | https://www.wikidata.org/wiki/Q97945603
+2) Q116850914 | Mahadeva temple, Nohta | 10th-century Kalachuri era Shiva temple | https://www.wikidata.org/wiki/Q116850914
+3) Q128474100 | Nohta | place in India | https://www.wikidata.org/wiki/Q128474100
+4) Q71804052 | Union Bank Of India Nohta branch | bank in India | https://www.wikidata.org/wiki/Q71804052
+5) Q66600666 | Lunule of nail of fourth toe | https://www.wikidata.org/wiki/Q66600666",,,
+cov217,hindi_belt_asi,asi:Rajasthan:Jaipur Circle:54,Excavated Site,Bairat,Jaipur,Rajasthan,https://www.wikidata.org/wiki/Q60752617,"1) Q60741846 | Bairat Temple | Buddhist temple near Bairat, Rajasthan, India | ASI N-RJ-86 | https://www.wikidata.org/wiki/Q60741846
+2) Q97459448 | Excavated Site | archaeological site in Jaipur district, India | ASI N-RJ-85 | https://www.wikidata.org/wiki/Q97459448
+3) Q97459576 | Excavated Site | archaeological site in Tonk district, India | ASI N-RJ-113 | https://www.wikidata.org/wiki/Q97459576
+4) Q97459483 | Excavated Site | archaeological site in Tonk district, India | ASI N-RJ-108 | https://www.wikidata.org/wiki/Q97459483
+5) Q97946848 | Excavated site | excavated site in Khargone district | ASI N-MP-209 | https://www.wikidata.org/wiki/Q97946848",,,
+cov238,hindi_belt_asi,asi:Uttar Pradesh:Lucknow Circle:27,"Site of an old Buddhist Vihara, Extensive mound",Pakhnabihar,Farrukhabad,Uttar Pradesh,,"1) Q97816035 | Site of an old Buddhist Vihara, Extensive mound | ASI N-UP-A155 | https://www.wikidata.org/wiki/Q97816035",,,
+cov239,hindi_belt_asi,asi:Uttar Pradesh:Lucknow Circle:36,Smaller mound bearing five large Digamber Jain figures which people call the five Pandavas,Asothar,Fatehpur,Uttar Pradesh,,1) Q97705349 | Smaller mound bearing five large Digamber Jain figures which people call the five Pandavas | ASI N-UP-L74 | https://www.wikidata.org/wiki/Q97705349,,,
+cov257,rest_asi,asi:Goa:Goa Circle:9,Chapel of St. Francis Xavier and connected buildings,Old Goa,North Goa,Goa,,"1) Q20047741 | St Catherine's Chapel, Old Goa | church in Old Goa, India | ASI N-GA-5, N-GA-8 | https://www.wikidata.org/wiki/Q20047741
+2) Q20047855 | Church of Our Lady of the Rosary | church in Old Goa | ASI N-GA-6, N-GA-11 | https://www.wikidata.org/wiki/Q20047855
+3) Q391123 | Basilica of Bom Jesus | church in Velha Goa, India | ASI N-GA-1, N-GA-6 | https://www.wikidata.org/wiki/Q391123
+4) Q56459098 | House of Bull | building in India | ASI N-GA-19, N-GA-13 | https://www.wikidata.org/wiki/Q56459098",,,
+cov260,rest_asi,asi:Gujarat:Rajkot Circle:41,Ananteshwara temple,Bhadia Anandpur,Surendranagar,Gujarat,,"1) Q63347729 | Ananteshwara temple | Hindu temple in Gujarat, India | ASI N-GJ-189 | https://www.wikidata.org/wiki/Q63347729",,,
+cov271,rest_asi,asi:Maharashtra:Mumbai Circle:108,Temple of Devi (Yamai),Mahalung,Sholapur,Maharashtra,https://www.wikidata.org/wiki/Q113288838,"1) Q97309155 | Temple of Devi (Yamai) | temple in Solapur district, Maharashtra | ASI N-MH-M100, N-MH-M108 | https://www.wikidata.org/wiki/Q97309155",,,
+cov280,rest_asi,asi:N.C.T. Delhi:Delhi Circle:96,A Gateway of Lalkot,Lado Sarai Village,South Delhi,N.C.T. Delhi,,,,,
+cov282,rest_asi,asi:Odisha:Bhubaneswar Circle:17,"Lord Lingraj Temple with all the minor temples in the compound as given below- (i) Amania well, (ii) Astmurti (iii) Chandeswar Deb, (iv) Gopaluni temple (v) Ladukeswar temple, (vi)Parbati temple, (vii) Sabitri Devi temple, (viii)Sakreswar temple, (ix) Sathidosi temple",Bhubaneswar,Khurda,Odisha,,"1) Q3536413 | Udayagiri and Khandagiri Caves | partly natural and partly artificial caves of archaeological, historical and religious importance near the city of Bhubaneswar in Odisha, India | ASI N-OR-62, N-OR-70 | https://www.wikidata.org/wiki/Q3536413
+2) Q3635669 | Muktesvara deula | 10th-century Hindu temple in Bhubaneshwar, Odisha, India | ASI N-OR-49, N-OR-76 | https://www.wikidata.org/wiki/Q3635669
+3) Q4848728 | Baitala Deula | temple in Odisha, India | ASI N-OR-52 | https://www.wikidata.org/wiki/Q4848728
+4) Q2365530 | Lingaraja Temple | Shiva Temple in Bhubaneswar | ASI N-OR-45, N-OR-55 | https://www.wikidata.org/wiki/Q2365530
+5) Q2578551 | Ananta Vasudeva Temple | Hindu temple in Bhubaneswar | ASI N-OR-41, N-OR-50 | https://www.wikidata.org/wiki/Q2578551",,,
+cov301,unesco_ich,ich:00010,"Kutiyattam, Sanskrit theatre",,,,,"1) Q1641463 | Koodiyattam | traditional performing art form in Kerala, India | https://www.wikidata.org/wiki/Q1641463
+2) Q6963515 | Nangiar koothu | type of dance | https://www.wikidata.org/wiki/Q6963515
+3) Q116074516 | https://www.wikidata.org/wiki/Q116074516",,,

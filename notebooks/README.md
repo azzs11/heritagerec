@@ -8,6 +8,7 @@ from a result file that a script in `src/` reads.
 | Notebook | What it does | Writes | Decision |
 | --- | --- | --- | --- |
 | `query_translation.ipynb` | IndicTrans2 1B translates the Hindi and Kannada queries to English for the translate-then-search control | `data/queries/translations_v1.tsv` and `.json` | 0019 |
+| `reranker.ipynb` | bge-reranker-v2-m3 reranks each dev query's fused top 50 (MaxP over its first 16 passages) | `results/retrieval/runs/bge_reranker_dev_v1.trec` | 0008 |
 | `relevance_judge.ipynb` | Gemma 4 31B judges a pool's (query, document) pairs 0-3 with the fixed prompt; pilot pairs first | `results/judging/<split>_judgements_v1.jsonl` | 0022 |
 | `query_generation.ipynb` | Sarvam-M writes the 200 benchmark queries (and reserves for rejected slots) at the revision the trial chose | `results/queries/generation_v1/outputs.jsonl` | 0021 |
 | `query_generator_trial.ipynb` | Three open-weight models write a backstory and a query for the same 30 grid cells, for the author's blind rating | `results/queries/generator_trial_v1/outputs.jsonl` | 0021 |

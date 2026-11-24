@@ -31,3 +31,16 @@ if [ -f "$TRANSLATED" ]; then
   run src.retrieval.bm25 search --queries "$TRANSLATED"
   run src.retrieval.bm25 search --queries "$TRANSLATED" --rm3
 fi
+
+# Stage 2 and the inputs of stages 3 and 4, once the dense runs are back from Kaggle (notebooks/dense_baselines.ipynb):
+# reciprocal rank fusion of the text, dense and graph lists (decision 0008), the graph features of the fused top 100
+# (decision 0036), and the reranker's candidate list for notebooks/reranker.ipynb. LambdaMART (decision 0037) runs
+# after judging: it needs the qrels.
+RUNS=results/retrieval/runs
+if [ -f "$RUNS/bge_m3_all_dev_v1.trec" ]; then
+  run src.retrieval.fusion --name rrf_dev_v1 --runs "$RUNS/bm25_dev_v1.trec" "$RUNS/bge_m3_all_dev_v1.trec" "$RUNS/ppr_dev_v1.trec"
+  run src.graph_retrieval.features --seeds data/queries/dev_v1_seeds.tsv --candidates "$RUNS/rrf_dev_v1.trec" --name dev
+  run src.retrieval.rerank prepare --candidates "$RUNS/rrf_dev_v1.trec" --split dev
+else
+  echo "== dense runs not back yet: fusion, graph features and the reranker's candidates wait for them"
+fi
