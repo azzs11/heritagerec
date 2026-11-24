@@ -2,6 +2,7 @@
 
 import csv
 import json
+import sys
 
 import pytest
 
@@ -217,3 +218,49 @@ def test_recheck_sheet_is_blind_and_agreement_counts_none_as_an_answer(tmp_path,
     report = json.loads((tmp_path / "out.json").read_text())
     assert report["compared"] == 3 and report["agree"] == 2  # "None" and "none" agree
     assert report["disagreements"] == [{"sample_id": "cov004", "first": "Q4", "second": "Q9"}]
+
+
+def test_local_language_rates_leave_out_entries_without_a_local_language(tmp_path, monkeypatch):
+    import src.coverage_audit.fill as fill
+
+    # Two Karnataka entries (local language kn) and one UNESCO element (none); all matched, all with a kn label.
+    sample = [
+        {
+            "sample_id": "a",
+            "stratum": "s",
+            "state": "Karnataka",
+            "local_lang": "kn",
+            "inclusion_prob": "1",
+            "recheck": "",
+        },
+        {
+            "sample_id": "b",
+            "stratum": "s",
+            "state": "Karnataka",
+            "local_lang": "kn",
+            "inclusion_prob": "1",
+            "recheck": "",
+        },
+        {"sample_id": "c", "stratum": "s", "state": "", "local_lang": "", "inclusion_prob": "1", "recheck": ""},
+    ]
+    entity = {"labels": {"kn": {"value": "x"}}, "descriptions": {}, "claims": {}, "sitelinks": {}}
+    monkeypatch.setattr(fill, "entities", lambda wm, qs: {q: {**entity, "id": q} for q in qs})
+    monkeypatch.setattr(fill, "article_lengths", lambda wm, lang, titles: {})
+    monkeypatch.setattr(fill, "graph_facts", lambda: (__import__("collections").Counter(), set()))
+    monkeypatch.setattr(fill, "frame_comparison", lambda wm: [])
+    monkeypatch.setattr(
+        fill,
+        "read_csv",
+        lambda path: (
+            sample
+            if "sample" in str(path)
+            else [{"sample_id": s["sample_id"], "match": f"Q{i}"} for i, s in enumerate(sample, 1)]
+        ),
+    )
+    monkeypatch.setattr(fill, "Wikimedia", lambda raw, pause: type("W", (), {"fetched": 0, "reused": 0})())
+    monkeypatch.setattr(sys, "argv", ["fill", "--out", str(tmp_path / "cov")])
+    fill.main()
+    report = json.loads((tmp_path / "cov.json").read_text())
+    local = report["strata"]["s"]["measures"]["local-language label"]
+    assert (local["k"], local["n"]) == (2, 2)  # the UNESCO element is not in the denominator
+    assert report["strata"]["s"]["measures"]["Kannada label"]["n"] == 3
