@@ -407,3 +407,55 @@
   border-radius: 4px;
   margin: 0.3rem 0 0.5rem;
 }
+
+/* Decision 0035: the switch between the two arrangements, and the communities as a table. */
+.arrange {
+  position: absolute;
+  top: 0.8rem;
+  left: var(--gutter);
+  z-index: 2;
+  display: inline-flex;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.arrange button {
+  font: inherit;
+  font-size: var(--step--1);
+  border: 0;
+  background: none;
+  padding: 0.25rem 0.85rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.arrange button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.asText {
+  margin: 1rem 0;
+  font-size: var(--step--2);
+}
+
+.asText summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.asText table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.4rem;
+}
+
+.asText th,
+.asText td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.2rem 0.3rem;
+  border-bottom: 1px solid var(--rule);
+}

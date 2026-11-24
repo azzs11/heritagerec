@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 
-import { LiveGraph, Legend, groupOf, type Group, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
+import { LiveGraph, Legend, groupOf, type LiveEdge, type LiveNode } from "@/components/LiveGraph";
+
+import { COMPOSITION_NAMES, CommunityMap, CompositionLegend, type Arrangement } from "./CommunityMap";
 import { Load, MarginNote, Names, Seal, fmt } from "@/components/ui";
 import { NextSteps } from "@/components/Wayfinding";
 import { api, label, stepLabel, type Bundle, type EgoView, type GraphEdge, type NodeCard, type Overview, type PathView } from "@/lib/api";
@@ -81,55 +83,57 @@ function Communities({ go }: { go: (id: string) => void }) {
 
 function CommunityView({ o, go }: { o: Overview; go: (id: string) => void }) {
   const [picked, setPicked] = useState<number | null>(null);
+  const [arrangement, setArrangement] = useState<Arrangement>("network");
   const linked = useMemo(() => new Set(o.links.flatMap((l) => [l.a, l.b])), [o]);
   const core = o.communities.filter((c) => linked.has(c.id));
   const shelf = o.communities.filter((c) => !linked.has(c.id));
-  const { nodes, edges } = useMemo(() => {
-    const max = Math.max(...core.map((c) => c.size), 1);
-    const nodes: LiveNode[] = core.map((c, i) => ({
-      id: `c${c.id}`,
-      label: c.label ?? `community ${c.id}`,
-      group: "other" as Group,
-      size: 4 + 16 * Math.sqrt(c.size / max),
-      hub: i < 12,
-    }));
-    const edges: LiveEdge[] = o.links.map((l) => ({ id: `l${l.a}-${l.b}`, source: `c${l.a}`, target: `c${l.b}`, label: `${l.edges} shared ${l.edges === 1 ? "fact" : "facts"}` }));
-    return { nodes, edges };
-    // `core` is derived from `o`.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [o]);
   const c = picked != null ? o.communities.find((x) => x.id === picked) : null;
   const maxShelf = Math.max(...shelf.map((x) => x.size), 1);
+  const placed = o.communities.filter((x) => x.centre).length;
 
   return (
     <div className={s.stage}>
       <div className={s.canvas}>
-        <LiveGraph
-          nodes={nodes}
-          edges={edges}
-          selected={picked != null ? `c${picked}` : null}
-          onSelect={(id) => setPicked(id ? Number(id.slice(1)) : null)}
-          focusOnSelect={false}
-          ariaLabel={`${core.length} communities that share facts with others, joined where they do`}
-        />
+        <div className={s.arrange} role="group" aria-label="Arrange the communities">
+          <button aria-pressed={arrangement === "network"} onClick={() => setArrangement("network")}>
+            As a network
+          </button>
+          <button aria-pressed={arrangement === "map"} onClick={() => setArrangement("map")}>
+            On the map
+          </button>
+        </div>
+        <CommunityMap o={o} arrangement={arrangement} picked={picked} onPick={setPicked} />
       </div>
       <aside className={s.panel}>
+        <CompositionLegend />
         {c ? (
           <div className={s.card}>
             <p className={s.kind}>community</p>
-            <h2 className={s.cardTitle}>{c.label}</h2>
+            <h2 className={s.cardTitle}>{(c.top_labels ?? [c.label]).filter(Boolean).join(" · ")}</h2>
             <p className={s.muted}>
-              <span className="num">{fmt(c.size)}</span> nodes: <span className="num">{fmt(c.documents)}</span> documents,{" "}
-              <span className="num">{fmt(c.entities)}</span> entities (<span className="num">{fmt(c.placed)}</span> on the map)
+              <span className="num">{fmt(c.size)}</span> nodes:{" "}
+              {(["built", "people", "culture", "other", "documents"] as const)
+                .filter((g) => (c.composition?.[g] ?? 0) > 0)
+                .map((g) => `${fmt(c.composition![g]!)} ${COMPOSITION_NAMES[g]}`)
+                .join(", ")}
+              .
+            </p>
+            <p className={s.muted}>
+              {c.spread === "regional"
+                ? "Its places cluster in one region; “On the map” shows where."
+                : c.spread === "across India"
+                  ? "Its places spread across India, so it has no single place on the map."
+                  : "Too few of its members have coordinates to place it."}
             </p>
             <p className="label">its most connected members</p>
             <TopMembers ids={c.top} go={go} />
           </div>
         ) : (
           <p className={s.lede}>
-            The graph without its hubs, grouped into communities. <b className="num">{fmt(core.length)}</b> share facts
-            with one another and are drawn on the left; <b className="num">{fmt(shelf.length)}</b> touch no other and wait
-            on the shelf below. Choose any to see what it is made of.
+            The graph without its hubs, grouped into communities, each drawn as a ring of what it holds.{" "}
+            <b className="num">{fmt(core.length)}</b> share facts with one another and form the network;{" "}
+            <b className="num">{fmt(placed)}</b> have places that cluster, and stand where they are on the map. Choose any
+            to see what it is made of.
           </p>
         )}
         <h3 className={s.shelfTitle}>
@@ -152,6 +156,34 @@ function CommunityView({ o, go }: { o: Overview; go: (id: string) => void }) {
           Left out: <span className="num">{fmt(o.others.communities)}</span> communities under {o.min_size} nodes (
           <span className="num">{fmt(o.others.nodes)}</span> nodes in all).
         </p>
+        <details className={s.asText}>
+          <summary>Every community, as text</summary>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Named by</th>
+                <th scope="col">Nodes</th>
+                <th scope="col">What it holds</th>
+                <th scope="col">Where</th>
+              </tr>
+            </thead>
+            <tbody>
+              {o.communities.map((x) => (
+                <tr key={x.id}>
+                  <td>{(x.top_labels ?? [x.label]).filter(Boolean).join(", ")}</td>
+                  <td className="num">{fmt(x.size)}</td>
+                  <td>
+                    {(["built", "people", "culture", "other", "documents"] as const)
+                      .filter((g) => (x.composition?.[g] ?? 0) > 0)
+                      .map((g) => `${fmt(x.composition![g]!)} ${COMPOSITION_NAMES[g]}`)
+                      .join(", ")}
+                  </td>
+                  <td>{x.spread === "regional" ? "one region" : x.spread ?? ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
         <MarginNote>
           <p>
             Communities are found by the Louvain method with a fixed seed, on the graph without its hubs. They are a way
