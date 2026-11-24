@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { forwardRef, useState } from "react";
 
+import { Portrait } from "@/components/Portrait";
 import { label, stepLabel } from "@/lib/api";
 import { DOC_TYPES, SOURCES } from "@/lib/names";
 
 import type { Lens, Reading } from "./model";
 import s from "./search.module.css";
 
-const SCRIPT_MARK: Record<string, string> = { en: "En", hi: "हि", kn: "ಕ" };
 
 /** One document as one lens read it: where it ranks, what it is, and the evidence for it. */
 export const ResultCard = forwardRef<
@@ -43,12 +43,18 @@ export const ResultCard = forwardRef<
       <span className={`${s.rank} num`}>{r.rank}</span>
       <div className={s.thumb} aria-hidden>
         {r.image && !imageFailed ? (
+          // A Commons photograph shows an entity, so its title says which one and credits its author (decision 0034).
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={r.image.thumb} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setImageFailed(true)} />
+          <img
+            src={r.image.thumb}
+            alt=""
+            title={r.image.of ? `Photo of ${label(r.image.of_labels ?? {}, r.image.of)}. ${r.image.credit}` : r.image.credit}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={() => setImageFailed(true)}
+          />
         ) : (
-          <span className={s.monogram} lang={r.language}>
-            {SCRIPT_MARK[r.language] ?? r.language}
-          </span>
+          <Portrait data={r.portrait} language={r.language} />
         )}
       </div>
       <div className={s.body}>

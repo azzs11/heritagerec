@@ -1,6 +1,6 @@
 // One shape for a result from either lens, so the collation can treat both readings alike.
 
-import { label, type GraphRank, type ImageRef, type PathView, type SearchView, type Word } from "@/lib/api";
+import { label, type GraphRank, type ImageRef, type PathView, type Portrait, type SearchView, type Word } from "@/lib/api";
 
 export type Lens = "text" | "graph";
 
@@ -13,6 +13,7 @@ export interface Reading {
   source: string;
   kind: string | null;
   image?: ImageRef;
+  portrait?: Portrait;
   snippet?: Word[] | null;
   path?: PathView | null;
 }
@@ -33,6 +34,7 @@ export function fromText(r: SearchView): Reading[] {
     source: x.source ?? origin(x.doc_id).source,
     kind: x.doc_type,
     image: x.image,
+    portrait: x.portrait,
     snippet: x.snippet,
   }));
 }
@@ -46,6 +48,7 @@ export function fromGraph(r: GraphRank): Reading[] {
     ...origin(x.document.id),
     kind: x.document.type,
     image: x.document.image,
+    portrait: x.document.portrait,
     path: x.path,
   }));
 }
