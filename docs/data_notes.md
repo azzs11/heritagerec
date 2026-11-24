@@ -159,6 +159,21 @@ Link precision per layer is measured on the author's check of
 - Explorer coordinates: the three sites listed in section 10 (two likely wrong coordinates, one possibly out of scope).
 - Coverage-audit lists: the rules in section 12, and a spot check of parsed rows against the PDFs.
 
+## 14. Where a community lies (decision 0035)
+
+| Found | Example | Change | Recorded in | Decided by |
+| --- | --- | --- | --- | --- |
+| Some communities' places spread across the country, so a median point would sit where none of them is | The "Chennai" community holds Indo-Saracenic buildings across India | A centre only when the middle half of latitudes and longitudes each spans 3 degrees or less, with at least 3 placed | `src/explorer/build.py`, `results/explorer/explorer_v1.json` | Rule, during the build, pending author review |
+
+## 13. Photographs of entities (decision 0034)
+
+| Found | Example | Change | Recorded in | Decided by |
+| --- | --- | --- | --- | --- |
+| Some Commons file names are so long that 50 in one request exceed the URL limit | Tuti-nama page scans, over 150 characters each | Requests batched by URL length as well as count | `src/explorer/commons_images.py` | Rule, during the build, pending author review |
+| Two files have a licence name but no licence link | see `results/explorer/entity_images_v1.json`, "licence without a link" | Left out, so every shown photograph can link its licence | same report | Rule, during the build, pending author review |
+| Commons artist fields hold HTML, talk-page links and long personal notes | "Timothy A. Gonsalves. Feel free to use my photos, but please mention me..." | The credit shows the name; the full field is kept as `artist_note` | `entity_images.jsonl.gz` | Rule, during the build, pending author review |
+| Documents "about" a hub would borrow the hub's photograph and place | The Imperial Gazetteer volumes are about India (Q668) | A hub never lends a document its photograph or place | `server/components.py`, `picture()`, `portrait()` | Rule, during the build, pending author review |
+
 ## 12. Coverage-audit lists (decision 0032)
 
 Found while parsing the official lists into rows (`src/coverage_audit/lists.py`); every difference from a list's
@@ -172,6 +187,10 @@ own figures is in `results/coverage_audit/lists_v1.md`.
 | The Karnataka PDF prints Mandya's section twice | Pages 14-18 and 32-36, same 31 entries | The second copy is dropped (31 entries) | `lists_v1.md`, "repeated entries dropped" | Rule, during parsing, pending author review |
 | One Karnataka district heading has no "DISTRICT" | "CHIKKABALLAPURA", page 52 | An all-capitals line opening a table counts as a heading | parser | Rule, during parsing, pending author review |
 | Karnataka district names are spelled differently in the itemised pages and the summary | Belagam / Belgaum, Bijapur / Vijayapura, Gulbarga / Kalaburgi, Yadgiri / Yadagiri | A spelling map, used only to compare counts | `KA_SUMMARY_NAME` in the parser | Rule, during parsing, pending author review |
+| Some monuments on an official list, and on Wikipedia's list page, have no Wikidata item with their code | S-MP-455 "Bawdi, Inside Hospital", Datia; S-MP-490 "Sefti Wall, Orchha"; two Tamil Nadu ASI entries | Matched as none, the search trail in the sheet | `results/coverage_audit/match_sheet_v1.csv`, `searched` | Author (matching, 24 Nov 2026) |
+| Wikidata's ASI codes (P1371) follow two numbering schemes, so one code can name different monuments | cov263 (Haryana), cov283 (Odisha: N-OR-26 is Jagdiswaraswami temple, Q97147592) | Matched as none, the clash noted | same sheet, `notes` | Author (matching) |
+| An item carrying a monument's code can be the village or locality, not the monument | cov085 Chikkajala (Q5097447); cov213 Madan Mahal (Q17058399, the Jabalpur locality) | Matched as none: no item for the site itself | same sheet, `notes` | Author (matching) |
+| One item stands for a fort but not for the other monuments listed inside it | Srirangapatna Fort (Q97096752): the moat kept, the palace of Mir Sadiq and Tuppada-Kola none | Matched one, none for the others | same sheet | Author (matching, after the automatic check flagged it) |
 | Karnataka's itemised list has 47 fewer entries than its own summary (797 against 844) | Yadgiri: 55 listed, 101 in the summary; Kolar: serials 2, 3, 4 and 14 not printed | Not changed: the listed entries are the sampling frame, and the shortfall is reported | `lists_v1.md` | Pending author review |
 | UNESCO's India page lists an ongoing nomination beside the inscribed elements | Henna (2026, ongoing) | Only the 16 inscribed elements are taken, as the page states | `lists_v1.md`, "elements inscribed" | Rule, during parsing, pending author review |
 | One inscribed element is shared by several countries | Nawrouz (2024, with India among the submitting states) | Kept: it is on India's list | `unesco_ich_india.csv` | Rule, during parsing, pending author review |
