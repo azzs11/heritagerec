@@ -1,0 +1,45 @@
+{
+  "generated": "2026-11-24T03:17:16Z",
+  "commit": "2208c1bf035176dd3339d853348c07a62de956cf",
+  "entities_with_p18": 5883,
+  "distinct_files": 5870,
+  "kept": 5881,
+  "outcomes": {
+    "ok": 5881,
+    "licence without a link": 2
+  },
+  "by_licence": {
+    "Public domain": 1500,
+    "CC BY-SA 4.0": 1428,
+    "CC0": 1316,
+    "CC BY-SA 3.0": 1082,
+    "CC BY 2.0": 136,
+    "CC BY 3.0": 132,
+    "CC BY 4.0": 93,
+    "CC BY-SA 2.0": 75,
+    "FAL": 24,
+    "CC BY-SA 2.5": 23,
+    "No restrictions": 19,
+    "CC BY 2.5": 15,
+    "GFDL 1.2": 10,
+    "GODL-India": 6,
+    "GFDL": 5,
+    "CC BY-SA 2.0 fr": 3,
+    "CC BY-SA 2.5 in": 2,
+    "CC BY-SA 3.0 igo": 2,
+    "CC BY-SA 3.0 de": 2,
+    "CC BY 2.5 pl": 1,
+    "CC BY-SA 3.0 pl": 1,
+    "CC BY-SA 1.0": 1,
+    "CC BY-SA 2.1 es": 1,
+    "CC BY-SA 2.0 de": 1,
+    "CC BY-SA 2.5 it": 1,
+    "CC BY-SA 3.0 at": 1,
+    "GPL": 1
+  },
+  "with_restrictions": 20,
+  "commons_requests": {
+    "fetched": 0,
+    "reused": 141
+  }
+}
