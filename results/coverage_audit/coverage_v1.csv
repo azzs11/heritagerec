@@ -1,0 +1,317 @@
+sample_id,stratum,state,local_lang,inclusion_prob,recheck,status,qid,monument_code,statements,properties,sitelinks,wikipedias,has_coordinates,has_image,has_description_en,label_en,article_en,article_en_bytes,label_hi,article_hi,article_hi_bytes,label_kn,article_kn,article_kn_bytes,label_local,article_local,article_local_bytes,in_corpus,graph_degree
+cov001,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096036,S-KA-45,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov002,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096082,S-KA-87,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov003,karnataka_state,Karnataka,kn,0.094221,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov004,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97096091,S-KA-96,7,7,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov005,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096069,S-KA-75,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov006,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096089,S-KA-94,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov007,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096088,S-KA-93,7,7,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov008,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096056,S-KA-63,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov009,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096099,S-KA-104,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov010,karnataka_state,Karnataka,kn,0.094221,,matched,Q4866285,,7,7,4,4,True,True,True,True,True,15403,False,False,,True,True,8956,True,True,8956,True,3
+cov011,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096126,S-KA-111,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov012,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096137,S-KA-122,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov013,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096198,S-KA-165,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov014,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096218,S-KA-176,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov015,karnataka_state,Karnataka,kn,0.094221,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov016,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096243,S-KA-194,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov017,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096312,S-KA-219,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov018,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97096297,S-KA-207,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov019,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096308,S-KA-215,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov020,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096246,S-KA-197,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov021,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096326,S-KA-232,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov022,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096364,S-KA-258,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov023,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096352,S-KA-252,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov024,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97096317,S-KA-224,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov025,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096396,S-KA-280,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov026,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97096452,S-KA-330,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov027,karnataka_state,Karnataka,kn,0.094221,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov028,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096500,S-KA-376,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov029,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096478,S-KA-356,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov030,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096483,S-KA-360,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov031,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096489,S-KA-366,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov032,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096492,S-KA-369,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov033,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096516,S-KA-391,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov034,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096645,S-KA-483,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov035,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096305,S-KA-212,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov036,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096654,S-KA-492,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov037,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096573,S-KA-423,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov038,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096592,S-KA-440,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov039,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096607,S-KA-452,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov040,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096585,S-KA-435,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov041,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096526,S-KA-401,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov042,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096572,S-KA-422,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov043,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096576,S-KA-426,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov044,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97096612,S-KA-457,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov045,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096665,S-KA-501,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov046,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096661,S-KA-497,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov047,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096697,S-KA-517,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov048,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096752,S-KA-559,7,7,0,0,False,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov049,karnataka_state,Karnataka,kn,0.094221,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov050,karnataka_state,Karnataka,kn,0.094221,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov051,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096784,S-KA-588,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov052,karnataka_state,Karnataka,kn,0.094221,,matched,Q97097634,S-KA-597,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov053,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096834,S-KA-617,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov054,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096801,S-KA-606,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov055,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97097635,S-KA-601,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov056,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096847,S-KA-630,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov057,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096837,S-KA-621,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov058,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096853,S-KA-637,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov059,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97096790,S-KA-595,6,6,0,0,False,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov060,karnataka_state,Karnataka,kn,0.094221,yes,none,,,,,,,,,,,,,,,,,,,,,,,
+cov061,karnataka_state,Karnataka,kn,0.094221,,matched,Q19893067,S-KA-667,9,9,4,3,True,True,True,True,True,8194,False,False,,True,True,17513,True,True,17513,True,3
+cov062,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096878,S-KA-662,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov063,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096902,S-KA-681,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov064,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096936,S-KA-714,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov065,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096950,S-KA-728,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov066,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096925,S-KA-703,7,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov067,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096968,S-KA-746,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov068,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096943,S-KA-721,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov069,karnataka_state,Karnataka,kn,0.094221,yes,matched,Q97096959,S-KA-737,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov070,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096437,S-KA-316,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov071,karnataka_state,Karnataka,kn,0.094221,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov072,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096410,S-KA-294,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov073,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096422,S-KA-304,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov074,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096399,S-KA-283,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov075,karnataka_state,Karnataka,kn,0.094221,,matched,Q97096472,S-KA-350,6,6,0,0,False,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov076,karnataka_asi,Karnataka,kn,0.150376,yes,matched,Q97441089,N-KA-B182,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov077,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97441092,N-KA-B185,9,9,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov078,karnataka_asi,Karnataka,kn,0.150376,,matched,Q7678799,N-KA-B186,11,10,4,3,True,True,True,True,True,28554,True,True,1409,True,True,6740,True,True,6740,True,4
+cov079,karnataka_asi,Karnataka,kn,0.150376,yes,matched,Q97441099,N-KA-B191,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov080,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97441105,N-KA-B198,6,6,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov081,karnataka_asi,Karnataka,kn,0.150376,,matched,Q22952213,N-KA-B200,13,11,5,4,True,True,True,True,True,9839,True,False,,True,True,10086,True,True,10086,True,5
+cov082,karnataka_asi,Karnataka,kn,0.150376,,matched,Q6727744,N-KA-B94,11,11,4,3,True,True,True,True,True,5503,False,False,,True,True,8109,True,True,8109,True,3
+cov083,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97440930,N-KA-B96,9,8,1,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov084,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97440933,N-KA-B99,7,7,0,0,False,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov085,karnataka_asi,Karnataka,kn,0.150376,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov086,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97440934,N-KA-B100,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov087,karnataka_asi,Karnataka,kn,0.150376,,matched,Q6744203,N-KA-B137,11,11,5,4,True,True,True,True,True,11880,False,False,,False,False,,False,False,,True,2
+cov088,karnataka_asi,Karnataka,kn,0.150376,,matched,Q6479950,N-KA-B139,11,11,5,4,True,True,True,True,True,10942,False,False,,True,True,2390,True,True,2390,True,4
+cov089,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97440980,N-KA-B144,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov090,karnataka_asi,Karnataka,kn,0.150376,,matched,Q21022143,N-KA-B148,9,9,6,5,True,True,True,True,True,28316,False,False,,False,False,,False,False,,True,2
+cov091,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97440989,N-KA-B154,7,7,0,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov092,karnataka_asi,Karnataka,kn,0.150376,,matched,Q3537502,N-KA-B160,18,17,18,17,True,True,True,True,True,44739,True,True,7598,True,True,7122,True,True,7122,True,4
+cov093,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97441067,N-KA-B162,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov094,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97441070,N-KA-B165,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov095,karnataka_asi,Karnataka,kn,0.150376,,matched,Q97441075,N-KA-B170,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov096,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440571,N-KA-D219,11,11,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov097,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440356,N-KA-D51,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov098,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440342,N-KA-D36,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov099,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440319,N-KA-D13,9,9,1,0,False,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov100,karnataka_asi,Karnataka,kn,0.148936,yes,matched,Q97440320,N-KA-D14,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov101,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440325,N-KA-D19,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov102,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440331,N-KA-D25,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov103,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440333,N-KA-D27,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov104,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440339,N-KA-D33,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov105,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440340,N-KA-D34,10,10,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov106,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440370,N-KA-D55,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov107,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440597,N-KA-D248,10,10,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov108,karnataka_asi,Karnataka,kn,0.148936,yes,matched,Q16259469,N-KA-D228,10,10,3,2,True,True,True,True,True,9294,False,False,,False,False,,False,False,,True,2
+cov109,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440581,N-KA-D230,7,7,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov110,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440600,N-KA-D251,7,7,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov111,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440613,N-KA-D263,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov112,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440622,N-KA-D270,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov113,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440624,N-KA-D272,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov114,karnataka_asi,Karnataka,kn,0.148936,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov115,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440639,N-KA-D284,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov116,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440641,N-KA-D287,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov117,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440375,N-KA-D60,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov118,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440548,N-KA-D203,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov119,karnataka_asi,Karnataka,kn,0.148936,,matched,Q3517553,N-KA-D61,14,14,11,10,True,True,True,True,True,16211,True,True,3381,True,True,27943,True,True,27943,True,5
+cov120,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440443,N-KA-D122,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov121,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440447,N-KA-D125,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov122,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440448,N-KA-D126,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov123,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440456,N-KA-D134,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov124,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440457,N-KA-D135,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov125,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440465,N-KA-D144,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov126,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440466,N-KA-D145,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov127,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440504,N-KA-D159,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov128,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440511,N-KA-D166,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov129,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440516,N-KA-D171,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov130,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440387,N-KA-D72,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov131,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440394,N-KA-D77,9,9,1,0,False,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov132,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440406,N-KA-D89,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov133,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440349,N-KA-D45,8,8,1,0,False,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov134,karnataka_asi,Karnataka,kn,0.148936,,matched,Q3517573,N-KA-D90,12,12,7,6,True,True,True,True,True,5193,False,False,,True,True,8024,True,True,8024,True,4
+cov135,karnataka_asi,Karnataka,kn,0.148936,,matched,Q3517721,N-KA-D105,11,10,13,12,True,True,True,True,True,9336,True,True,4579,True,True,16801,True,True,16801,True,4
+cov136,karnataka_asi,Karnataka,kn,0.148936,,matched,Q66619211,N-KA-D49,10,9,0,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov137,karnataka_asi,Karnataka,kn,0.148936,,matched,Q97440570,N-KA-D218,9,9,1,0,False,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov138,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440738,N-KA-B23,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov139,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440740,N-KA-B24,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov140,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440746,N-KA-B26,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov141,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440752,N-KA-B29,8,8,0,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov142,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440754,N-KA-B30-a,8,8,1,0,False,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov143,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440766,N-KA-B32,9,8,1,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov144,karnataka_asi,Karnataka,kn,0.142857,yes,matched,Q97440889,N-KA-B61,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov145,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440885,N-KA-B58,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov146,karnataka_asi,Karnataka,kn,0.142857,yes,matched,Q97440893,N-KA-B65,7,7,0,0,False,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov147,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440894,N-KA-B66,8,8,1,0,False,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov148,karnataka_asi,Karnataka,kn,0.142857,,matched,Q68284409,N-KA-B68,11,11,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov149,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440902,N-KA-B74,6,6,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov150,karnataka_asi,Karnataka,kn,0.142857,,matched,Q97440611,N-KA-D261,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov151,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q142220564,S-MP-432,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov152,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101101,S-MP-103,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov153,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97100878,S-MP-33,9,9,1,0,True,True,False,True,False,,True,False,,False,False,,True,False,,False,0
+cov154,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101555,S-MP-304,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov155,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97100876,S-MP-30,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov156,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101211,S-MP-156,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov157,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q5577562,S-MP-10,11,11,4,3,True,True,True,True,True,3847,True,True,10879,False,False,,True,True,10879,True,3
+cov158,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101393,S-MP-213,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov159,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101520,S-MP-284,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov160,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101071,S-MP-86,9,9,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov161,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q142200659,S-MP-393,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov162,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101581,S-MP-326,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov163,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q142190694,S-MP-384,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov164,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q142210671,S-MP-415,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov165,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101171,S-MP-112,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov166,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101103,S-MP-104,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov167,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101452,S-MP-256,10,10,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov168,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101365,S-MP-197,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov169,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101086,S-MP-93,10,10,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov170,hindi_belt_state,Madhya Pradesh,hi,0.100604,yes,matched,Q97101173,S-MP-116,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov171,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101188,S-MP-132,9,9,0,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov172,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101218,S-MP-162,8,8,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov173,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101346,S-MP-188,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov174,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q98927643,S-MP-131,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov175,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97100896,S-MP-52,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov176,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101403,S-MP-222,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov177,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101176,S-MP-119,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov178,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97100869,S-MP-22,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov179,hindi_belt_state,Madhya Pradesh,hi,0.100604,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov180,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101518,S-MP-283,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov181,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101462,S-MP-265,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov182,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101458,S-MP-262,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov183,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97100865,S-MP-18,8,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov184,hindi_belt_state,Madhya Pradesh,hi,0.100604,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov185,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97100874,S-MP-28,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov186,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101436,S-MP-245,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov187,hindi_belt_state,Madhya Pradesh,hi,0.100604,yes,matched,Q97101196,S-MP-141,8,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov188,hindi_belt_state,Madhya Pradesh,hi,0.100604,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov189,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101434,S-MP-243,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov190,hindi_belt_state,Madhya Pradesh,hi,0.100604,yes,none,,,,,,,,,,,,,,,,,,,,,,,
+cov191,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97100901,S-MP-58,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov192,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101208,S-MP-153,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov193,hindi_belt_state,Madhya Pradesh,hi,0.100604,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov194,hindi_belt_state,Madhya Pradesh,hi,0.100604,yes,matched,Q97101562,S-MP-309,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov195,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q97101318,S-MP-173,7,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov196,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q142201259,S-MP-397,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov197,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q98928422,S-MP-311,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov198,hindi_belt_state,Madhya Pradesh,hi,0.100604,yes,matched,Q97101037,S-MP-68,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov199,hindi_belt_state,Madhya Pradesh,hi,0.100604,yes,matched,Q97590216,S-MP-14,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov200,hindi_belt_state,Madhya Pradesh,hi,0.100604,,matched,Q142202745,S-MP-401,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov201,hindi_belt_asi,Bihar,hi,0.042857,yes,matched,Q18913464,N-BR-4,12,12,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov202,hindi_belt_asi,Bihar,hi,0.042857,,matched,Q18913465,N-BR-5,9,9,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov203,hindi_belt_asi,Bihar,hi,0.042857,,matched,Q19343061,"N-BR-67, N-BR-61",10,9,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov204,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97946682,N-MP-113,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov205,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97946883,N-MP-268,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov206,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q1854330,N-MP-278,18,17,17,16,True,True,True,True,True,65953,True,True,8138,True,True,6476,True,True,8138,True,5
+cov207,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97945660,N-MP-124,9,9,1,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov208,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97946799,N-MP-186,10,10,3,2,True,True,True,True,True,3184,False,False,,False,False,,False,False,,True,3
+cov209,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97945596,N-MP-35,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov210,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97946283,N-MP-266,9,9,0,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov211,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97945593,N-MP-28,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov212,hindi_belt_asi,Madhya Pradesh,hi,0.041237,yes,matched,Q97945603,N-MP-38,9,9,0,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov213,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov214,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q97946002,N-MP-231,9,9,0,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov215,hindi_belt_asi,Madhya Pradesh,hi,0.041237,,matched,Q1347967,N-MP-236,15,15,10,9,True,True,True,True,True,31709,True,True,26146,False,False,,True,True,26146,True,3
+cov216,hindi_belt_asi,Rajasthan,hi,0.03681,,matched,Q97459601,N-RJ-131,9,9,0,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov217,hindi_belt_asi,Rajasthan,hi,0.03681,yes,matched,Q60741846,N-RJ-86,9,9,4,3,True,True,True,True,True,19503,False,False,,False,False,,False,False,,True,2
+cov218,hindi_belt_asi,Rajasthan,hi,0.03681,,matched,Q97459462,N-RJ-95,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov219,hindi_belt_asi,Rajasthan,hi,0.03681,,matched,Q97459271,N-RJ-11,7,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov220,hindi_belt_asi,Rajasthan,hi,0.03681,,matched,Q14547483,N-RJ-1,17,17,13,11,True,True,True,True,True,24035,True,True,5940,False,False,,True,True,5940,True,6
+cov221,hindi_belt_asi,Rajasthan,hi,0.03681,,matched,Q97459625,N-RJ-146,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov222,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97816236,N-UP-A221,9,8,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov223,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97815514,N-UP-A2,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov224,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97815725,N-UP-A79,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov225,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97815915,N-UP-A138,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov226,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705663,N-UP-L234,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov227,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705309,N-UP-L40,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov228,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705432,N-UP-L329,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov229,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705440,N-UP-L336,7,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov230,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705314,N-UP-L43,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov231,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705323,N-UP-L52,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov232,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705378,N-UP-L117,9,8,1,0,False,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov233,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705393,N-UP-L131,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov234,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705409,N-UP-L142,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov235,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705587,N-UP-L347,7,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov236,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705592,N-UP-L352,9,9,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov237,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705600,N-UP-L360,8,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov238,hindi_belt_asi,Uttar Pradesh,hi,0.039031,yes,matched,Q97816035,N-UP-A155,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov239,hindi_belt_asi,Uttar Pradesh,hi,0.039031,yes,matched,Q97705349,N-UP-L74,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov240,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97705453,N-UP-L18,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov241,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97815762,N-UP-A102,7,7,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov242,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97816272,N-UP-A242,6,6,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov243,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97816281,N-UP-A248,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov244,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97816387,N-UP-A255,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov245,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov246,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97692239,N-UP-P108,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov247,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97691962,N-UP-P14,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov248,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97692178,N-UP-P101,5,5,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov249,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,matched,Q97692014,N-UP-P47,7,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov250,hindi_belt_asi,Uttar Pradesh,hi,0.039031,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov251,rest_asi,Andhra Pradesh,te,0.02963,,matched,Q18171035,"N-AP-118, N-AP-113",9,8,0,0,True,False,True,True,False,,False,False,,True,False,,False,False,,False,0
+cov252,rest_asi,Andhra Pradesh,te,0.02963,,matched,Q113560234,"N-AP-23, N-AP-19",12,10,3,2,True,True,True,True,True,6095,False,False,,False,False,,True,True,11036,True,1
+cov253,rest_asi,Andhra Pradesh,te,0.02963,,matched,Q17783173,"N-AP-76, N-AP-36",13,12,1,0,True,True,True,True,False,,False,False,,False,False,,True,False,,False,0
+cov254,rest_asi,Andhra Pradesh,te,0.02963,,matched,Q17782915,"N-AP-70, N-AP-56",12,11,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov255,rest_asi,Assam,as,0.018182,,matched,Q18177143,N-AS-7,9,9,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov256,rest_asi,Chhattisgarh,hi,0.021739,,matched,Q19632921,"N-CT-10, N-CT-45",10,9,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov257,rest_asi,Goa,gom,0.047619,yes,matched,Q28952563,"N-GA-18, N-GA-9",21,18,2,1,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov258,rest_asi,Gujarat,gu,0.02439,,matched,Q63323348,N-GJ-131,8,8,0,0,True,False,True,True,False,,False,False,,False,False,,True,False,,False,0
+cov259,rest_asi,Gujarat,gu,0.02439,,matched,Q62779590,N-GJ-68,10,10,1,0,True,True,True,True,False,,False,False,,False,False,,True,False,,False,0
+cov260,rest_asi,Gujarat,gu,0.02439,yes,matched,Q63347729,N-GJ-189,8,8,0,0,True,False,True,True,False,,False,False,,False,False,,True,False,,False,0
+cov261,rest_asi,Gujarat,gu,0.02439,,matched,Q42173709,N-GJ-125,11,11,7,6,True,True,True,True,True,5586,False,False,,False,False,,True,True,7950,True,2
+cov262,rest_asi,Gujarat,gu,0.02439,,matched,Q63344213,N-GJ-162,8,8,0,0,True,False,True,True,False,,False,False,,False,False,,True,False,,False,0
+cov263,rest_asi,Haryana,hi,0.021505,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov264,rest_asi,Haryana,hi,0.021505,,matched,Q59633581,"N-HR-80, N-HR-82",9,8,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov265,rest_asi,Himachal Pradesh,hi,0.025,,matched,Q56949580,"N-HP-14, N-HP-15",12,11,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov266,rest_asi,Jammu & Kashmir (U.T.),,0.035714,,matched,Q6774201,"N-JK-3, N-JK-2",23,21,15,13,True,True,True,True,True,14873,True,True,15119,False,False,,,,,True,4
+cov267,rest_asi,Jammu & Kashmir (U.T.),,0.035714,,matched,Q59657485,"N-JK-2, N-JK-4",18,17,1,0,True,True,False,True,False,,False,False,,False,False,,,,,False,0
+cov268,rest_asi,Kerala,ml,0.034483,,matched,Q110436320,N-KL-1,11,11,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov269,rest_asi,Maharashtra,mr,0.027972,,matched,Q97148015,N-MH-A48,7,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov270,rest_asi,Maharashtra,mr,0.027972,,matched,Q97148044,"N-MH-A57, N-MH-A56",8,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov271,rest_asi,Maharashtra,mr,0.027972,yes,matched,Q97309155,"N-MH-M100, N-MH-M108",8,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov272,rest_asi,Maharashtra,mr,0.027972,,matched,Q97308938,"N-MH-M31, N-MH-M60",7,6,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov273,rest_asi,Maharashtra,mr,0.027972,,matched,Q97308940,"N-MH-M32, N-MH-M61",8,7,0,0,True,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov274,rest_asi,Maharashtra,mr,0.027972,,matched,Q97147878,"N-MH-N26, N-MH-N20",8,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov275,rest_asi,Maharashtra,mr,0.027972,,matched,Q97147995,"N-MH-N61, N-MH-N55",8,7,0,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov276,rest_asi,Maharashtra,mr,0.027972,,matched,Q97147749,"N-MH-N66, N-MH-N60",10,9,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov277,rest_asi,N.C.T. Delhi,hi,0.02907,,matched,Q22680393,"N-DL-7, N-DL-14",9,8,0,0,False,False,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov278,rest_asi,N.C.T. Delhi,hi,0.02907,,matched,Q29860594,"N-DL-41, N-DL-27",10,9,0,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov279,rest_asi,N.C.T. Delhi,hi,0.02907,,matched,Q22806940,N-DL-137,11,11,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov280,rest_asi,N.C.T. Delhi,hi,0.02907,yes,matched,Q41652635,"N-DL-154, N-DL-97",12,11,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov281,rest_asi,N.C.T. Delhi,hi,0.02907,,matched,Q7286369,"N-DL-152, N-DL-99",12,11,7,6,True,True,True,True,True,6166,True,True,4315,False,False,,True,True,4315,True,3
+cov282,rest_asi,Odisha,or,0.024691,yes,matched,Q2365530,"N-OR-45, N-OR-55",25,23,27,26,True,True,True,True,True,30050,True,True,13523,True,True,9885,True,True,7263,True,5
+cov283,rest_asi,Odisha,or,0.024691,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov284,rest_asi,Punjab,pa,0.030303,,matched,Q56238698,"N-PB-16, N-PB-19",12,11,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov285,rest_asi,Tamilnadu,ta,0.026699,,matched,Q24937257,N-TN-C169,10,10,6,5,True,True,True,True,True,8746,False,False,,False,False,,True,True,17255,True,2
+cov286,rest_asi,Tamilnadu,ta,0.026699,,matched,Q97481253,N-TN-C213,10,10,3,2,True,True,True,True,True,5422,False,False,,False,False,,True,True,12980,True,1
+cov287,rest_asi,Tamilnadu,ta,0.026699,,matched,Q97481290,N-TN-C232,10,10,1,0,True,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov288,rest_asi,Tamilnadu,ta,0.026699,,matched,Q29467430,N-TN-C240,10,10,5,4,True,True,True,True,True,7248,False,False,,False,False,,True,True,12793,True,2
+cov289,rest_asi,Tamilnadu,ta,0.026699,,matched,Q97479838,N-TN-C269,7,6,0,0,False,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov290,rest_asi,Tamilnadu,ta,0.026699,,matched,Q65998810,N-TN-C49,13,11,1,0,True,False,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov291,rest_asi,Tamilnadu,ta,0.026699,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov292,rest_asi,Tamilnadu,ta,0.026699,,matched,Q97480556,"N-TN-C165, N-TN-T114",12,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov293,rest_asi,Tamilnadu,ta,0.026699,,matched,Q97481130,N-TN-T144,9,9,1,0,True,True,False,True,False,,False,False,,False,False,,False,False,,False,0
+cov294,rest_asi,Tamilnadu,ta,0.026699,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov295,rest_asi,Tamilnadu,ta,0.026699,,none,,,,,,,,,,,,,,,,,,,,,,,
+cov296,rest_asi,Uttarakhand,hi,0.022727,,matched,Q56392975,N-UT-11,7,7,0,0,False,True,True,True,False,,False,False,,False,False,,False,False,,False,0
+cov297,rest_asi,West Bengal,bn,0.02963,,matched,Q56225086,N-WB-41,12,11,1,0,True,True,True,True,False,,True,False,,False,False,,True,False,,False,0
+cov298,rest_asi,West Bengal,bn,0.02963,,matched,Q29032413,N-WB-64,13,13,4,3,True,True,True,True,True,2439,False,False,,False,False,,True,True,2711,True,2
+cov299,rest_asi,West Bengal,bn,0.02963,,matched,Q56245153,N-WB-85,11,10,1,0,True,True,True,True,False,,False,False,,False,False,,True,False,,False,0
+cov300,rest_asi,West Bengal,bn,0.02963,,matched,Q56245449,N-WB-93,12,11,4,3,True,True,True,True,True,5129,False,False,,False,False,,True,True,3979,True,3
+cov301,unesco_ich,,,1.0,yes,matched,Q1641463,,21,16,33,31,False,True,True,True,True,16264,True,True,23620,True,True,26808,,,,True,3
+cov302,unesco_ich,,,1.0,,matched,Q48723594,,23,15,13,13,False,True,True,True,True,16441,True,True,1347,True,True,12022,,,,True,3
+cov303,unesco_ich,,,1.0,,matched,Q167067,,20,15,27,26,True,True,True,True,True,40245,True,True,20763,False,False,,,,,True,3
+cov304,unesco_ich,,,1.0,,matched,Q7289735,,12,9,16,15,False,True,True,True,True,10249,True,True,19055,False,False,,,,,True,2
+cov305,unesco_ich,,,1.0,,matched,Q1071518,,24,18,32,30,False,True,True,True,True,19205,True,True,16086,True,True,22078,,,,True,3
+cov306,unesco_ich,,,1.0,,matched,Q6351763,,15,11,21,20,False,True,True,True,True,12679,True,True,18726,True,True,13669,,,,True,3
+cov307,unesco_ich,,,1.0,,matched,Q1479611,,13,10,20,19,False,True,True,True,True,6712,True,True,14163,True,False,,,,,True,2
+cov308,unesco_ich,,,1.0,,matched,Q16345168,,15,13,11,9,False,True,True,True,True,23304,True,True,3863,False,False,,,,,True,4
+cov309,unesco_ich,,,1.0,,matched,Q113025255,,8,5,0,0,False,False,False,True,False,,False,False,,False,False,,,,,False,0
+cov310,unesco_ich,,,1.0,,matched,Q28171926,,13,9,12,11,False,True,True,True,True,6383,True,True,7318,False,False,,,,,True,2
+cov311,unesco_ich,,,1.0,,matched,Q96213176,,9,6,0,0,False,True,True,True,False,,False,False,,False,False,,,,,False,0
+cov312,unesco_ich,,,1.0,,matched,Q9350,,163,120,159,139,False,True,True,True,True,156775,True,True,129505,True,True,98355,,,,True,10
+cov313,unesco_ich,,,1.0,,matched,Q10283,,33,30,66,64,False,True,True,True,True,98615,True,True,27061,True,True,53491,,,,True,3
+cov314,unesco_ich,,,1.0,,matched,Q882985,,14,13,25,24,False,True,True,True,True,8815,True,True,6003,True,True,8996,,,,True,3
+cov315,unesco_ich,,,1.0,,matched,Q483236,,112,45,102,97,False,True,True,True,True,138384,True,True,27090,False,False,,,,,True,2
+cov316,unesco_ich,,,1.0,,matched,Q10244,,72,43,107,103,False,True,True,True,True,126913,True,True,103842,True,True,9680,,,,True,14
