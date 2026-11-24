@@ -51,6 +51,7 @@ dependencies = [
     "rapidfuzz>=3.14",
     "indic-transliteration>=2.3",
     "h3==4.5.0",
+    "lightgbm>=4.6",
 ]
 
 [dependency-groups]
