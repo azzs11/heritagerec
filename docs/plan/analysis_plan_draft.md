@@ -6,6 +6,26 @@
 - Drafted: 22 November 2026. Source of the rules: specification Sections 1, 6 and 10.
 - Items marked **[author]** need the author's choice before freezing.
 
+## Recommended answers to the open items (24 Nov 2026, for one-step approval)
+
+Each **[author]** item below has a recommendation; approving this section answers all of them. Nothing here changes
+until the author says so, and the plan is frozen only by copying it to `docs/plan/analysis_plan.md`.
+
+1. **Primary family (Section 1): five comparisons, Holm across the five.**
+   - RQ1: PPR (core layer, hub power chosen on dev) against BM25; against the best dense model; against
+     entity-expanded BM25 (decision 0033, alpha chosen on dev).
+   - RQ2: the better of reciprocal rank fusion and LambdaMART on dev, against the best single text system on dev.
+   - RQ3: on the Hindi and Kannada test queries only, PPR against the better translate-then-search run on dev
+     (decision 0019).
+   "Best on dev" is decided by dev NDCG@10 and written into this file, by run name, before freezing.
+2. **Type coverage@10 and period or region match (Section 3).** Keep type coverage@10, defined here as the number of
+   distinct document types in a run's top 10 divided by the six types, computed by a small tested function and
+   reported descriptively (no tests). Drop period and region match from v1: they need the query cue extraction of
+   specification Section 5, which is not built; the paper says so.
+3. **Tier pairs (Section 4a).** The RQ1 pairs that decide the confound: PPR against BM25 and PPR against
+   entity-expanded BM25; for RQ3, PPR against translate-then-search on the Hindi and Kannada queries. Secondary,
+   outside the Holm family, as 0031 says.
+
 ## 1. Questions and hypotheses
 
 | RQ | Hypothesis tested | Primary comparison (test split) |
