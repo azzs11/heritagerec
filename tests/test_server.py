@@ -298,9 +298,21 @@ def test_a_document_downloads_with_its_attribution(graph_client):
 @pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
 def test_documents_say_where_to_get_the_original(graph_client):
     wiki = graph_client.get("/api/documents/wikipedia:en:7051661").json()["get_it"]
-    assert [x["label"] for x in wiki] == ["Original page", "PDF from Wikipedia"]
+    assert [x["label"] for x in wiki][:2] == ["Original page", "PDF from Wikipedia"]
+    # The article has no image of its own; its entity's Commons photograph is linked with its licence (0034).
+    assert all(x["label"].startswith("Photo on Wikimedia Commons (") for x in wiki[2:])
     met = graph_client.get("/api/documents/met:38517").json()["get_it"]
     assert met[-1]["label"] == "Full image (CC0)"
+
+
+def test_a_picture_is_the_objects_own_then_its_entitys_photograph_with_credit(graph_client):
+    met = graph_client.get("/api/documents/met:38517").json()
+    assert met["image"]["licence"].endswith("/publicdomain/zero/1.0/") and "of" not in met["image"]
+    wiki = graph_client.get("/api/documents/wikipedia:en:7051661").json()
+    photo = wiki.get("image")
+    if photo:  # present when data/explorer/v1/entity_images.jsonl.gz is built
+        assert photo["source"] == "commons" and photo["credit"].startswith("Photo:")
+        assert photo["of"] in {e["id"] for e in wiki["entities"]} and photo["licence_name"]
 
 
 @needs_keyword
@@ -309,3 +321,19 @@ def test_a_partial_match_is_reported_honestly(full_client):
     assert r["linked"]["mentions"] == []
     assert r["top_match"]["in_best_passage"] < r["top_match"]["query_words"]
     assert "rome" in r["top_match"]["missing"]
+
+
+def test_a_document_portrait_holds_only_recorded_place_and_centuries(graph_client):
+    d = graph_client.get("/api/documents/wikipedia:en:7051661").json()
+    p = d["portrait"]
+    assert set(p) <= {"centuries", "lat", "lon", "place"}
+    assert all(isinstance(c, int) for c in p["centuries"]) and p["centuries"] == sorted(p["centuries"])
+    if "place" in p:  # the place is an entity the document is about, with the explorer's coordinates
+        assert p["place"] in {e["id"] for e in d["entities"]}
+
+
+def test_a_hub_never_lends_a_document_its_picture_or_its_place(graph_client):
+    # The Imperial Gazetteer volumes are "about" India, a hub: no photograph of India, no dot at India's centre.
+    d = graph_client.get("/api/documents/internet_archive:imperialgazette01meyegoog").json()
+    assert "image" not in d or d["image"].get("of") != "Q668"
+    assert d["portrait"].get("place") != "Q668"
