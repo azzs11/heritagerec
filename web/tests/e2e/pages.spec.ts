@@ -311,3 +311,38 @@ test("a reader can cite a document, take a ranking away, and get to a place", as
   await expect(page.getByRole("link", { name: "on OpenStreetMap ↗" })).toHaveAttribute("href", /openstreetmap\.org\/\?mlat=/);
   await expect(page.getByRole("link", { name: "directions ↗" })).toHaveAttribute("href", /openstreetmap\.org\/directions/);
 });
+
+test("a photograph says what it shows and who took it; a document without one shows where and when", async ({ page }) => {
+  test.skip(!(await corpusRunning(page)), "needs the corpus");
+  const h = await (await page.request.get("http://127.0.0.1:8000/api/health")).json();
+  test.skip(!h.graph?.photos, "needs data/explorer/v1/entity_images.jsonl.gz");
+  await page.goto("/document/?id=wikipedia%3Aen%3A7051661");
+  await settle(page);
+  await expect(page.getByText(/^Photo of .*, from Wikimedia Commons\./)).toBeVisible();
+  await expect(page.getByRole("link", { name: /Photo on Wikimedia Commons \(CC/ })).toBeVisible();
+  await page.getByText("Cite it").click();
+  await expect(page.getByText(/The photograph is not part of this document/)).toBeVisible();
+  // The Imperial Gazetteer is "about" India, a hub: no borrowed photograph, no dot at India's centre.
+  await page.goto("/document/?id=internet_archive%3Aimperialgazette01meyegoog");
+  await settle(page);
+  await expect(page.getByText(/No photograph\. From the record: no recorded place, 20th century\./)).toBeVisible();
+  await expect(page.getByText(/^Photo of /)).toHaveCount(0);
+});
+
+test("communities are rings of what they hold, as a network or where they lie", async ({ page }) => {
+  await page.goto("/graph/");
+  await settle(page);
+  // Every ring says in words what it holds and where its places lie.
+  const ring = page.getByRole("button", { name: /^Chennai, Chennai district.*\d+ nodes; .*sites and places.*; its places/ });
+  await expect(ring).toBeVisible();
+  await ring.click();
+  await expect(ring).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("aside").getByText(/^\d[\d,]* nodes: .*sites and places/)).toBeVisible();
+  // On the map: a community whose places cluster stands at its place; Chennai's spread across India, so it is apart.
+  await page.getByRole("button", { name: "On the map", exact: true }).click();
+  await expect(page.locator("aside").getByText(/spread across India, so it has no single place on the map/)).toBeVisible();
+  await expect(page.getByRole("button", { name: /Hassan district.*its places cluster in one region/ })).toBeVisible();
+  // The same rings as text, for readers who do not see the drawing.
+  await page.getByText("Every community, as text").click();
+  await expect(page.getByRole("cell", { name: /Chennai, Chennai district/ })).toBeVisible();
+});
