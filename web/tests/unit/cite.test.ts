@@ -56,3 +56,15 @@ describe("ranking export", () => {
     expect(lines[2]).toContain('graph,"pagerank(hub=1, restart=0.15)",1,d2');
   });
 });
+
+import { centuryText } from "@/components/Portrait";
+
+describe("portrait text", () => {
+  it("writes centuries as readers say them, and says when none is recorded", () => {
+    expect(centuryText([])).toBe("no recorded century");
+    expect(centuryText([20])).toBe("20th century");
+    expect(centuryText([-3, 1, 3])).toBe("3rd century BCE to 3rd century");
+    expect(centuryText([11, 12, 13])).toBe("11th century to 13th century");
+    expect(centuryText([21, 22])).toBe("21st century to 22nd century");
+  });
+});
