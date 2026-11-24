@@ -305,6 +305,7 @@ def test_documents_say_where_to_get_the_original(graph_client):
     assert met[-1]["label"] == "Full image (CC0)"
 
 
+@pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
 def test_a_picture_is_the_objects_own_then_its_entitys_photograph_with_credit(graph_client):
     met = graph_client.get("/api/documents/met:38517").json()
     assert met["image"]["licence"].endswith("/publicdomain/zero/1.0/") and "of" not in met["image"]
@@ -323,6 +324,7 @@ def test_a_partial_match_is_reported_honestly(full_client):
     assert "rome" in r["top_match"]["missing"]
 
 
+@pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
 def test_a_document_portrait_holds_only_recorded_place_and_centuries(graph_client):
     d = graph_client.get("/api/documents/wikipedia:en:7051661").json()
     p = d["portrait"]
@@ -332,6 +334,7 @@ def test_a_document_portrait_holds_only_recorded_place_and_centuries(graph_clien
         assert p["place"] in {e["id"] for e in d["entities"]}
 
 
+@pytest.mark.skipif(not HAVE_RECORDS, reason="needs the corpus snapshot")
 def test_a_hub_never_lends_a_document_its_picture_or_its_place(graph_client):
     # The Imperial Gazetteer volumes are "about" India, a hub: no photograph of India, no dot at India's centre.
     d = graph_client.get("/api/documents/internet_archive:imperialgazette01meyegoog").json()
