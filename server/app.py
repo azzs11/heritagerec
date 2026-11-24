@@ -195,9 +195,12 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
             g.card(q) if g and q in g.nodes else {"id": q, "labels": {}} for q in record.get("entity_ids") or []
         ]
         meta["in_graph"] = bool(g and doc_id in g.nodes)
-        meta["get_it"] = sources_for(record, g.images.get(doc_id) if g else None)
-        if g and doc_id in g.images:
-            meta["image"] = g.images[doc_id]
+        picture = g.picture(doc_id) if g else None
+        if g and doc_id in g.nodes:
+            meta["portrait"] = g.portrait(doc_id)
+        meta["get_it"] = sources_for(record, picture)
+        if picture:
+            meta["image"] = picture
         return meta
 
     # ---------- graph ----------
@@ -354,8 +357,11 @@ def create_app(paths: Paths = Paths(), use_keyword: bool = True) -> FastAPI:
         out = keyword.search(kw, optional("corpus"), text, chosen, system == "bm25_rm3", k)
         g = optional("graph")
         for r in out["results"]:
-            if g and r["doc_id"] in g.images:
-                r["image"] = g.images[r["doc_id"]]
+            picture = g.picture(r["doc_id"]) if g else None
+            if picture:
+                r["image"] = picture
+            if g and r["doc_id"] in g.nodes:
+                r["portrait"] = g.portrait(r["doc_id"])
         out["query"], out["detected"] = text, detected
         out["linked"] = linked(text)
         return out
@@ -420,7 +426,12 @@ def sources_for(record: dict, image: dict | None) -> list[dict]:
         out.append(
             {"label": "Scans and files at the Internet Archive", "url": url.replace("/details/", "/download/", 1)}
         )
-    if image:
+    if image and image.get("source") == "commons":
+        # A photograph of the entity, not part of the record: its own page carries its licence and author.
+        out.append(
+            {"label": f"Photo on Wikimedia Commons ({image['licence_name']})", "url": image["page"] or image["full"]}
+        )
+    elif image:
         out.append({"label": "Full image (CC0)", "url": image["full"]})
     return out
 
