@@ -6,10 +6,11 @@
 - Drafted: 22 November 2026. Source of the rules: specification Sections 1, 6 and 10.
 - Items marked **[author]** need the author's choice before freezing.
 
-## Recommended answers to the open items (24 Nov 2026, for one-step approval)
+## Recommended answers to the open items (24 Nov 2026, approved by the author 25 Nov 2026)
 
-Each **[author]** item below has a recommendation; approving this section answers all of them. Nothing here changes
-until the author says so, and the plan is frozen only by copying it to `docs/plan/analysis_plan.md`.
+The author approved these answers on 25 Nov 2026; they settle every **[author]** item below. The plan is still a
+draft: it is frozen only by copying it to `docs/plan/analysis_plan.md`, after the dev runs name the "best on dev"
+systems.
 
 1. **Primary family (Section 1): five comparisons, Holm across the five.**
    - RQ1: PPR (core layer, hub power chosen on dev) against BM25; against the best dense model; against
